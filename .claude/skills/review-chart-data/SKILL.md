@@ -5,13 +5,13 @@ description: Prefill the data-charting form from the full texts of included pape
 
 # Prefill data charting
 
-You fill empty charting fields for included papers, from the full text, with page locators. Each paper you touch stays `checked_by: AI` until the reviewer checks it in Review Studio ("Checked — next"). You never overwrite a value already there, and you never touch a paper the reviewer has checked. `ai_assist.py` enforces both rules.
+You fill empty charting fields for included papers, from the full text, with page locators. Each paper you touch stays `checked_by: AI` until the reviewer checks it in Review Studio ("Checked — next"). You never overwrite a value already there, and you never touch a paper the reviewer has checked. `ai-assist.js` enforces both rules.
 
 ## Steps
 
 1. **Get the next papers:**
    ```
-   python "95 - Tools/PRISMA review/ai_assist.py" --review "<review>" context charting --limit 5
+   node "C:/Users/A-Bag/Desktop/prisma-studio/bin/ai-assist.js" --review "<review>" context charting --limit 5
    ```
    - If AI assistance is **off**, stop and tell the user where to switch it on (Review Studio, stage 12).
    - The output has the review questions, the charting `fields` (name + description, which often fixes the allowed values), and per paper its `pdf` path and the fields already `filled`.
@@ -28,7 +28,7 @@ You fill empty charting fields for included papers, from the full text, with pag
    ```
    Then run:
    ```
-   python "95 - Tools/PRISMA review/ai_assist.py" --review "<review>" chart FILE.json --model "<your exact model id>"
+   node "C:/Users/A-Bag/Desktop/prisma-studio/bin/ai-assist.js" --review "<review>" chart FILE.json --model "<your exact model id>"
    ```
 
 4. **Repeat** for further batches if the user wants. Then report how many papers you prefilled and any field whose description was hard to apply consistently. That is useful feedback for the charting form, and changing the form after the lock is an amendment.

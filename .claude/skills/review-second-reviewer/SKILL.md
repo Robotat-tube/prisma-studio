@@ -7,13 +7,13 @@ description: Act as the independent (blind) second reviewer on the screening sam
 
 You screen the random sample independently. Blindness is the whole point of this step. You see only the blind sheet and the criteria, never the first reviewer's decisions. So do not open record notes, `Screening.base`, the PRISMA flow, or the timeline for this review while you work.
 
-All reading and writing goes through `95 - Tools/PRISMA review/ai_assist.py`.
+All reading and writing goes through `bin/ai-assist.js` (PRISMA Studio), run from the folder that holds the review.
 
 ## Steps
 
 1. **Get the sheet:**
    ```
-   python "95 - Tools/PRISMA review/ai_assist.py" --review "<review>" context reviewer
+   node "C:/Users/A-Bag/Desktop/prisma-studio/bin/ai-assist.js" --review "<review>" context reviewer
    ```
    - If it says AI assistance is **off**, stop: this review uses a human second reviewer.
    - If there's no sheet yet, the reviewer first draws the sample in Review Studio (stage 9).
@@ -30,7 +30,7 @@ All reading and writing goes through `95 - Tools/PRISMA review/ai_assist.py`.
    ```
    Then run:
    ```
-   python "95 - Tools/PRISMA review/ai_assist.py" --review "<review>" r2 FILE.json --model "<your exact model id>"
+   node "C:/Users/A-Bag/Desktop/prisma-studio/bin/ai-assist.js" --review "<review>" r2 FILE.json --model "<your exact model id>"
    ```
    This saves a filled copy of the sheet named `… (AI).csv`, imports it, recomputes Cohen's κ and logs the model and date.
 

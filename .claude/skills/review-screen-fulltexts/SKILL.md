@@ -7,13 +7,13 @@ description: Suggest full-text screening decisions for a scoping review in this 
 
 You suggest; the reviewer decides. For records that passed title/abstract screening and have a PDF attached, you read the full text and write only `ai_ft_decision`, `ai_ft_reason` and `ai_ft_why`. The reviewer then confirms or changes each suggestion in Review Studio (Screening → Full text tab → **Suggested** queue), and only that writes `ft_decision`.
 
-All reading and writing goes through `95 - Tools/PRISMA review/ai_assist.py`. Never edit record notes or `review_state.json` yourself.
+All reading and writing goes through `bin/ai-assist.js` (PRISMA Studio), run from the folder that holds the review. Never edit record notes or `review_state.json` yourself.
 
 ## Steps
 
 1. **Get the batch.** Run this from the vault root:
    ```
-   python "95 - Tools/PRISMA review/ai_assist.py" --review "<review>" context fulltext --limit 5
+   node "C:/Users/A-Bag/Desktop/prisma-studio/bin/ai-assist.js" --review "<review>" context fulltext --limit 5
    ```
    - If it says full-text suggestions are **off**, stop. Tell the user that the reviewer can choose "AI suggests (+ full text)" in Review Studio (stage 8, AI assistance card).
    - The output has the review questions (PCC), the eligibility text, the full-text exclusion reasons (`ft_reasons`), `remaining`, `without_pdf` and up to 5 records with their `pdf` path.
@@ -32,7 +32,7 @@ All reading and writing goes through `95 - Tools/PRISMA review/ai_assist.py`. Ne
    ```
    Then run:
    ```
-   python "95 - Tools/PRISMA review/ai_assist.py" --review "<review>" suggest FILE.json --stage ft --model "<your exact model id>"
+   node "C:/Users/A-Bag/Desktop/prisma-studio/bin/ai-assist.js" --review "<review>" suggest FILE.json --stage ft --model "<your exact model id>"
    ```
    Read the "skipped" lines and fix any invalid reason codes.
 

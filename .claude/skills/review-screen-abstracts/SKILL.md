@@ -7,13 +7,13 @@ description: Suggest title/abstract screening decisions for a scoping review in 
 
 You suggest; the reviewer decides. You write only `ai_decision`, `ai_reason` and `ai_why` on records that are still `pending`. The reviewer then confirms or changes each suggestion in Review Studio (Screening → **Suggested** queue), and only that writes `ta_decision`.
 
-All reading and writing goes through `95 - Tools/PRISMA review/ai_assist.py`. Never edit record notes, `review_state.json` or the screening guide yourself.
+All reading and writing goes through `bin/ai-assist.js` (PRISMA Studio), run from the folder that holds the review. Never edit record notes, `review_state.json` or the screening guide yourself.
 
 ## Steps
 
 1. **Get the batch.** Run this from the vault root, with the review name the user gave (the anchor note's name, e.g. `Project 2 review`):
    ```
-   python "95 - Tools/PRISMA review/ai_assist.py" --review "<review>" context screening --limit 40
+   node "C:/Users/A-Bag/Desktop/prisma-studio/bin/ai-assist.js" --review "<review>" context screening --limit 40
    ```
    - If it says AI assistance is **off**, stop. Tell the user to switch it on in Review Studio: stage 8, the AI assistance card. Never switch it on yourself.
    - The output has the review questions (PCC), the eligibility text, the exclusion reasons (`ta_reasons`, e.g. `E1 …`), `remaining`, and up to 40 records with title and abstract.
@@ -31,7 +31,7 @@ All reading and writing goes through `95 - Tools/PRISMA review/ai_assist.py`. Ne
    ```
    Then run:
    ```
-   python "95 - Tools/PRISMA review/ai_assist.py" --review "<review>" suggest FILE.json --model "<your exact model id>"
+   node "C:/Users/A-Bag/Desktop/prisma-studio/bin/ai-assist.js" --review "<review>" suggest FILE.json --model "<your exact model id>"
    ```
    Read the "skipped" lines and fix any invalid reason codes.
 

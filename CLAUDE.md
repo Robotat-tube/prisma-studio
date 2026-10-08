@@ -22,7 +22,6 @@ A browser app for scoping reviews (PRISMA-ScR). A review is a folder on the user
 ## Open items (2026-10-08)
 
 - Opening a real folder in Chrome failed with AbortError; fixed by picking with read access and asking for edit access separately (commit 828b80b) — still to be confirmed by the user.
-- The skills in `.claude/skills/review-*` still call `python ai_assist.py`; switch them to `node bin/ai-assist.js`.
 - Test copy of the user's review: `Desktop\PRISMA Studio test\Project 2 review records` (never test on the original in the vault).
 - Not yet: hosting (Cloudflare Pages from this private repo), PWA/offline, timing a real 5,683-note review from disk.
 
