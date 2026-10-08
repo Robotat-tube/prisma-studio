@@ -4,8 +4,11 @@
   "private": true,
   "description": "Scoping-review workbench (PRISMA-ScR) that runs in the browser and keeps every review in a folder on your own PC.",
   "type": "module",
+  "exports": "./src/index.js",
   "scripts": {
-    "test": "node --test"
+    "test": "node --test \"tests/unit/**/*.test.js\"",
+    "test:parity": "node --test \"tests/parity/**/*.test.js\"",
+    "check": "node scripts/check-architecture.js"
   },
   "engines": {
     "node": ">=20"
