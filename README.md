@@ -11,6 +11,8 @@ npm install
 npm run serve            # then open http://localhost:8770/web/ in Chrome or Edge
 ```
 
+To publish: `npm run build` writes `dist/` (the page, the engine and a copy of pdf.js); publish `dist/` with GitHub Pages, Cloudflare Pages or Netlify. It is a static site: nothing runs on the server and no review data leaves the user's PC.
+
 Open a review folder (the "… records" folder) or start a new review. *Settings → Review settings* sets the Obsidian vault (to open notes in Obsidian) and an optional library folder for publication notes.
 
 | Area | Python original | JavaScript | Status |

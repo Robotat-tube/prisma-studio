@@ -1,10 +1,10 @@
 // Start of PRISMA Studio in the browser: checks the browser, loads help texts, templates and pdf.js, shows
 // the start screen (recent reviews, open a folder, new review), then loads the Review Studio page.
-import * as pdfjs from "../node_modules/pdfjs-dist/build/pdf.mjs";
+import * as pdfjs from "pdfjs";
 import { Backend } from "../src/ui/backend.js";
 import { forgetReview, recentReviews, rememberReview } from "../src/adapters/browser-store.js";
 
-pdfjs.GlobalWorkerOptions.workerSrc = new URL("../node_modules/pdfjs-dist/build/pdf.worker.mjs", import.meta.url).href;
+pdfjs.GlobalWorkerOptions.workerSrc = import.meta.resolve("pdfjs/worker");
 
 const $ = s => document.querySelector(s);
 const el = (tag, props = {}, ...kids) => {

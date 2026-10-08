@@ -5,6 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>PRISMA Studio</title>
   <meta name="description" content="Scoping reviews (PRISMA-ScR) in your browser; every review stays in a folder on your own PC.">
+  <!-- where pdf.js comes from (the site build points these to its own copy) -->
+  <script type="importmap">
+    { "imports": { "pdfjs": "../node_modules/pdfjs-dist/build/pdf.mjs", "pdfjs/worker": "../node_modules/pdfjs-dist/build/pdf.worker.mjs" } }
+  </script>
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="start.css">
   <script>
