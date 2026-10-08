@@ -36,13 +36,31 @@ window.backend = backend;
 async function openReview(entry) {
   const started = performance.now();
   say(`Opening ${entry.name}…`);
-  await backend.open(entry, { onProgress: (done, total) => say(`Reading notes: ${done.toLocaleString()} of ${total.toLocaleString()}…`) });
-  say(`Preparing the page (${((performance.now() - started) / 1000).toFixed(1)} s so far)…`);
+  let notes = 0;
+  await backend.open(entry, { onProgress: (done, total) => { notes = total; say(`Reading notes: ${done.toLocaleString()} of ${total.toLocaleString()}…`); } });
+  const read = performance.now();
+  say(`Preparing the page (${((read - started) / 1000).toFixed(1)} s so far)…`);
   remember("review", entry.name);
   $("#start").hidden = true;
   $("#app").hidden = false;
   await import("./review-studio.js");
   $("#btnReviewSettings").onclick = reviewSettings;
+  await new Promise(r => requestAnimationFrame(() => setTimeout(r)));   // after the first paint
+  showOpenTiming({ review: entry.name, notes, readSeconds: (read - started) / 1000, totalSeconds: (performance.now() - started) / 1000 });
+}
+
+/** How long opening took, shown for 20 s (click to close) and kept as window.openTiming. */
+function showOpenTiming(t) {
+  window.openTiming = t;
+  console.info("PRISMA Studio open timing", t);
+  const note = document.createElement("div");
+  note.className = "toast";
+  note.title = "Click to close";
+  note.textContent = `Opened ${t.notes ? t.notes.toLocaleString() + " notes" : "the review"} in ${t.totalSeconds.toFixed(1)} s ` +
+    `(reading the folder ${t.readSeconds.toFixed(1)} s, showing the page ${(t.totalSeconds - t.readSeconds).toFixed(1)} s)`;
+  note.onclick = () => note.remove();
+  $("#toasts").append(note);
+  setTimeout(() => note.remove(), 20000);
 }
 
 /** A new review: a folder "<name> records" inside the folder the user picks. */
