@@ -2,7 +2,16 @@
 
 A workbench for scoping reviews (PRISMA-ScR) that runs in the browser and keeps every review in a folder on your own PC: records as Markdown notes, searches as CSV, full texts as PDFs. Nothing is uploaded. The folders open in Obsidian and work with Claude Code.
 
-**Status:** phase 1 — porting the review engine from Python (Review Studio in the author's Obsidian vault) to JavaScript, module by module, each one tested against the Python version on a real review. See [ARCHITECTURE.md](ARCHITECTURE.md) for the layers and rules.
+**Status:** phase 1 (engine) is done: the Python tool is ported and tested against it. Phase 2 (browser app) works: start screen, open or create a review folder, the full Review Studio page running on the engine in the browser. See [ARCHITECTURE.md](ARCHITECTURE.md).
+
+## Run it
+
+```
+npm install
+npm run serve            # then open http://localhost:8770/web/ in Chrome or Edge
+```
+
+Open a review folder (the "… records" folder) or start a new review. *Settings → Review settings* sets the Obsidian vault (to open notes in Obsidian) and an optional library folder for publication notes.
 
 | Area | Python original | JavaScript | Status |
 |---|---|---|---|

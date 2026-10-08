@@ -11,7 +11,8 @@
   "scripts": {
     "test": "node --test \"tests/unit/**/*.test.js\"",
     "test:parity": "node --test \"tests/parity/**/*.test.js\"",
-    "check": "node scripts/check-architecture.js"
+    "check": "node scripts/check-architecture.js",
+    "serve": "node scripts/serve.js"
   },
   "engines": {
     "node": ">=20"

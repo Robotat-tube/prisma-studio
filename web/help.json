@@ -1,0 +1,1016 @@
+{
+ "levels": {
+  "report": {
+   "label": "Required to report",
+   "color": "#1D4ED8",
+   "explain": "A reporting standard (PRISMA-ScR / PRISMA 2020 / PRISMA-S) requires you to REPORT this. It does not always require you to DO it — but if you don't, you must say so."
+  },
+  "guidance": {
+   "label": "Methodological guidance",
+   "color": "#15803D",
+   "explain": "Recommended by established methodological guidance (JBI, Cochrane, Arksey & O'Malley, Levac et al.). Widely accepted; deviate only with a reason."
+  },
+  "convention": {
+   "label": "Convention — varies",
+   "color": "#B45309",
+   "explain": "Common practice, but no agreed rule. Fields and supervisors differ. Choose, state your choice and why."
+  },
+  "tool": {
+   "label": "Choice of this tool",
+   "color": "#64748B",
+   "explain": "How this tool happens to do it. Not a scientific requirement; other tools do it differently."
+  }
+ },
+ "refs": {
+  "tricco2018": {
+   "text": "Tricco, A. C., Lillie, E., Zarin, W., et al. (2018). PRISMA Extension for Scoping Reviews (PRISMA-ScR): Checklist and explanation. Annals of Internal Medicine, 169(7), 467–473.",
+   "doi": "10.7326/M18-0850"
+  },
+  "page2021": {
+   "text": "Page, M. J., McKenzie, J. E., Bossuyt, P. M., et al. (2021). The PRISMA 2020 statement: an updated guideline for reporting systematic reviews. BMJ, 372, n71.",
+   "doi": "10.1136/bmj.n71"
+  },
+  "rethlefsen2021": {
+   "text": "Rethlefsen, M. L., Kirtley, S., Waffenschmidt, S., et al. (2021). PRISMA-S: an extension to the PRISMA statement for reporting literature searches in systematic reviews. Systematic Reviews, 10, 39.",
+   "doi": "10.1186/s13643-020-01542-z"
+  },
+  "arksey2005": {
+   "text": "Arksey, H., & O'Malley, L. (2005). Scoping studies: towards a methodological framework. International Journal of Social Research Methodology, 8(1), 19–32.",
+   "doi": "10.1080/1364557032000119616"
+  },
+  "levac2010": {
+   "text": "Levac, D., Colquhoun, H., & O'Brien, K. K. (2010). Scoping studies: advancing the methodology. Implementation Science, 5, 69.",
+   "doi": "10.1186/1748-5908-5-69"
+  },
+  "peters2015": {
+   "text": "Peters, M. D. J., Godfrey, C. M., Khalil, H., et al. (2015). Guidance for conducting systematic scoping reviews. International Journal of Evidence-Based Healthcare, 13(3), 141–146.",
+   "doi": "10.1097/XEB.0000000000000050"
+  },
+  "peters2020": {
+   "text": "Peters, M. D. J., Marnie, C., Tricco, A. C., et al. (2020). Updated methodological guidance for the conduct of scoping reviews. JBI Evidence Synthesis, 18(10), 2119–2126.",
+   "doi": "10.11124/JBIES-20-00167"
+  },
+  "munn2018": {
+   "text": "Munn, Z., Peters, M. D. J., Stern, C., et al. (2018). Systematic review or scoping review? Guidance for authors when choosing between a systematic or scoping review approach. BMC Medical Research Methodology, 18, 143.",
+   "doi": "10.1186/s12874-018-0611-x"
+  },
+  "kitchenham2007": {
+   "text": "Kitchenham, B., & Charters, S. (2007). Guidelines for performing Systematic Literature Reviews in Software Engineering (EBSE Technical Report EBSE-2007-01). Keele University and Durham University.",
+   "doi": ""
+  },
+  "cochrane4": {
+   "text": "Lefebvre, C., Glanville, J., Briscoe, S., et al. (2023). Chapter 4: Searching for and selecting studies. In Higgins, J. P. T., et al. (Eds.), Cochrane Handbook for Systematic Reviews of Interventions, version 6.4. Cochrane.",
+   "doi": ""
+  },
+  "mcgowan2016": {
+   "text": "McGowan, J., Sampson, M., Salzwedel, D. M., et al. (2016). PRESS Peer Review of Electronic Search Strategies: 2015 guideline statement. Journal of Clinical Epidemiology, 75, 40–46.",
+   "doi": "10.1016/j.jclinepi.2016.01.021"
+  },
+  "bramer2018": {
+   "text": "Bramer, W. M., de Jonge, G. B., Rethlefsen, M. L., Mast, F., & Kleijnen, J. (2018). A systematic approach to searching: an efficient and complete method to develop literature searches. Journal of the Medical Library Association, 106(4), 531–541.",
+   "doi": "10.5195/jmla.2018.283"
+  },
+  "bramer2017": {
+   "text": "Bramer, W. M., Rethlefsen, M. L., Kleijnen, J., & Franco, O. H. (2017). Optimal database combinations for literature searches in systematic reviews: a prospective exploratory study. Systematic Reviews, 6, 245.",
+   "doi": "10.1186/s13643-017-0644-y"
+  },
+  "bramer2016": {
+   "text": "Bramer, W. M., Giustini, D., de Jonge, G. B., Holland, L., & Bekhuis, T. (2016). De-duplication of database search results for systematic reviews in EndNote. Journal of the Medical Library Association, 104(3), 240–243.",
+   "doi": "10.3163/1536-5050.104.3.014"
+  },
+  "sampson2006": {
+   "text": "Sampson, M., Zhang, L., Morrison, A., et al. (2006). An alternative to the hand searching gold standard: validating methodological search filters using relative recall. BMC Medical Research Methodology, 6, 33.",
+   "doi": "10.1186/1471-2288-6-33"
+  },
+  "gusenbauer2020": {
+   "text": "Gusenbauer, M., & Haddaway, N. R. (2020). Which academic search systems are suitable for systematic reviews or meta-analyses? Evaluating retrieval qualities of Google Scholar, PubMed, and 26 other resources. Research Synthesis Methods, 11(2), 181–217.",
+   "doi": "10.1002/jrsm.1378"
+  },
+  "shea2017": {
+   "text": "Shea, B. J., Reeves, B. C., Wells, G., et al. (2017). AMSTAR 2: a critical appraisal tool for systematic reviews that include randomised or non-randomised studies of healthcare interventions, or both. BMJ, 358, j4008.",
+   "doi": "10.1136/bmj.j4008"
+  },
+  "pieper2022": {
+   "text": "Pieper, D., & Rombey, T. (2022). Where to prospectively register a systematic review. Systematic Reviews, 11, 8.",
+   "doi": "10.1186/s13643-021-01877-1"
+  },
+  "cohen1960": {
+   "text": "Cohen, J. (1960). A coefficient of agreement for nominal scales. Educational and Psychological Measurement, 20(1), 37–46.",
+   "doi": "10.1177/001316446002000104"
+  },
+  "landis1977": {
+   "text": "Landis, J. R., & Koch, G. G. (1977). The measurement of observer agreement for categorical data. Biometrics, 33(1), 159–174.",
+   "doi": "10.2307/2529310"
+  },
+  "mchugh2012": {
+   "text": "McHugh, M. L. (2012). Interrater reliability: the kappa statistic. Biochemia Medica, 22(3), 276–282.",
+   "doi": "10.11613/BM.2012.031"
+  },
+  "polanin2019": {
+   "text": "Polanin, J. R., Pigott, T. D., Espelage, D. L., & Grotpeter, J. K. (2019). Best practice guidelines for abstract screening large-evidence systematic reviews and meta-analyses. Research Synthesis Methods, 10(3), 330–342.",
+   "doi": "10.1002/jrsm.1354"
+  },
+  "wohlin2014": {
+   "text": "Wohlin, C. (2014). Guidelines for snowballing in systematic literature studies and a replication in software engineering. Proceedings of EASE '14, Article 38.",
+   "doi": "10.1145/2601248.2601268"
+  },
+  "hong2018": {
+   "text": "Hong, Q. N., Fàbregues, S., Bartlett, G., et al. (2018). The Mixed Methods Appraisal Tool (MMAT) version 2018 for information professionals and researchers. Education for Information, 34(4), 285–291.",
+   "doi": "10.3233/EFI-180221"
+  },
+  "priem2022": {
+   "text": "Priem, J., Piwowar, H., & Orr, R. (2022). OpenAlex: A fully-open index of scholarly works, authors, venues, institutions, and concepts. arXiv:2205.01833.",
+   "doi": "10.48550/arXiv.2205.01833"
+  }
+ },
+ "terms": {
+  "Scoping review": {
+   "definition": "A review that maps the concepts, evidence types and gaps in a field, rather than answering a narrow effectiveness question. Usually no pooling of results and often no quality appraisal.",
+   "refs": [
+    "arksey2005",
+    "munn2018",
+    "peters2020"
+   ]
+  },
+  "Systematic review": {
+   "definition": "A review that answers a focused question with an explicit, reproducible method, including appraisal of the included studies.",
+   "refs": [
+    "page2021",
+    "munn2018"
+   ]
+  },
+  "PRISMA-ScR": {
+   "definition": "The 22-item reporting checklist for scoping reviews. It tells you what to report, not how to conduct the review.",
+   "refs": [
+    "tricco2018"
+   ]
+  },
+  "PCC": {
+   "definition": "Population – Concept – Context: the JBI framework for formulating scoping-review questions and eligibility criteria (the scoping counterpart of PICO).",
+   "refs": [
+    "peters2015",
+    "peters2020"
+   ]
+  },
+  "Protocol": {
+   "definition": "The plan of the review written before searching: questions, criteria, sources, search, selection, charting and synthesis. Changes after it is fixed are reported as amendments.",
+   "refs": [
+    "peters2020",
+    "page2021"
+   ]
+  },
+  "Registration": {
+   "definition": "Publicly time-stamping the protocol (e.g. on OSF), so readers can compare plan and report. PROSPERO does not accept scoping reviews.",
+   "refs": [
+    "pieper2022"
+   ]
+  },
+  "Amendment": {
+   "definition": "A documented change to the protocol after it was fixed, with date and reason.",
+   "refs": [
+    "page2021"
+   ]
+  },
+  "Concept block": {
+   "definition": "A group of synonyms for one concept, joined with OR; blocks are joined with AND.",
+   "refs": [
+    "bramer2018",
+    "cochrane4"
+   ]
+  },
+  "Boolean operators": {
+   "definition": "AND (all concepts must occur), OR (any synonym may occur), NOT (exclude records with a term — risky, it also removes relevant records that mention it).",
+   "refs": [
+    "cochrane4"
+   ]
+  },
+  "Truncation / wildcard": {
+   "definition": "A symbol (usually *) that matches any word ending: repairab* finds repairable, repairability. Syntax differs between databases.",
+   "refs": [
+    "cochrane4"
+   ]
+  },
+  "Field tags": {
+   "definition": "Where in the record a term is searched, e.g. Scopus TITLE-ABS-KEY (title, abstract, keywords), Web of Science TS (topic).",
+   "refs": [
+    "rethlefsen2021"
+   ]
+  },
+  "Test set / relative recall": {
+   "definition": "Papers known in advance to be relevant. The share of them that a search retrieves (relative recall) estimates how complete the search is.",
+   "refs": [
+    "sampson2006",
+    "bramer2018"
+   ]
+  },
+  "Precision": {
+   "definition": "The share of retrieved records that are relevant. In reviews, precision is often low (a few percent) because completeness has priority.",
+   "refs": [
+    "cochrane4"
+   ]
+  },
+  "Deduplication": {
+   "definition": "Removing records that appear in more than one database or version. Usually by DOI, then by title/author/year.",
+   "refs": [
+    "bramer2016"
+   ]
+  },
+  "Title/abstract screening": {
+   "definition": "First selection stage: deciding on the basis of title and abstract only.",
+   "refs": [
+    "polanin2019",
+    "cochrane4"
+   ]
+  },
+  "Full-text screening": {
+   "definition": "Second stage: reading the full report and applying the criteria; exclusion reasons are reported.",
+   "refs": [
+    "page2021",
+    "tricco2018"
+   ]
+  },
+  "Cohen's kappa (κ)": {
+   "definition": "Agreement between two raters corrected for agreement expected by chance. 1 = perfect, 0 = chance level.",
+   "refs": [
+    "cohen1960",
+    "mchugh2012"
+   ]
+  },
+  "Snowballing": {
+   "definition": "Finding studies through the references (backward) and citations (forward) of included studies, in iterations until no new studies are found.",
+   "refs": [
+    "wohlin2014"
+   ]
+  },
+  "Grey literature": {
+   "definition": "Material not published in journals: reports, standards, theses, policy documents.",
+   "refs": [
+    "cochrane4",
+    "peters2020"
+   ]
+  },
+  "Data charting": {
+   "definition": "Scoping-review term for data extraction: recording predefined items from each included source in a charting form.",
+   "refs": [
+    "arksey2005",
+    "peters2020"
+   ]
+  },
+  "Critical appraisal": {
+   "definition": "Assessing the methodological quality / risk of bias of each included study.",
+   "refs": [
+    "munn2018",
+    "hong2018"
+   ]
+  },
+  "PRISMA flow diagram": {
+   "definition": "Diagram of the number of records identified, screened, excluded (with reasons) and included.",
+   "refs": [
+    "page2021",
+    "tricco2018"
+   ]
+  },
+  "OpenAlex": {
+   "definition": "A free, open index of scholarly works used here for pilot counts, snowballing and open-access links.",
+   "refs": [
+    "priem2022"
+   ]
+  }
+ },
+ "stages": {
+  "idea": {
+   "what": "Dated notes on what you want to find out and why.",
+   "how": [
+    "Write a note whenever your view changes.",
+    "Vague is fine; stage 1 makes it precise."
+   ],
+   "terms": [
+    "Scoping review",
+    "Systematic review"
+   ],
+   "rules": [
+    [
+     "The question may be refined as you read.",
+     "guidance",
+     [
+      "arksey2005",
+      "levac2010"
+     ]
+    ],
+    [
+     "Scoping review = map a field; systematic review = answer a focused question.",
+     "guidance",
+     [
+      "munn2018"
+     ]
+    ],
+    [
+     "A dated idea log.",
+     "tool",
+     []
+    ]
+   ]
+  },
+  "questions": {
+   "what": "Turn the idea into review questions using Population – Concept – Context.",
+   "how": [
+    "Fill P, C and C.",
+    "One main question, 2–4 sub-questions.",
+    "Say why you changed a version."
+   ],
+   "terms": [
+    "PCC"
+   ],
+   "rules": [
+    [
+     "Report the objectives and questions (PRISMA-ScR 4).",
+     "report",
+     [
+      "tricco2018"
+     ]
+    ],
+    [
+     "Frame scoping questions with PCC.",
+     "guidance",
+     [
+      "peters2015",
+      "peters2020"
+     ]
+    ],
+    [
+     "Keeping every earlier version.",
+     "tool",
+     []
+    ]
+   ]
+  },
+  "concepts": {
+   "what": "Split the question into concepts; list every synonym per concept.",
+   "how": [
+    "2–4 concepts.",
+    "Add spellings and neighbouring terms; * for word endings.",
+    "Avoid NOT."
+   ],
+   "terms": [
+    "Concept block",
+    "Boolean operators",
+    "Truncation / wildcard"
+   ],
+   "rules": [
+    [
+     "Synonyms with OR, concepts with AND.",
+     "guidance",
+     [
+      "bramer2018",
+      "cochrane4"
+     ]
+    ],
+    [
+     "Avoid NOT: it also removes relevant records.",
+     "guidance",
+     [
+      "cochrane4"
+     ]
+    ],
+    [
+     "Have the strategy checked by a librarian (PRESS).",
+     "guidance",
+     [
+      "mcgowan2016"
+     ]
+    ],
+    [
+     "How many concepts, how broad.",
+     "convention",
+     []
+    ]
+   ]
+  },
+  "queries": {
+   "what": "The concept table translated into each database's syntax.",
+   "how": [
+    "Copy each string into the advanced search.",
+    "Edit by hand only if needed."
+   ],
+   "terms": [
+    "Field tags",
+    "Truncation / wildcard"
+   ],
+   "rules": [
+    [
+     "Report the full search for ≥ 1 database (PRISMA-ScR 8); PRISMA-S: all.",
+     "report",
+     [
+      "tricco2018",
+      "rethlefsen2021"
+     ]
+    ],
+    [
+     "Search ≥ 2 databases (AMSTAR 2).",
+     "guidance",
+     [
+      "shea2017"
+     ]
+    ],
+    [
+     "Not Google Scholar as main source: not reproducible.",
+     "guidance",
+     [
+      "gusenbauer2020",
+      "bramer2017"
+     ]
+    ],
+    [
+     "Strings generated automatically.",
+     "tool",
+     []
+    ]
+   ]
+  },
+  "pilot": {
+   "what": "Test the string: manageable hits, and does it find papers you already know?",
+   "how": [
+    "Known relevant papers = test set.",
+    "Look at what was missed and why.",
+    "Tune recall first, hits second."
+   ],
+   "terms": [
+    "Test set / relative recall",
+    "Precision"
+   ],
+   "rules": [
+    [
+     "Check the search against known papers.",
+     "guidance",
+     [
+      "sampson2006",
+      "bramer2018"
+     ]
+    ],
+    [
+     "A minimum recall (e.g. 90 %).",
+     "convention",
+     []
+    ],
+    [
+     "OpenAlex counts are only indicative.",
+     "tool",
+     [
+      "priem2022"
+     ]
+    ]
+   ]
+  },
+  "protocol": {
+   "what": "The plan of the review, written before searching.",
+   "how": [
+    "Write the method sections.",
+    "Set the exclusion reasons.",
+    "Let your supervisor review it."
+   ],
+   "terms": [
+    "Protocol"
+   ],
+   "rules": [
+    [
+     "Say whether a protocol exists and where (PRISMA-ScR 5).",
+     "report",
+     [
+      "tricco2018"
+     ]
+    ],
+    [
+     "Report criteria with rationale (PRISMA-ScR 6).",
+     "report",
+     [
+      "tricco2018"
+     ]
+    ],
+    [
+     "Write the protocol before searching.",
+     "guidance",
+     [
+      "peters2020",
+      "kitchenham2007"
+     ]
+    ],
+    [
+     "Coded exclusion reasons (E1, E2 …).",
+     "convention",
+     []
+    ]
+   ]
+  },
+  "registration": {
+   "what": "Freeze the protocol; later changes become logged amendments.",
+   "how": [
+    "Lock before the final searches.",
+    "Optional: OSF registration DOI.",
+    "Skipping? Give the reason."
+   ],
+   "terms": [
+    "Registration",
+    "Amendment"
+   ],
+   "rules": [
+    [
+     "Report registration, or that there was none (PRISMA-ScR 5).",
+     "report",
+     [
+      "tricco2018"
+     ]
+    ],
+    [
+     "Report amendments with reasons (PRISMA 2020 24c).",
+     "report",
+     [
+      "page2021"
+     ]
+    ],
+    [
+     "Registering scoping reviews: encouraged, not required.",
+     "guidance",
+     [
+      "pieper2022",
+      "peters2020"
+     ]
+    ],
+    [
+     "Git commit as time stamp.",
+     "tool",
+     []
+    ]
+   ]
+  },
+  "searches": {
+   "what": "Import every final export with exact string, date and filters.",
+   "how": [
+    "Export as RIS.",
+    "Paste the string exactly as run.",
+    "Always record the date."
+   ],
+   "terms": [
+    "Deduplication"
+   ],
+   "rules": [
+    [
+     "Report sources, coverage and date last searched (PRISMA-ScR 7).",
+     "report",
+     [
+      "tricco2018"
+     ]
+    ],
+    [
+     "Report records per source and limits (PRISMA-S).",
+     "report",
+     [
+      "rethlefsen2021"
+     ]
+    ],
+    [
+     "Remove duplicates and report how many.",
+     "guidance",
+     [
+      "bramer2016"
+     ]
+    ],
+    [
+     "Dedup by DOI, then title/year — check by hand.",
+     "tool",
+     []
+    ]
+   ]
+  },
+  "screening": {
+   "what": "Apply the criteria: title/abstract first, then full text.",
+   "how": [
+    "Pilot on 10–20 records first.",
+    "In doubt → unsure → full text.",
+    "Every exclusion gets a code."
+   ],
+   "terms": [
+    "Title/abstract screening",
+    "Full-text screening"
+   ],
+   "rules": [
+    [
+     "Report the selection process and exclusions (PRISMA-ScR 9, 14).",
+     "report",
+     [
+      "tricco2018"
+     ]
+    ],
+    [
+     "Pilot the criteria before screening.",
+     "guidance",
+     [
+      "polanin2019",
+      "levac2010"
+     ]
+    ],
+    [
+     "Report any AI/automation used (PRISMA 2020 item 8).",
+     "report",
+     [
+      "page2021"
+     ]
+    ],
+    [
+     "'Unsure' = go to full text.",
+     "convention",
+     []
+    ]
+   ]
+  },
+  "reviewer": {
+   "what": "A second person screens a random sample blind; agreement as Cohen's κ.",
+   "how": [
+    "Agree how to use 'unsure' first.",
+    "Send only the sheet.",
+    "An AI may fill the sheet (AI assistance card), but report it as an AI, not a second person."
+   ],
+   "terms": [
+    "Cohen's kappa (κ)"
+   ],
+   "rules": [
+    [
+     "Report how many screened and whether independently (PRISMA 2020 item 8).",
+     "report",
+     [
+      "page2021"
+     ]
+    ],
+    [
+     "Two independent screeners, ideally for all records.",
+     "guidance",
+     [
+      "levac2010",
+      "cochrane4"
+     ]
+    ],
+    [
+     "Only a 20 % sample.",
+     "convention",
+     []
+    ],
+    [
+     "κ ≥ 0.6 as 'good enough' — the bands are arbitrary.",
+     "convention",
+     [
+      "landis1977",
+      "mchugh2012"
+     ]
+    ],
+    [
+     "Counting an AI as the second reviewer — no agreed rule yet; say so and name the model.",
+     "convention",
+     []
+    ]
+   ]
+  },
+  "snowballing": {
+   "what": "Search the references and citations of included studies.",
+   "how": [
+    "Seeds = studies included at full text.",
+    "New records go back through 8 · Screening and 10 · Retrieval (same criteria).",
+    "Stop when a round adds no new included study."
+   ],
+   "terms": [
+    "Snowballing"
+   ],
+   "rules": [
+    [
+     "Report other sources used (PRISMA-ScR 7).",
+     "report",
+     [
+      "tricco2018"
+     ]
+    ],
+    [
+     "Iterate until no new studies.",
+     "guidance",
+     [
+      "wohlin2014"
+     ]
+    ],
+    [
+     "Doing it at all.",
+     "convention",
+     []
+    ]
+   ]
+  },
+  "retrieval": {
+   "what": "Get the full text of everything that passed title/abstract.",
+   "how": [
+    "Open access first, then your library.",
+    "Not found = 'not retrieved', not excluded."
+   ],
+   "terms": [
+    "Full-text screening"
+   ],
+   "rules": [
+    [
+     "Report reports sought and not retrieved (PRISMA 2020 flow).",
+     "report",
+     [
+      "page2021"
+     ]
+    ]
+   ]
+  },
+  "charting": {
+   "what": "Record the same data items from every included source.",
+   "how": [
+    "Items follow from your questions.",
+    "Pilot the form on 2–3 sources.",
+    "Note page numbers."
+   ],
+   "terms": [
+    "Data charting"
+   ],
+   "rules": [
+    [
+     "Report the charting process and items (PRISMA-ScR 10–11).",
+     "report",
+     [
+      "tricco2018"
+     ]
+    ],
+    [
+     "Pilot the form; ideally a second person checks.",
+     "guidance",
+     [
+      "levac2010",
+      "peters2020"
+     ]
+    ],
+    [
+     "Page locators for each value.",
+     "convention",
+     []
+    ]
+   ]
+  },
+  "appraisal": {
+   "what": "Rate the quality of each included source.",
+   "how": [
+    "Pick a tool that fits the designs (e.g. MMAT).",
+    "Skipping? Report 'not performed'."
+   ],
+   "terms": [
+    "Critical appraisal"
+   ],
+   "rules": [
+    [
+     "Report appraisal if done (PRISMA-ScR 12, 16).",
+     "report",
+     [
+      "tricco2018"
+     ]
+    ],
+    [
+     "Usually not required in scoping reviews.",
+     "guidance",
+     [
+      "munn2018",
+      "peters2020"
+     ]
+    ],
+    [
+     "Some argue it should be considered.",
+     "convention",
+     [
+      "levac2010"
+     ]
+    ]
+   ]
+  },
+  "report": {
+   "what": "Flow diagram, checklist and exports for writing.",
+   "how": [
+    "Numbers in the text = PRISMA flow.",
+    "Tick each checklist item.",
+    "Sync the included papers."
+   ],
+   "terms": [
+    "PRISMA flow diagram",
+    "PRISMA-ScR"
+   ],
+   "rules": [
+    [
+     "Report numbers per stage, ideally as a flow diagram (PRISMA-ScR 14).",
+     "report",
+     [
+      "tricco2018"
+     ]
+    ],
+    [
+     "Submit the PRISMA-ScR checklist.",
+     "report",
+     [
+      "tricco2018"
+     ]
+    ],
+    [
+     "Descriptive synthesis, no pooling.",
+     "guidance",
+     [
+      "peters2020"
+     ]
+    ]
+   ]
+  }
+ },
+ "examples": {
+  "idea": {
+   "items": [
+    [
+     "Note",
+     "Repair scores (French index, EN 45554) are spreading. How do researchers measure how repairable a phone or laptop is — and do the methods agree?"
+    ]
+   ]
+  },
+  "questions": {
+   "items": [
+    [
+     "Population",
+     "Consumer electronic products (smartphones, laptops, tablets)"
+    ],
+    [
+     "Concept",
+     "Assessment of repairability / ease of disassembly"
+    ],
+    [
+     "Context",
+     "Peer-reviewed studies and standards, 2010–2026"
+    ],
+    [
+     "Main question",
+     "Which methods are used to assess the repairability of consumer electronic products, and how are they validated?"
+    ],
+    [
+     "Sub-questions",
+     "Which indicators? · Which products? · How was validity tested?"
+    ]
+   ]
+  },
+  "concepts": {
+   "items": [
+    [
+     "Repairability",
+     "repairab* · reparab* · ease of repair · disassembl*"
+    ],
+    [
+     "Product",
+     "smartphone* · mobile phone* · laptop* · tablet* · consumer electronic*"
+    ],
+    [
+     "Assessment",
+     "assess* · scor* · indicator* · index · metric*"
+    ]
+   ],
+   "lesson": "'disassembl*' catches ease-of-disassembly methods that never say 'repair'."
+  },
+  "queries": {
+   "code": "TITLE-ABS-KEY((repairab* OR reparab* OR \"ease of repair\" OR disassembl*) AND (smartphone* OR \"mobile phone*\" OR laptop* OR tablet* OR \"consumer electronic*\") AND (assess* OR scor* OR indicator* OR index OR metric*))",
+   "lesson": "OpenAlex has no wildcards: repairab* becomes 'repairability' there."
+  },
+  "pilot": {
+   "items": [
+    [
+     "Three concepts",
+     "819 hits · test set 1 of 4"
+    ],
+    [
+     "Without 'Assessment'",
+     "3,394 hits · test set 2 of 4"
+    ]
+   ],
+   "lesson": "4× more hits for one extra paper. The missed papers point to a too-narrow product block (add 'electrical and electronic equipment') — and one test-set paper was out of scope."
+  },
+  "protocol": {
+   "items": [
+    [
+     "Eligibility",
+     "Include: methods that assess repairability of consumer electronics. Exclude: repair-behaviour studies without a method; non-electronic products."
+    ],
+    [
+     "Exclusion reasons",
+     "E1 wrong concept · E2 wrong context · E3 publication type · E6 no usable content"
+    ]
+   ]
+  },
+  "registration": {
+   "items": [
+    [
+     "Locked",
+     "6 Oct 2026, frozen copy + checksum"
+    ],
+    [
+     "Amendment (example)",
+     "'Removed NOT block: it dropped relevant DSM papers'"
+    ]
+   ]
+  },
+  "searches": {
+   "items": [
+    [
+     "Source",
+     "OpenAlex, top 40 by relevance (stand-in for a Scopus export)"
+    ],
+    [
+     "Result",
+     "40 records → 39 unique · 2 already in the library"
+    ]
+   ],
+   "lesson": "A preprint with a different title slipped past deduplication — the screener caught it."
+  },
+  "screening": {
+   "items": [
+    [
+     "Title/abstract",
+     "10 include · 4 unsure · 25 exclude (E1 22, E2 2, E3 1)"
+    ],
+    [
+     "Typical E1",
+     "'mobile phone' + 'repair' also finds DNA-repair and pothole studies"
+    ]
+   ]
+  },
+  "reviewer": {
+   "items": [
+    [
+     "Sample",
+     "8 of 39 records, seed 42"
+    ],
+    [
+     "Result",
+     "75 % agreement · κ = 0.60"
+    ]
+   ],
+   "lesson": "Both disagreements were about 'unsure' — agree on its meaning beforehand."
+  },
+  "snowballing": {
+   "items": [
+    [
+     "Round 1",
+     "7 seeds · backward · 31 new records to screen"
+    ]
+   ]
+  },
+  "retrieval": {
+   "items": [
+    [
+     "Open access",
+     "7 links found via OpenAlex"
+    ],
+    [
+     "Not retrieved",
+     "1 trade-press article behind a paywall"
+    ]
+   ]
+  },
+  "charting": {
+   "items": [
+    [
+     "study_type",
+     "method development"
+    ],
+    [
+     "product_domain",
+     "smartphones, tablets (mobile ICT devices)"
+    ],
+    [
+     "method",
+     "reparability scoring of self-repair potential"
+    ],
+    [
+     "locators",
+     "from the full text, with page numbers"
+    ]
+   ]
+  },
+  "appraisal": {
+   "items": [
+    [
+     "Decision",
+     "Skipped — 'optional in scoping reviews; not planned in the protocol'"
+    ]
+   ]
+  },
+  "report": {
+   "items": [
+    [
+     "Flow",
+     "71 identified → 70 screened → 15 sought → 13 assessed → 10 included"
+    ],
+    [
+     "Checklist",
+     "items 5, 7, 8 ticked with their manuscript location"
+    ]
+   ]
+  }
+ },
+ "example_topic": "How is the repairability of smartphones, laptops and tablets assessed, and are the methods validated?"
+}

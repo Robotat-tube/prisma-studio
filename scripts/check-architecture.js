@@ -9,6 +9,7 @@ const ALLOWED = {
   ports: ["ports", "domain"],                          // interfaces (types only)
   services: ["services", "domain", "ports"],           // use cases
   adapters: ["adapters", "domain", "ports"],           // platform code implementing ports
+  ui: ["ui", "", "adapters"],                          // the browser shell: public API (src/index.js) and adapters
   "": ["domain", "ports", "services", "adapters"],     // src/index.js
 };
 const PLATFORM_FREE = new Set(["domain", "ports", "services"]);  // must run unchanged in the browser

@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PRISMA Studio</title>
+  <meta name="description" content="Scoping reviews (PRISMA-ScR) in your browser; every review stays in a folder on your own PC.">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="start.css">
+  <script>
+    try { document.documentElement.dataset.theme = localStorage.getItem("theme") ||
+      (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"); } catch (e) {}
+  </script>
+</head>
+<body>
+  <!-- start screen: shown until a review folder is open -->
+  <main class="start" id="start">
+    <div class="start-card">
+      <div class="brand start-brand"><div class="logo">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4 6h16M7 12h10M10 18h4"/></svg>
+      </div>PRISMA Studio</div>
+      <p class="muted">Scoping reviews, step by step. Each review is a folder on your PC: notes, tables and PDFs. Nothing is uploaded.</p>
+      <div id="startBody"></div>
+    </div>
+  </main>
+
+  <div class="app" id="app" hidden>
+    <aside class="sidebar">
+      <div class="brand"><div class="logo">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4 6h16M7 12h10M10 18h4"/></svg>
+      </div>PRISMA Studio</div>
+      <div class="review-picker"><select id="reviewSel" title="Review"></select></div>
+      <nav class="stepper" id="stepper"></nav>
+    </aside>
+    <main class="main" id="main">
+      <header class="topbar" id="topwrap">
+        <nav class="toolbar" aria-label="Review tools">
+          <button class="btn sm ghost" id="btnTimeline" title="Every dated event of this review (T)">🕘 Timeline</button>
+          <button class="btn sm ghost" id="btnScr" title="The 22 PRISMA-ScR reporting items">☑ PRISMA-ScR</button>
+          <button class="btn sm ghost" id="btnGlossary" title="Terms used in the review (G)">📖 Glossary</button>
+          <button class="btn sm ghost" id="btnClaude" title="How to use Claude (or another AI assistant) with this review">🤖 Working with Claude</button>
+          <button class="btn sm ghost" id="btnKeys" title="Keyboard shortcuts">⌨ Shortcuts</button>
+          <span class="spacer"></span>
+          <div class="menu-wrap">
+            <button class="btn sm ghost" id="btnSettings" aria-haspopup="true" aria-expanded="false">⚙ Settings</button>
+            <div class="popmenu" id="settingsMenu" hidden>
+              <button class="btn ghost" id="btnReviewSettings">📁 Review settings…</button>
+              <button class="btn ghost" id="btnTheme">🌓 Light / dark</button>
+              <button class="btn ghost" id="btnDev">🛠 Developer mode</button>
+            </div>
+          </div>
+        </nav>
+        <div id="topbar"></div>
+      </header>
+      <section class="content">
+        <div class="metrics" id="metrics"></div>
+        <div id="page"></div>
+      </section>
+    </main>
+  </div>
+  <aside class="drawer" id="drawer"></aside>
+  <div class="toasts" id="toasts"></div>
+  <script type="module" src="main.js"></script>
+</body>
+</html>

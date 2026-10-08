@@ -1,0 +1,13 @@
+/* Start screen: recent reviews, open a folder, new review */
+.start { min-height: 100vh; display: grid; place-items: center; padding: 24px 16px; background: var(--bg); }
+.start[hidden], .app[hidden] { display: none; }
+.start-card { width: min(560px, 100%); background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 28px; box-shadow: var(--shadow); display: grid; gap: 14px; }
+.start-brand { padding: 0; font-size: 20px; }
+.start-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.recent { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.start-msg .err { color: var(--bad); }
+dialog.modal { border: 1px solid var(--border); border-radius: 14px; padding: 0; background: var(--surface); color: var(--text); width: min(560px, calc(100% - 32px)); }
+dialog.modal::backdrop { background: rgb(0 0 0 / 0.45); }
+dialog.modal .mh { font-weight: 700; padding: 16px 20px 0; }
+dialog.modal .mb { padding: 12px 20px; display: grid; gap: 12px; }
+dialog.modal .mf { padding: 0 20px 16px; display: flex; justify-content: flex-end; gap: 8px; }
