@@ -54,9 +54,18 @@ async function newReview() {
   await openReview(await rememberReview(handle, { recordsPath: `${name} records/08 - Records` }));
 }
 
+/** Shows any failure on the start screen, in words (a refused or cancelled folder included). */
+function explain(e) {
+  console.error(e);
+  if (e?.name === "AbortError") return say("No folder was opened: the folder window was closed, or the browser refused that folder or the permission to edit it. Try again and choose the review folder itself.", "err");
+  if (e?.name === "SecurityError") return say("The browser blocked the folder window. Click the button again (it must be a direct click).", "err");
+  say(`${e?.name ?? "Error"}: ${e?.message ?? e}`, "err");
+}
+
 async function openFolder() {
+  say("Choose the review folder in the window that opened…");
   const entry = await backend.pickFolder();
-  say(`Checking "${entry.name}"…`);
+  say(`Got "${entry.name}". Checking it…`);
   if (!(await Backend.isReviewFolder(entry.handle))
     && !confirm(`"${entry.name}" has no review files yet (no 08 - Records, 07 - Searches.csv or review_state.json). Start a new review in it?`)) return;
   await openReview(entry);
@@ -96,15 +105,16 @@ async function reviewSettings() {
 async function startScreen() {
   const recent = await recentReviews();
   const list = recent.map(r => el("div", { className: "recent" },
-    button(`▶ ${r.name}`, () => openReview(r).catch(e => say(e.message, "err")), "primary"),
+    button(`▶ ${r.name}`, () => openReview(r).catch(explain), "primary"),
     el("span", { className: "muted small" }, new Date(r.opened).toLocaleDateString()),
     button("Forget", async () => { await forgetReview(r.id); startScreen(); }, "sm ghost")));
   $("#startBody").replaceChildren(...[
     list.length ? el("div", { className: "stack" }, el("h3", {}, "Continue"), ...list) : null,
     el("div", { className: "row start-actions" },
-      button("📂 Open a review folder…", () => openFolder().catch(e => e.name !== "AbortError" && say(e.message, "err")), list.length ? "" : "primary"),
-      button("＋ New review…", () => newReview().catch(e => e.name !== "AbortError" && say(e.message, "err")), "")),
+      button("📂 Open a review folder…", () => openFolder().catch(explain), list.length ? "" : "primary"),
+      button("＋ New review…", () => newReview().catch(explain), "")),
     el("p", { className: "start-msg small muted" }, "Chrome or Edge asks once per visit before the app may use a folder."),
+    el("p", { className: "small muted" }, "Use Chrome or Edge in a normal browser window: browser panes built into other apps cannot open folders on your PC."),
   ].filter(Boolean));
 }
 
