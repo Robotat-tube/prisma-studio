@@ -45,3 +45,21 @@ test("developer mode lifts the locks but logs every change", async () => {
   await s.setDevMode(false);
   await assert.rejects(s.saveDatabases(["OpenAlex"]), AmendmentRequired);
 });
+
+test("saving keeps edits made outside the app (e.g. in Obsidian) since the note was read", async () => {
+  const folder = memoryFolder();
+  const s = await ReviewSession.open(folder, deps());
+  await s.lockProtocol("OSF-1");
+  await s.importSearch({ fileName: "a.ris", bytes: new TextEncoder().encode(ris), database: "Scopus", query: "q" });
+  const [r] = s.records();
+  const disk = await folder.readText(r.file);
+  await folder.writeText(r.file, disk.replace(/^notes: .*$/m, 'notes: "typed in Obsidian"').replace(/\n*$/, "\n\nA paragraph added in Obsidian.\n"));
+  await s.decide(r.id, "ta", "include");
+  const saved = await folder.readText(r.file);
+  assert.match(saved, /^ta_decision: "include"$/m, "the app's change is written");
+  assert.match(saved, /^notes: "typed in Obsidian"$/m, "the outside edit of another property is kept");
+  assert.match(saved, /A paragraph added in Obsidian\./, "the outside edit of the body is kept");
+  assert.equal(s.repo.records.get(r.id).props.notes, "typed in Obsidian", "the app now shows the merged note");
+  await s.decide(r.id, "ta", "exclude", { reason: "E1", notes: "mine" });
+  assert.match(await folder.readText(r.file), /^notes: "mine"$/m, "a property the app changes itself wins");
+});

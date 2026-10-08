@@ -27,6 +27,8 @@ export class ReviewRepository {
   /** @type {Map<string, import("../domain/records.js").ReviewRecord>} */
   records = new Map();
   #changed = new Set();
+  /** Each record as last read or written: its text on disk and its parsed form. @type {Map<string, {file: string, text: string, props: object, body: string}>} */
+  #base = new Map();
 
   /**
    * @param {import("../ports/folder.js").Folder} folder
@@ -54,7 +56,10 @@ export class ReviewRepository {
       const texts = await Promise.all(batch.map(file => folder.readText(file)));
       batch.forEach((file, k) => {
         const [props, body] = frontmatter.parse(texts[k]);
-        if (props.type === "review-record") repo.records.set(String(props.record_id), { id: String(props.record_id), file, props, body });
+        if (props.type !== "review-record") return;
+        const id = String(props.record_id);
+        repo.records.set(id, { id, file, props, body });
+        repo.#base.set(id, { file, text: texts[k], props, body });
       });
       onProgress(Math.min(i + BATCH, files.length), files.length);
     }
@@ -76,11 +81,32 @@ export class ReviewRepository {
   async save() {
     const ids = [...this.#changed];
     for (const id of ids) {
-      const r = this.records.get(id);
-      await this.folder.writeText(r.file, recordText(r));
+      const r = await this.#withOutsideEdits(this.records.get(id));
+      const text = recordText(r);
+      await this.folder.writeText(r.file, text);
+      this.records.set(id, r);
+      this.#base.set(id, { file: r.file, text, props: r.props, body: r.body });
     }
     this.#changed.clear();
     return ids.length;
+  }
+
+  /**
+   * A record to write, keeping edits made outside the app since it was read (e.g. a note typed in Obsidian):
+   * when the file changed on disk, only the properties (and body) this app changed are applied to the disk version.
+   */
+  async #withOutsideEdits(r) {
+    const base = this.#base.get(r.id);
+    if (!base || base.file !== r.file || !(await this.folder.exists(r.file))) return r;
+    const disk = await this.folder.readText(r.file);
+    if (disk === base.text) return r;
+    const [props, body] = frontmatter.parse(disk);
+    const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+    for (const k of new Set([...Object.keys(base.props), ...Object.keys(r.props)])) {
+      if (same(base.props[k], r.props[k])) continue;                    // not changed here: the disk value stays
+      if (k in r.props) props[k] = r.props[k]; else delete props[k];
+    }
+    return { ...r, props, body: r.body === base.body ? body : r.body };
   }
 
   /** Rows of 07 - Searches.csv (all values as text). */
