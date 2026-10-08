@@ -15,6 +15,7 @@ import { DEFAULT_FT_REASONS, DEFAULT_TA_REASONS } from "./vocabulary.js";
  * @property {string} rerun     how to regenerate the PRISMA flow note, e.g. "`prisma_review.py report`"
  * @property {string} commands  last section of the screening guide (where the commands are)
  * @property {string} logBy     who writes the review log, e.g. "`prisma_review.py`"
+ * @property {string} stagesBy  `generated-by` of the protocol note
  */
 
 /** @type {Generator} */
@@ -23,6 +24,7 @@ export const APP_GENERATOR = Object.freeze({
   rerun: "*Report* in PRISMA Studio",
   commands: "Use PRISMA Studio. After a screening session open *Report* to refresh [[14 - PRISMA flow]].",
   logBy: "PRISMA Studio",
+  stagesBy: "PRISMA Studio",
 });
 
 export const FILES = Object.freeze({

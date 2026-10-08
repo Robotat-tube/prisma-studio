@@ -6,7 +6,10 @@
  */
 import * as frontmatter from "../domain/frontmatter.js";
 import { DuplicateIndex, yearOf } from "../domain/matching.js";
+import { isIncluded } from "../domain/progress.js";
+import { newPublicationNote, nextIndex } from "../domain/publications.js";
 import { comparePy } from "../domain/pytext.js";
+import { event, FULLTEXT_DIR } from "../domain/stages.js";
 import { fileOrder } from "./review-repository.js";
 
 /**
@@ -84,4 +87,47 @@ export async function applyLibrarySync(library, repo, { changes }) {
   }
   if (changes.length) await repo.log("sync", `${changes.length} property change(s) in publication notes`);
   return byNote.size;
+}
+
+/**
+ * End of the review: copies every included paper to the library (a note from the publication template and
+ * a copy of its PDF). A paper already in the library only gets this review added to `included_in`. In the
+ * review folder only each record's `publication` link changes.
+ * @param {import("./review-repository.js").ReviewRepository} repo @param {object} st review state
+ * @param {Library} library @param {{template: string}} options text of the publication template
+ * @returns {Promise<Map<string, number>>} "added" / "already in library" counts
+ */
+export async function addKeptToLibrary(repo, st, library, { template }) {
+  const done = new Map();
+  const bump = k => done.set(k, (done.get(k) ?? 0) + 1);
+  const included = [...repo.records.values()].filter(r => isIncluded(r.props))
+    .sort((a, b) => comparePy(String(a.props.record_id), String(b.props.record_id)));
+  for (const r of included) {
+    const f = r.props;
+    const linked = noteName(f.publication || "");
+    let stem = library.notes.has(linked) ? linked : library.index.find(f.doi, f.title, yearOf(f.year));
+    if (stem) bump("already in library");
+    else {
+      const note = newPublicationNote({ record: f, recordBody: r.body, index: nextIndex(library.notes), reviewName: repo.name, reviewLink: repo.link, template });
+      await library.folder.writeText(`${note.stem}.md`, frontmatter.serialize(note.props) + note.body);
+      library.index.add(note.stem, f.doi, f.title, yearOf(f.year));
+      library.notes.set(note.stem, note.props);
+      stem = note.stem;
+      bump("added");
+    }
+    const [props, body] = frontmatter.parse(await library.folder.readText(`${stem}.md`));
+    const current = props.included_in;                       // a list, or text typed by hand (as Python treats it)
+    const listed = (Array.isArray(current) || typeof current === "string") && current.includes(repo.link);
+    if (!listed) props.included_in = [...(Array.isArray(current) ? current : typeof current === "string" ? [...current] : []), repo.link];
+    const pdf = `${FULLTEXT_DIR}/${r.file.split("/").pop().replace(/\.md$/, "")}.pdf`;
+    if (!props.pdf && (await repo.folder.exists(pdf))) {
+      await library.folder.writeBytes(`PDFs/${stem}.pdf`, await repo.folder.readBytes(pdf));
+      props.pdf = `[[${stem}.pdf]]`;
+    }
+    await library.folder.writeText(`${stem}.md`, frontmatter.serialize(props) + body);
+    if (f.publication !== `[[${stem}]]`) repo.put({ ...repo.records.get(r.id), props: { ...repo.records.get(r.id).props, publication: `[[${stem}]]` } });
+  }
+  await repo.save();
+  event(st, "report", "kept papers copied to the library: " + ([...done].map(([k, v]) => `${v} ${k}`).join(", ") || "none"), repo.clock.now());
+  return done;
 }

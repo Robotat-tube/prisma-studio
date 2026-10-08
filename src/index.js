@@ -19,6 +19,11 @@ export { flowCounts } from "./domain/flow.js";
 export { sample as pythonSample } from "./domain/pyrandom.js";
 export { APP_GENERATOR, FILES } from "./domain/notes.js";
 export { normalizeNewlines } from "./domain/pytext.js";
+export * as stages from "./domain/stages.js";
+export { AI_STEPS, aiMode, aiPrompt, setAiMode } from "./domain/ai-steps.js";
+export { buildQuery, cleanTerms, openalexQuery } from "./domain/queries.js";
+export { lockChecks, protocolMarkdown } from "./domain/protocol.js";
+export { chartingProgress, workComplete } from "./domain/progress.js";
 
 // services: use cases
 export { ReviewRepository } from "./services/review-repository.js";
@@ -26,6 +31,11 @@ export { applyLibrarySync, emptyLibrary, openLibrary, planLibrarySync, testSet }
 export {
   addEntries, addPaper, checkScreening, drawSample, importSearch, importSecondReviewer, ReviewError, writeReport,
 } from "./services/review-commands.js";
+export { loadState, saveState, STATE_FILE } from "./services/review-state.js";
+export * as stageActions from "./services/stage-actions.js";
+export { addKeptToLibrary } from "./services/library.js";
+export { OpenAlexClient, OpenAlexError } from "./services/openalex-client.js";
 
 // adapters
 export { memoryFolder } from "./adapters/memory-folder.js";
+export { fetchHttp } from "./adapters/fetch-http.js";
