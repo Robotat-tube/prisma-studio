@@ -25,6 +25,8 @@ export class Backend {
   #uploads = new Map();       // upload token -> File
   #pdfFolders = new Map();    // folder name -> handle (folders scanned for PDFs in this visit)
   #lastPdfFolder = null;
+  #stamp = null;              // when review_state.json was last written by this app (or read)
+  #busy = 0;                  // actions running (no re-reading meanwhile)
 
   /**
    * @param {object} p
@@ -68,6 +70,7 @@ export class Backend {
       await this.session.repo.log("init", "review workspace created");
       await this.session.save();
     }
+    this.#stamp = await this.#stateStamp();
     return this.session;
   }
 
@@ -133,10 +136,30 @@ export class Backend {
     setTimeout(() => URL.revokeObjectURL(url), 10_000);
   }
 
+  async #stateStamp() {
+    try { return await this.session.repo.folder.lastModified("review_state.json"); } catch { return null; }
+  }
+
+  /**
+   * Re-reads the review when another program changed it since this app last wrote it (Claude through
+   * bin/ai-assist.js always updates review_state.json). @returns {Promise<boolean>} whether it did
+   */
+  async refreshIfChanged() {
+    if (!this.session || this.#busy) return false;
+    const now = await this.#stateStamp();
+    if (now === this.#stamp || this.#busy) return false;
+    await this.session.reload();
+    this.#stamp = now;
+    return true;
+  }
+
   /** POST /api/action: one action of the page. Answers like the server: {status, ok, body}. */
   async action(action, args = {}) {
     try {
-      const result = await this.#run(action, args);
+      if (!action.startsWith("preview")) await this.refreshIfChanged();    // never save over changes made outside meanwhile
+      this.#busy++;
+      let result;
+      try { result = await this.#run(action, args); } finally { this.#stamp = await this.#stateStamp(); this.#busy--; }
       if (result?.raw) return answer(200, result.raw);
       const body = { message: typeof result === "string" ? result : (result?.message ?? "") };
       if (result?.download) body.download = result.download;

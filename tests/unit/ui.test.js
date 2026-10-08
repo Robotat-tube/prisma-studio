@@ -68,3 +68,23 @@ test("snapshot after an action shows the changed record (views and checks are ke
   const again = (await backend.action("decide", { record_id: "R0002", stage: "ta", decision: "pending" })).body.state;
   assert.ok(!again.problems.some(p => p.record_id === "R0002"), "the problem goes once the record changes");
 });
+
+test("backend: re-reads the review after changes made outside the app, and never saves over them", async () => {
+  const backend = await backendWithReview();
+  await backend.action("save_databases", { databases: ["Scopus"] });              // the app's own write
+  assert.equal(await backend.refreshIfChanged(), false, "its own writes are not outside changes");
+  const folder = backend.session.repo.folder;
+  const outside = async text => {
+    const st = JSON.parse(await folder.readText("review_state.json"));
+    st.events.push({ when: "2026-01-15 11:00", stage: "screening", text });
+    await folder.writeText("review_state.json", JSON.stringify(st));
+  };
+  await outside("written by Claude");
+  assert.equal(await backend.refreshIfChanged(), true);
+  assert.equal(backend.session.st.events.at(-1).text, "written by Claude");
+  assert.equal(await backend.refreshIfChanged(), false);
+  await outside("written by Claude again");
+  await backend.action("save_databases", { databases: ["Scopus", "OpenAlex"] });
+  const saved = JSON.parse(await folder.readText("review_state.json"));
+  assert.ok(saved.events.some(e => e.text === "written by Claude again"), "an action first takes in the outside change");
+});
