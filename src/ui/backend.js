@@ -52,7 +52,9 @@ export class Backend {
    * @param {{onProgress?: (done: number, total: number) => void}} [options]
    */
   async open(entry, { onProgress } = {}) {
-    if (!(await requestAccess(entry.handle))) throw new Error("Access to the folder was not granted.");
+    if (!(await requestAccess(entry.handle))) {
+      throw new Error("Chrome did not allow the app to edit files in this folder. Click the folder icon in the address bar (or Site settings → File editing) and allow it, then try again.");
+    }
     const s = entry.settings ?? {};
     let library = emptyLibrary();
     if (s.library && (await requestAccess(s.library))) library = await openLibrary(browserFolder(s.library));
@@ -71,7 +73,8 @@ export class Backend {
 
   /** Lets the user pick a review folder (or an empty folder for a new review) and remembers it. */
   async pickFolder() {
-    const handle = await window.showDirectoryPicker({ id: "review", mode: "readwrite" });
+    // read access first; editing is asked for separately (open), so each refusal gets its own message
+    const handle = await window.showDirectoryPicker({ id: "review" });
     return rememberReview(handle);
   }
 

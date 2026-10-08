@@ -65,7 +65,7 @@ function explain(e) {
 async function openFolder() {
   say("Choose the review folder in the window that opened…");
   const entry = await backend.pickFolder();
-  say(`Got "${entry.name}". Checking it…`);
+  say(`Got "${entry.name}". Asking permission to edit files in it…`);
   if (!(await Backend.isReviewFolder(entry.handle))
     && !confirm(`"${entry.name}" has no review files yet (no 08 - Records, 07 - Searches.csv or review_state.json). Start a new review in it?`)) return;
   await openReview(entry);
