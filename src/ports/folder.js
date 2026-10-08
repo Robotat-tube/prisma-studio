@@ -13,6 +13,7 @@
  * @typedef {object} Folder
  * @property {string} name                                        display name of the folder
  * @property {(path: string) => Promise<boolean>} exists
+ * @property {(path: string) => Promise<boolean>} isDirectory
  * @property {(path: string) => Promise<string>} readText          rejects when the file is missing
  * @property {(path: string, text: string) => Promise<void>} writeText   creates parent folders
  * @property {(path: string, text: string) => Promise<void>} appendText  creates the file if missing

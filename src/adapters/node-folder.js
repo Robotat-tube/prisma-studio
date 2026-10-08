@@ -14,6 +14,7 @@ export function nodeFolder(root) {
   return {
     name: basename(root),
     exists: path => stat(full(path)).then(() => true, () => false),
+    isDirectory: path => stat(full(path)).then(s => s.isDirectory(), () => false),
     readText: async path => normalizeNewlines(await readFile(full(path), "utf8")),
     writeText: async (path, text) => { await ensureParent(path); await writeFile(full(path), text, "utf8"); },
     appendText: async (path, text) => { await ensureParent(path); await appendFile(full(path), text, "utf8"); },

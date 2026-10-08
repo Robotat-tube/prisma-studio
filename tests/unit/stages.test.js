@@ -121,3 +121,18 @@ test("OpenAlex client spaces calls, retries and explains a used-up budget", asyn
   const budget = new OpenAlexClient({ http: { get: async () => ({ status: 429, header: n => (n === "X-RateLimit-Remaining" ? "0" : null), json: async () => ({}) }) }, wait: async () => {} });
   await assert.rejects(budget.get("works"), /daily budget/);
 });
+
+test("PDF matching: DOI first, title needs the first author, letter-spaced names", async () => {
+  const { matchPdfs, summarizePdf, firstAuthor } = await import("../../src/domain/pdf-matching.js");
+  const records = new Map([
+    ["R1", { doi: "10.1000/abc", title: "Anything", authors: "Liu, Z." }],
+    ["R2", { title: "Design structure matrix methods for products", authors: "Jiao, J.; Tseng, M." }],
+    ["R3", { title: "Design structure matrix", authors: "Other, O." }],
+  ]);
+  const pdfs = [
+    { path: "a.pdf", name: "a.pdf", ...summarizePdf("Some paper DOI: 10.1000/ABC). text") },
+    { path: "b.pdf", name: "b.pdf", ...summarizePdf("Design Structure Matrix Methods for Products\nJ I A O and M. Tseng") },
+  ];
+  assert.deepEqual(matchPdfs(records, pdfs).map(m => [m.record_id, m.how, m.pdf]), [["R1", "doi", "a.pdf"], ["R2", "title", "b.pdf"]]);
+  assert.equal(firstAuthor("Agus Sudjianto; Kevin Otto"), "sudjianto");
+});

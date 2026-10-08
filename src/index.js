@@ -36,7 +36,10 @@ export * as stageActions from "./services/stage-actions.js";
 export { addKeptToLibrary } from "./services/library.js";
 export { OpenAlexClient, OpenAlexError } from "./services/openalex-client.js";
 export { AmendmentRequired, ReviewSession } from "./services/review-session.js";
+export { listPdfs, recordsWithoutFullText, scanForPdfs } from "./services/local-pdfs.js";
+export { matchPdfs, summarizePdf } from "./domain/pdf-matching.js";
 
 // adapters
 export { memoryFolder } from "./adapters/memory-folder.js";
 export { fetchHttp } from "./adapters/fetch-http.js";
+export { pdfjsText } from "./adapters/pdfjs-text.js";

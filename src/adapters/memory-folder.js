@@ -17,6 +17,7 @@ export function memoryFolder(files = {}, name = "memory") {
     name,
     files: store,
     exists: async p => store.has(clean(p)) || dirs.has(clean(p)) || [...store.keys()].some(k => k.startsWith(clean(p) + "/")),
+    isDirectory: async p => dirs.has(clean(p)) || [...store.keys()].some(k => k.startsWith(clean(p) + "/")),
     readText: async p => { const v = read(p); return typeof v === "string" ? v : new TextDecoder().decode(v); },
     writeText: async (p, text) => { store.set(clean(p), String(text)); },
     appendText: async (p, text) => { store.set(clean(p), (store.has(clean(p)) ? String(store.get(clean(p))) : "") + text); },

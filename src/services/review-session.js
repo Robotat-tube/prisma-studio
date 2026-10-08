@@ -11,12 +11,13 @@ import { FILES, screeningGuide } from "../domain/notes.js";
 import { PROTOCOL_FILE } from "../domain/protocol.js";
 import { buildQuery } from "../domain/queries.js";
 import { comparePy, splitWords, strip } from "../domain/pytext.js";
-import { addIdea, amend, event, guardedChange, isLocked, needsAmendment, sameValue, saveQuestions, setStatus, touch } from "../domain/stages.js";
+import { addIdea, amend, event, FULLTEXT_DIR, guardedChange, isLocked, needsAmendment, sameValue, saveQuestions, setStatus, touch } from "../domain/stages.js";
 import { checkScreening, drawSample, importSearch, importSecondReviewer, addPaper, writeReport, ReviewError } from "./review-commands.js";
 import { addKeptToLibrary, applyLibrarySync, emptyLibrary, planLibrarySync } from "./library.js";
 import { loadState, saveState } from "./review-state.js";
 import { ReviewRepository } from "./review-repository.js";
 import * as actions from "./stage-actions.js";
+import { recordsWithoutFullText, scanForPdfs } from "./local-pdfs.js";
 
 /** A protected part of a locked protocol was changed without giving the reason for the amendment. */
 export class AmendmentRequired extends Error {
@@ -390,6 +391,34 @@ export class ReviewSession {
   async attachPdf(recordId, bytes) {
     await actions.attachPdf(this.repo, this.st, recordId, bytes);
     await this.save();
+  }
+
+  /**
+   * Looks for full texts already on the PC: matches the PDFs in a folder (and its subfolders) to records
+   * waiting for one. Nothing is copied until the reviewer confirms (attachFound).
+   * @param {import("../ports/folder.js").Folder} pdfFolder @param {import("../ports/pdf-text.js").PdfText} pdfText
+   * @param {{cache?: Map<string, object>, onProgress?: (done: number, total: number) => void}} [options]
+   */
+  async scanPdfs(pdfFolder, pdfText, options = {}) {
+    const need = await recordsWithoutFullText(this.repo);
+    const result = await scanForPdfs(pdfFolder, need, pdfText, options);
+    for (const m of result.matches) Object.assign(m, { title: need.get(m.record_id).title, year: need.get(m.record_id).year });
+    this.st.pdf_folders = [pdfFolder.name, ...(this.st.pdf_folders ?? []).filter(f => f !== pdfFolder.name)].slice(0, 5);
+    await this.save();
+    return { ...result, message: `${result.pdfs} PDF(s) read: ${result.matches.length} match(es) for ${result.records} record(s) without a full text.` };
+  }
+
+  /** Copies the confirmed matches into the review under each record's name. @param {{record_id: string, pdf: string}[]} items */
+  async attachFound(items, pdfFolder) {
+    let n = 0;
+    for (const it of items) {
+      if (!this.repo.records.has(it.record_id) || !(await pdfFolder.exists(it.pdf))) continue;
+      await actions.attachPdf(this.repo, this.st, it.record_id, await pdfFolder.readBytes(it.pdf));
+      n++;
+    }
+    event(this.st, "retrieval", `${n} full text(s) attached from a local folder (${pdfFolder.name}), each match confirmed by the reviewer`, this.now);
+    await this.save();
+    return `${n} PDF(s) copied into ${FULLTEXT_DIR}.`;
   }
 
   async markPdf(recordId, status) {
