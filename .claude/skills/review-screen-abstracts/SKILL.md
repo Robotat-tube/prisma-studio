@@ -7,13 +7,13 @@ description: Suggest title/abstract screening decisions for a scoping review (PR
 
 You suggest; the reviewer decides. You write only `ai_decision`, `ai_reason` and `ai_why` on records that are still `pending`. The reviewer then confirms or changes each suggestion in Review Studio (Screening → **Suggested** queue), and only that writes `ta_decision`.
 
-All reading and writing goes through `bin/ai-assist.js` (PRISMA Studio). Pass `--review` the full path of the review's `<name> records` folder (ask the reviewer if you do not know it; the test copy is `C:/Users/A-Bag/Desktop/PRISMA Studio test/Project 2 review records`). Never edit record notes, `review_state.json` or the screening guide yourself.
+All reading and writing goes through `bin/ai-assist.js` (PRISMA Studio). Pass `--review` the review's name (e.g. `Project 2 review`) or the full path of its `<name> records` folder. When a name fits more than one folder (a review and its test copy) the command lists them: ask the reviewer which one, never pick yourself. Never edit record notes, `review_state.json` or the screening guide yourself.
 
 ## Steps
 
 1. **Get the batch.** Run this from any folder:
    ```
-   node "C:/Users/A-Bag/Desktop/prisma-studio/bin/ai-assist.js" --review "<full path of the review records folder>" context screening --limit 40
+   node "C:/Users/A-Bag/Desktop/prisma-studio/bin/ai-assist.js" --review "<review name or full path of its records folder>" context screening --limit 40
    ```
    - If it says AI assistance is **off**, stop. Tell the user to switch it on in Review Studio: stage 8, the AI assistance card. Never switch it on yourself.
    - The output has the review questions (PCC), the eligibility text, the exclusion reasons (`ta_reasons`, e.g. `E1 …`), `remaining`, and up to 40 records with title and abstract.
@@ -31,7 +31,7 @@ All reading and writing goes through `bin/ai-assist.js` (PRISMA Studio). Pass `-
    ```
    Then run:
    ```
-   node "C:/Users/A-Bag/Desktop/prisma-studio/bin/ai-assist.js" --review "<full path of the review records folder>" suggest FILE.json --model "<your exact model id>"
+   node "C:/Users/A-Bag/Desktop/prisma-studio/bin/ai-assist.js" --review "<review name or full path of its records folder>" suggest FILE.json --model "<your exact model id>"
    ```
    Read the "skipped" lines and fix any invalid reason codes.
 

@@ -13,6 +13,7 @@
  * and "99 - Templates" and "98 - Publications" there are used when present.
  */
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
+import { homedir } from "node:os";
 import { basename, isAbsolute, join, relative, resolve } from "node:path";
 import { parseArgs } from "node:util";
 import { nodeFolder } from "../src/adapters/node-folder.js";
@@ -25,22 +26,42 @@ import { ReviewError } from "../src/services/review-commands.js";
 const root = process.cwd();
 const posix = p => p.split("\\").join("/");
 
-/** A review given as its records folder, or by name (the "<name> records" folder somewhere below root). */
+const SKIP = new Set(["node_modules", "AppData", "Application Data", "Library", "OneDrive", "$Recycle.Bin"]);
+
+/** Every "<name> records" folder below dir, at most `depth` levels down. */
+function findAll(dir, want, depth) {
+  const found = [];
+  const stack = [[dir, 0]];
+  while (stack.length) {
+    const [d, level] = stack.pop();
+    let entries;
+    try { entries = readdirSync(d, { withFileTypes: true }); } catch { continue; }      // no access: skip
+    for (const e of entries) {
+      if (!e.isDirectory() || e.name.startsWith(".") || SKIP.has(e.name)) continue;
+      const p = join(d, e.name);
+      if (e.name === want) found.push(p);
+      else if (level < depth) stack.push([p, level + 1]);
+    }
+  }
+  return found;
+}
+
+/**
+ * A review given as its records folder, or by name: the "<name> records" folder below the current folder,
+ * else below the home folder. A name that fits more than one folder (a review and its test copy) is refused.
+ */
 function findReview(review) {
   const direct = isAbsolute(review) ? review : resolve(root, review);
   if (existsSync(direct) && statSync(direct).isDirectory()) return direct;
   const want = `${review} records`;
-  const stack = [root];
-  while (stack.length) {
-    const dir = stack.pop();
-    for (const e of readdirSync(dir, { withFileTypes: true })) {
-      if (!e.isDirectory() || e.name.startsWith(".") || e.name === "node_modules") continue;
-      const p = join(dir, e.name);
-      if (e.name === want) return p;
-      stack.push(p);
+  for (const [where, depth] of [[root, 8], [homedir(), 5]]) {
+    const found = findAll(where, want, depth);
+    if (found.length === 1) return found[0];
+    if (found.length > 1) {
+      throw new ReviewError(`"${review}" fits more than one folder; pass --review the full path of the one you mean:\n  ${found.map(posix).join("\n  ")}`);
     }
   }
-  throw new ReviewError(`Review "${review}" not found below ${root}.`);
+  throw new ReviewError(`Review "${review}" not found below ${root} or ${homedir()}; pass --review the full path of its "… records" folder.`);
 }
 
 const fail = msg => { console.error(`ai_assist: ${msg}`); process.exit(1); };

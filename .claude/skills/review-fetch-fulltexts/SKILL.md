@@ -7,11 +7,13 @@ description: Find and attach the full-text PDFs for records awaiting full-text s
 
 Your job is to get the full text of every record in the retrieval queue and attach it with `ai-assist.js attach`. That command copies the PDF into `10 - Full texts/` under the record's name and logs it. You never decide anything about a paper, and you never mark one as "not retrieved": that is the reviewer's call, after their own library attempt.
 
+`--review` takes the review's name (e.g. `Project 2 review`) or the full path of its `<name> records` folder. When a name fits more than one folder (a review and its test copy) the command lists them: ask the reviewer which one, never pick yourself.
+
 ## Steps
 
 1. **Get the queue:**
    ```
-   node "C:/Users/A-Bag/Desktop/prisma-studio/bin/ai-assist.js" --review "<full path of the review records folder>" context retrieval --limit 200
+   node "C:/Users/A-Bag/Desktop/prisma-studio/bin/ai-assist.js" --review "<review name or full path of its records folder>" context retrieval --limit 200
    ```
    - If AI assistance is **off**, stop and tell the user where to switch it on (Review Studio, stage 10).
    - Each record comes with title, authors, year, DOI, URL and `oa_url`, which is filled when Review Studio found an open-access link.
@@ -34,7 +36,7 @@ Your job is to get the full text of every record in the retrieval queue and atta
 
 4. **Attach each PDF:**
    ```
-   node "C:/Users/A-Bag/Desktop/prisma-studio/bin/ai-assist.js" --review "<full path of the review records folder>" attach R0123 "C:/temp/x.pdf" --model "<your exact model id>"
+   node "C:/Users/A-Bag/Desktop/prisma-studio/bin/ai-assist.js" --review "<review name or full path of its records folder>" attach R0123 "C:/temp/x.pdf" --model "<your exact model id>"
    ```
 
 5. **Never bypass access controls:** no CAPTCHA solving, no shadow libraries (Sci-Hub, LibGen and the like), no sharing logins. If a site asks "are you a robot", leave that paper for the user.
