@@ -42,5 +42,43 @@ export const normalizeNewlines = s => String(s).replace(/\r\n?/g, "\n");
 /** str.isprintable() for one character */
 export const isPrintable = c => c === " " || !PRINTABLE_EXCEPT.test(c);
 
+/**
+ * format(x, f".{digits}f"): rounds the exact binary value of x, ties to even (JS toFixed rounds ties up).
+ * @param {number} x @param {number} digits
+ */
+export function formatFixed(x, digits) {
+  if (!Number.isFinite(x)) return String(x);
+  const view = new DataView(new ArrayBuffer(8));
+  view.setFloat64(0, x);
+  const bits = view.getBigUint64(0);
+  const negative = bits >> 63n === 1n;
+  const exp = Number((bits >> 52n) & 0x7ffn);
+  let mantissa = bits & 0xfffffffffffffn;
+  let e;
+  if (exp === 0) e = -1074;
+  else { mantissa |= 1n << 52n; e = exp - 1075; }
+  // |x| = mantissa · 2^e; scaled = |x| · 10^digits, rounded half to even
+  let num = mantissa * 10n ** BigInt(digits), den = 1n;
+  if (e >= 0) num <<= BigInt(e); else den <<= BigInt(-e);
+  let q = num / den;
+  const twice = 2n * (num % den);
+  if (twice > den || (twice === den && q % 2n === 1n)) q++;
+  let s = q.toString().padStart(digits + 1, "0");
+  if (digits) s = s.slice(0, -digits) + "." + s.slice(-digits);
+  return (negative ? "-" : "") + s;              // Python keeps the sign of -0.0 too
+}
+
+/** format(x, ".0%") */
+export const formatPercent = x => formatFixed(x * 100, 0) + "%";
+
+/** Python's default string order (by code point); JS sorts by UTF-16 units. */
+export function comparePy(a, b) {
+  const x = chars(a), y = chars(b);
+  for (let i = 0; i < Math.min(x.length, y.length); i++) {
+    if (x[i] !== y[i]) return x[i].codePointAt(0) - y[i].codePointAt(0);
+  }
+  return x.length - y.length;
+}
+
 /** Escapes a string for use inside a RegExp. */
 export const escapeRegExp = s => String(s).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");

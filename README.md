@@ -7,7 +7,7 @@ A workbench for scoping reviews (PRISMA-ScR) that runs in the browser and keeps 
 | Area | Python original | JavaScript | Status |
 |---|---|---|---|
 | Front matter, CSV, names, matching, duplicate index, RIS/BibTeX/CSV import | `prisma_review.py` (first half) | `src/domain/{frontmatter,csv,names,matching,similarity,importers}.js` | ported, identical on 5,683 records |
-| Review folder, import, screening checks, sample sheets, PRISMA counts, κ, flow report | `prisma_review.py` (second half) | `src/domain/…`, `src/services/…` | next |
+| Review folder, import, add, screening checks, sample sheets (same seeds), second-reviewer import, PRISMA counts, κ, flow report, library sync | `prisma_review.py` (second half) | `src/domain/{records,screening,agreement,flow,sampling,pyrandom,notes}.js`, `src/services/{review-repository,review-commands,library}.js` | ported; a six-command sequence on a copy of Project 2 writes identical files |
 | Stages, protocol, amendments, charting, snowballing, OpenAlex | `review_stages.py` | | to do |
 | Local PDF finder | `local_pdfs.py` | (pdf.js) | to do |
 
