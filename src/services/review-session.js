@@ -44,9 +44,12 @@ export class ReviewSession {
     this.devMode = Boolean(deps.devMode);
   }
 
-  /** Opens a review folder. @param {import("../ports/folder.js").Folder} folder @param {SessionDeps} deps */
+  /**
+   * Opens a review folder. @param {import("../ports/folder.js").Folder} folder
+   * @param {SessionDeps & {onProgress?: (done: number, total: number) => void}} deps
+   */
   static async open(folder, deps) {
-    const repo = await ReviewRepository.open(folder, deps.clock, deps.settings);
+    const repo = await ReviewRepository.open(folder, deps.clock, deps.settings, { onProgress: deps.onProgress });
     return new ReviewSession(repo, await loadState(folder), deps);
   }
 

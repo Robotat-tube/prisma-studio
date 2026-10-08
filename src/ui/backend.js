@@ -47,15 +47,18 @@ export class Backend {
     return false;
   }
 
-  /** Opens a remembered review (asks for access; needs a click). */
-  async open(entry) {
+  /**
+   * Opens a remembered review (asks for access; needs a click).
+   * @param {{onProgress?: (done: number, total: number) => void}} [options]
+   */
+  async open(entry, { onProgress } = {}) {
     if (!(await requestAccess(entry.handle))) throw new Error("Access to the folder was not granted.");
     const s = entry.settings ?? {};
     let library = emptyLibrary();
     if (s.library && (await requestAccess(s.library))) library = await openLibrary(browserFolder(s.library));
     const clock = { today: () => new Date().toLocaleDateString("sv"), now: () => new Date().toLocaleString("sv").slice(0, 16) };
     this.session = await ReviewSession.open(browserFolder(entry.handle), {
-      clock, library, openalex: this.openalex, devMode: false,
+      clock, library, openalex: this.openalex, devMode: false, onProgress,
       settings: { name: entry.name.replace(/ records$/, ""), recordsPath: s.recordsPath || `${entry.name}/08 - Records`, template: this.templates.record },
     });
     this.entry = await rememberReview(entry.handle, s);

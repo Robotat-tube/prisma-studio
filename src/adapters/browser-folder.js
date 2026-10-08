@@ -7,12 +7,18 @@ import { normalizeNewlines } from "../domain/pytext.js";
 
 const parts = path => String(path).split("/").filter(Boolean);
 
+const known = new WeakMap();           // root -> Map(path -> directory handle): folders are looked up once
+
 /** The directory handle at a path inside root (null when missing; created when `create`). */
 async function dirAt(root, path, create = false) {
+  if (!known.has(root)) known.set(root, new Map());
+  const cache = known.get(root), key = parts(path).join("/");
+  if (cache.has(key)) return cache.get(key);
   let dir = root;
   for (const name of parts(path)) {
     try { dir = await dir.getDirectoryHandle(name, { create }); } catch { return null; }
   }
+  cache.set(key, dir);
   return dir;
 }
 

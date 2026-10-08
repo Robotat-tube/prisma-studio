@@ -41,14 +41,22 @@ export class ReviewRepository {
     this.link = `[[${settings.name}]]`;
   }
 
-  /** Opens a review folder and reads every record note in it. */
-  static async open(folder, clock, settings) {
+  /**
+   * Opens a review folder and reads every record note in it (several at a time; the order stays the files' order).
+   * @param {{onProgress?: (done: number, total: number) => void}} [options]
+   */
+  static async open(folder, clock, settings, { onProgress = () => {} } = {}) {
     const repo = new ReviewRepository(folder, clock, settings);
     const files = (await folder.list(RECORDS_DIR)).filter(f => /^R.*\.md$/.test(f)).sort(fileOrder);
-    for (const name of files) {
-      const file = `${RECORDS_DIR}/${name}`;
-      const [props, body] = frontmatter.parse(await folder.readText(file));
-      if (props.type === "review-record") repo.records.set(String(props.record_id), { id: String(props.record_id), file, props, body });
+    const BATCH = 64;
+    for (let i = 0; i < files.length; i += BATCH) {
+      const batch = files.slice(i, i + BATCH).map(name => `${RECORDS_DIR}/${name}`);
+      const texts = await Promise.all(batch.map(file => folder.readText(file)));
+      batch.forEach((file, k) => {
+        const [props, body] = frontmatter.parse(texts[k]);
+        if (props.type === "review-record") repo.records.set(String(props.record_id), { id: String(props.record_id), file, props, body });
+      });
+      onProgress(Math.min(i + BATCH, files.length), files.length);
     }
     return repo;
   }

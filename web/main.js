@@ -34,8 +34,10 @@ window.backend = backend;
 // ------------------------------------------------------------------ opening a review
 
 async function openReview(entry) {
-  say("Opening…");
-  await backend.open(entry);
+  const started = performance.now();
+  say(`Opening ${entry.name}…`);
+  await backend.open(entry, { onProgress: (done, total) => say(`Reading notes: ${done.toLocaleString()} of ${total.toLocaleString()}…`) });
+  say(`Preparing the page (${((performance.now() - started) / 1000).toFixed(1)} s so far)…`);
   remember("review", entry.name);
   $("#start").hidden = true;
   $("#app").hidden = false;
@@ -54,6 +56,7 @@ async function newReview() {
 
 async function openFolder() {
   const entry = await backend.pickFolder();
+  say(`Checking "${entry.name}"…`);
   if (!(await Backend.isReviewFolder(entry.handle))
     && !confirm(`"${entry.name}" has no review files yet (no 08 - Records, 07 - Searches.csv or review_state.json). Start a new review in it?`)) return;
   await openReview(entry);
