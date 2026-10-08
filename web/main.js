@@ -57,7 +57,7 @@ async function newReview() {
 /** Shows any failure on the start screen, in words (a refused or cancelled folder included). */
 function explain(e) {
   console.error(e);
-  if (e?.name === "AbortError") return say("No folder was opened: the folder window was closed, or the browser refused that folder or the permission to edit it. Try again and choose the review folder itself.", "err");
+  if (e?.name === "AbortError") return say(`No folder was opened: the folder window was closed, or the browser refused that folder or the permission to edit it. Try again and choose the review folder itself. (Browser: "${e.message}")`, "err");
   if (e?.name === "SecurityError") return say("The browser blocked the folder window. Click the button again (it must be a direct click).", "err");
   say(`${e?.name ?? "Error"}: ${e?.message ?? e}`, "err");
 }
