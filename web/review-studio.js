@@ -1035,12 +1035,22 @@ PAGES.screening = () => {
         btn("← Previous", () => move(-1), "ghost"), h("span", { class: "kbdhint" }, "I include · U unsure · E exclude · 1–9 reason · ←/→ move"), btn("Next →", () => move(1), "ghost")));
   }
 
+  // the queue lists at most 400 records: those around the current one, so it is always in view
+  const at = Math.max(0, q.findIndex(r => r.record_id === SC.id)), from = Math.max(0, Math.min(at - 100, q.length - 400));
+  const shown = q.slice(from, from + 400);
   const side = h("div", {},
-    h("div", { class: "card", style: "padding:12px" }, h("h3", { style: "padding:4px 6px" }, `Queue (${q.length})`),
-      h("div", { class: "queue" }, q.slice(0, 400).map(r => h("div", { class: "qitem" + (r.record_id === SC.id ? " cur" : ""), onclick: () => { SC.id = r.record_id; SC.excl = false; render(); } },
+    h("div", { class: "card", style: "padding:12px" }, h("h3", { style: "padding:4px 6px" }, `Queue (${q.length})`,
+      q.length > shown.length ? h("span", { class: "small muted" }, ` · showing ${from + 1}–${from + shown.length}`) : null),
+      h("div", { class: "queue" }, shown.map(r => h("div", { class: "qitem" + (r.record_id === SC.id ? " cur" : ""), onclick: () => { SC.id = r.record_id; SC.excl = false; render(); } },
         h("span", { class: "dec-dot " + r[dkey] }), h("span", { class: "id" }, r.record_id), h("span", { class: "t", title: r.title }, r.title))))),
     S.problems.length ? h("div", { class: "card", style: "padding:12px;border-left:4px solid var(--bad)" }, h("h3", {}, `${S.problems.length} problem(s)`),
       S.problems.slice(0, 30).map(p => h("div", { class: "small", style: "padding:3px 0;cursor:pointer", onclick: () => { SC.id = p.record_id; SC.filter = "all"; render(); } }, h("b", {}, p.record_id), " ", p.text))) : null);
+  setTimeout(() => {                                    // keep the current record in view inside the queue list
+    const list = document.querySelector(".queue"), cur = list?.querySelector(".qitem.cur");
+    if (!cur) return;
+    const box = list.getBoundingClientRect(), r = cur.getBoundingClientRect();
+    if (r.top < box.top || r.bottom > box.bottom) list.scrollTop += r.top - box.top - box.height / 2;
+  });
   return h("div", {}, head, h("div", { class: "screen" }, main, side));
 };
 
