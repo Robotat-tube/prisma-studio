@@ -35,6 +35,7 @@ export { loadState, saveState, STATE_FILE } from "./services/review-state.js";
 export * as stageActions from "./services/stage-actions.js";
 export { addKeptToLibrary } from "./services/library.js";
 export { OpenAlexClient, OpenAlexError } from "./services/openalex-client.js";
+export { AmendmentRequired, ReviewSession } from "./services/review-session.js";
 
 // adapters
 export { memoryFolder } from "./adapters/memory-folder.js";

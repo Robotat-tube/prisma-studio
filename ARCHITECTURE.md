@@ -30,6 +30,10 @@ PRISMA Studio is a browser app whose data is a folder on the user's PC. The code
 
 `npm run check` enforces the "may import" column and that domain, ports and services use no platform modules (`node:*`, packages), so they run in the browser as they are.
 
+## Entry point for the UI
+
+`ReviewSession` (services/review-session.js) opens one review folder and offers one method per user action. It keeps the records and the review state in memory and saves both after each action. Changes to protected parts of a locked protocol throw `AmendmentRequired`; the UI asks for the reason and repeats the call with it. Its dependencies are injected: the `Folder`, a `Clock`, the library, the OpenAlex client, developer mode.
+
 ## Rules
 
 - **Same files as the Python tool.** A review folder is the contract. Anything that writes text the Python tool also writes goes through `domain/pytext.js` (Python-compatible whitespace, line breaks, character counting) and is covered by a parity test.
