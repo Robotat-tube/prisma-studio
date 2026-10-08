@@ -1429,7 +1429,8 @@ async function switchReview(name) {
   } catch (e) { toast(e.message, "err"); }
 }
 
-(async function start() {
+// main.js waits for this to time how long opening a review takes
+window.studioReady = (async function start() {
   try {
     H = await getJSON("/api/help");
     try { S = await getJSON(`/api/state?review=${encodeURIComponent(REVIEW)}`); }

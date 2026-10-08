@@ -21,13 +21,22 @@ export function abstractOf(record) {
   return after.split("\n## ")[0].trim().replaceAll("_(no abstract in the export)_", "");
 }
 
+// Records are replaced, never changed in place, so a record's view can be kept until the record is replaced.
+// The snapshot is rebuilt after every action; with thousands of records this keeps that quick.
+const VIEWS = new WeakMap();
+
 /** One record as the page lists it (with the abstract when `full`). */
 export function recordView(record, full = false) {
+  if (full) return { ...listView(record), abstract: abstractOf(record) };
+  if (!VIEWS.has(record)) VIEWS.set(record, listView(record));
+  return VIEWS.get(record);
+}
+
+function listView(record) {
   const p = record.props;
   const out = Object.fromEntries(RECORD_FIELDS.map(k => [k, p[k] ?? ""]));
   out.chart = Object.fromEntries(Object.entries(p).filter(([k]) => k.startsWith("chart_")).map(([k, v]) => [k.slice(6), v]));
   out.file = fileStem(record);
-  if (full) out.abstract = abstractOf(record);
   return out;
 }
 
@@ -59,9 +68,9 @@ export function flowView(records, searches) {
 export function agreementView(records, stage) {
   const key = stage === "ta" ? "ta_decision" : "ft_decision";
   const pairs = [], disagreements = [];
-  for (const f of [...records].sort((a, b) => String(a.record_id).localeCompare(String(b.record_id)))) {
+  const decided = records.filter(f => f[`sample_${stage}`] && ["include", "exclude", "unsure"].includes(f[key]) && f[`r2_${stage}_decision`]);
+  for (const f of decided.sort((a, b) => String(a.record_id).localeCompare(String(b.record_id)))) {
     const mine = f[key], theirs = f[`r2_${stage}_decision`];
-    if (!(f[`sample_${stage}`] && ["include", "exclude", "unsure"].includes(mine) && theirs)) continue;
     pairs.push([mine, theirs]);
     if (mine !== theirs) disagreements.push({ record_id: f.record_id, title: f.title, mine, theirs, reason: f[`r2_${stage}_reason`] ?? "" });
   }

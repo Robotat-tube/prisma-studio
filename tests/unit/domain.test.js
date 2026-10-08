@@ -8,6 +8,14 @@ import { DuplicateIndex, normalizeDoi, normalizeTitle, yearOf } from "../../src/
 import { similarity } from "../../src/domain/similarity.js";
 import { parseExport } from "../../src/domain/importers.js";
 import { memoryFolder } from "../../src/adapters/memory-folder.js";
+import { comparePy } from "../../src/domain/pytext.js";
+
+test("comparePy: Python's code-point order, also past the BMP", () => {
+  const sorted = ["b", "a", "ab", "", "～", "\u{1F600}", "R0010", "R0002"].sort(comparePy);
+  assert.deepEqual(sorted, ["", "R0002", "R0010", "a", "ab", "b", "～", "\u{1F600}"]);
+  assert.ok(comparePy("x\u{1F600}", "x～") > 0, "a surrogate pair sorts after U+FF5E, unlike UTF-16 order");
+  assert.equal(comparePy("same", "same"), 0);
+});
 
 test("front matter: parse, serialize, replace one list", () => {
   const text = '---\ntype: review-record\nyear: 2024\nflag: true\nsources:\n  - "Scopus"\n  - WoS\ntags: [a, "b, c"]\nempty: \n---\n# Body\n';

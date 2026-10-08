@@ -53,3 +53,18 @@ test("backend: import, decide, preview, amendment answer, errors", async () => {
   assert.equal(unknown.status, 400);
   assert.equal((await backend.get("/api/reviews")).reviews[0], "Demo records");
 });
+
+test("snapshot after an action shows the changed record (views and checks are kept per record)", async () => {
+  const backend = await backendWithReview();
+  const token = backend.upload({ name: "s.ris", arrayBuffer: async () => new TextEncoder().encode(ris).buffer });
+  await backend.action("import", { path: token, database: "Scopus", query: "q", force: true });
+  const before = await backend.snapshot();
+  const after = (await backend.action("decide", { record_id: "R0002", stage: "ta", decision: "exclude", reason: "E9" })).body.state;
+  const r1 = id => s => s.records.find(r => r.record_id === id);
+  assert.equal(r1("R0002")(before).ta_decision, "pending");
+  assert.equal(r1("R0002")(after).ta_decision, "exclude");
+  assert.equal(r1("R0001")(after), r1("R0001")(before), "an unchanged record keeps its view");
+  assert.ok(after.problems.some(p => p.record_id === "R0002"), "a reason not in the guide is a problem");
+  const again = (await backend.action("decide", { record_id: "R0002", stage: "ta", decision: "pending" })).body.state;
+  assert.ok(!again.problems.some(p => p.record_id === "R0002"), "the problem goes once the record changes");
+});

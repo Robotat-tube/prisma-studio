@@ -12,7 +12,13 @@ const NORMALISED = ["ta_decision", "ft_decision", "pdf_status", "r2_ta_decision"
 export function isValidReason(reason, allowed) {
   if (!reason) return false;
   const code = splitWords(reason)[0];
-  return allowed.some(a => reason === a || (code !== undefined && code === splitWords(a)[0]));
+  return allowed.includes(reason) || (code !== undefined && codesOf(allowed).has(code));
+}
+
+const CODES = new WeakMap();   // allowed list → its codes (the list is checked once per record)
+function codesOf(allowed) {
+  if (!CODES.has(allowed)) CODES.set(allowed, new Set(allowed.map(a => splitWords(a)[0]).filter(c => c !== undefined)));
+  return CODES.get(allowed);
 }
 
 /**

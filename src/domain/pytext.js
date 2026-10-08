@@ -73,6 +73,14 @@ export const formatPercent = x => formatFixed(x * 100, 0) + "%";
 
 /** Python's default string order (by code point); JS sorts by UTF-16 units. */
 export function comparePy(a, b) {
+  // fast path: UTF-16 order equals code-point order up to the first difference, unless a surrogate is involved there
+  a = String(a); b = String(b);
+  const n = Math.min(a.length, b.length);
+  let i = 0;
+  while (i < n && a.charCodeAt(i) === b.charCodeAt(i)) i++;
+  if (i === n) return a.length - b.length;
+  const u = a.charCodeAt(i), v = b.charCodeAt(i);
+  if ((u < 0xd800 || u > 0xdfff) && (v < 0xd800 || v > 0xdfff)) return u - v;
   const x = chars(a), y = chars(b);
   for (let i = 0; i < Math.min(x.length, y.length); i++) {
     if (x[i] !== y[i]) return x[i].codePointAt(0) - y[i].codePointAt(0);

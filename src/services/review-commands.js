@@ -96,6 +96,8 @@ export async function addPaper(repo, { title, authors = "", year = "", journal =
   return `${row.id}: ${added ? "new record" : "already present (source added)"}`;
 }
 
+const CHECKED = new WeakMap();   // record properties → result of checkRecord
+
 /**
  * Checks every record (allowed values, reasons) and fills what follows from the decisions.
  * @returns {Promise<{problems: {record: object, text: string}[], updated: number}>}
@@ -103,8 +105,12 @@ export async function addPaper(repo, { title, authors = "", year = "", journal =
 export async function checkScreening(repo, { write = true } = {}) {
   const reasons = await repo.reasons();
   const problems = [];
+  const today = repo.clock.today(), key = `${today}\n${reasons.ta.join("\n")}\n\n${reasons.ft.join("\n")}`;
   for (const record of repo.records.values()) {
-    const { props, problems: found, changed } = checkRecord(record.props, reasons, repo.clock.today());
+    // records are replaced, never changed in place: an unchanged record keeps its result (the page checks after every action)
+    let checked = CHECKED.get(record.props);
+    if (checked?.key !== key) CHECKED.set(record.props, checked = { key, ...checkRecord(record.props, reasons, today) });
+    const { props, problems: found, changed } = checked;
     for (const text of found) problems.push({ record, text });
     if (!changed) continue;
     if (write) repo.put({ ...record, props });
