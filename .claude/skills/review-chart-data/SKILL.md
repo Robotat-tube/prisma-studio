@@ -1,6 +1,6 @@
 ---
 name: review-chart-data
-description: Prefill the data-charting form from the full texts of included papers in a scoping review in this vault (Review Studio, stage 12). Use when the user asks to chart, extract data from, or fill the charting table for included papers.
+description: Prefill the data-charting form from the full texts of included papers in a scoping review (PRISMA Studio) (Review Studio, stage 12). Use when the user asks to chart, extract data from, or fill the charting table for included papers.
 ---
 
 # Prefill data charting
@@ -11,7 +11,7 @@ You fill empty charting fields for included papers, from the full text, with pag
 
 1. **Get the next papers:**
    ```
-   node "C:/Users/A-Bag/Desktop/prisma-studio/bin/ai-assist.js" --review "<review>" context charting --limit 5
+   node "C:/Users/A-Bag/Desktop/prisma-studio/bin/ai-assist.js" --review "<full path of the review records folder>" context charting --limit 5
    ```
    - If AI assistance is **off**, stop and tell the user where to switch it on (Review Studio, stage 12).
    - The output has the review questions, the charting `fields` (name + description, which often fixes the allowed values), and per paper its `pdf` path and the fields already `filled`.
@@ -28,7 +28,7 @@ You fill empty charting fields for included papers, from the full text, with pag
    ```
    Then run:
    ```
-   node "C:/Users/A-Bag/Desktop/prisma-studio/bin/ai-assist.js" --review "<review>" chart FILE.json --model "<your exact model id>"
+   node "C:/Users/A-Bag/Desktop/prisma-studio/bin/ai-assist.js" --review "<full path of the review records folder>" chart FILE.json --model "<your exact model id>"
    ```
 
 4. **Repeat** for further batches if the user wants. Then report how many papers you prefilled and any field whose description was hard to apply consistently. That is useful feedback for the charting form, and changing the form after the lock is an amendment.

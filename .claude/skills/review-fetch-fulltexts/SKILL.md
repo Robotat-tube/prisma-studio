@@ -1,6 +1,6 @@
 ---
 name: review-fetch-fulltexts
-description: Find and attach the full-text PDFs for records awaiting full-text screening in a scoping review in this vault (Review Studio, stage 10). Use when the user asks to collect, download, or fetch the PDFs or full texts for a review.
+description: Find and attach the full-text PDFs for records awaiting full-text screening in a scoping review (PRISMA Studio) (Review Studio, stage 10). Use when the user asks to collect, download, or fetch the PDFs or full texts for a review.
 ---
 
 # Fetch full texts
@@ -11,7 +11,7 @@ Your job is to get the full text of every record in the retrieval queue and atta
 
 1. **Get the queue:**
    ```
-   node "C:/Users/A-Bag/Desktop/prisma-studio/bin/ai-assist.js" --review "<review>" context retrieval --limit 200
+   node "C:/Users/A-Bag/Desktop/prisma-studio/bin/ai-assist.js" --review "<full path of the review records folder>" context retrieval --limit 200
    ```
    - If AI assistance is **off**, stop and tell the user where to switch it on (Review Studio, stage 10).
    - Each record comes with title, authors, year, DOI, URL and `oa_url`, which is filled when Review Studio found an open-access link.
@@ -28,13 +28,13 @@ Your job is to get the full text of every record in the retrieval queue and atta
       - IEEE: `/stampPDF/getPDF.jsp?tp=&arnumber=<n>`
       - ScienceDirect: the article's "View PDF" link
 
-   Save each download to a temporary folder outside the vault.
+   Save each download to a temporary folder outside the review folder.
 
 3. **Check before attaching.** The file must start with `%PDF-`, and its first page must show the record's title. Publishers sometimes serve a related article, a cover page or a login page. A preprint is fine; mention it in your report.
 
 4. **Attach each PDF:**
    ```
-   node "C:/Users/A-Bag/Desktop/prisma-studio/bin/ai-assist.js" --review "<review>" attach R0123 "C:/temp/x.pdf" --model "<your exact model id>"
+   node "C:/Users/A-Bag/Desktop/prisma-studio/bin/ai-assist.js" --review "<full path of the review records folder>" attach R0123 "C:/temp/x.pdf" --model "<your exact model id>"
    ```
 
 5. **Never bypass access controls:** no CAPTCHA solving, no shadow libraries (Sci-Hub, LibGen and the like), no sharing logins. If a site asks "are you a robot", leave that paper for the user.

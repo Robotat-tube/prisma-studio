@@ -6,10 +6,16 @@ A workbench for scoping reviews (PRISMA-ScR) that runs in the browser and keeps 
 
 ## Run it
 
+Double-click `Start PRISMA Studio.cmd`: it installs what is needed on first start, starts the app and opens it in Chrome or Edge (needs Node.js). Or by hand:
+
 ```
 npm install
 npm run serve            # then open http://localhost:8770/web/ in Chrome or Edge
 ```
+
+**Offline.** After the first visit the browser keeps a copy of the app (`web/sw.js`), so http://localhost:8770/web/ opens without the server or a network. Chrome and Edge can also install it as an app (install icon in the address bar). Review folders are never copied; only searching OpenAlex needs the internet.
+
+**Opening a review** shows how long it took (reading the folder, showing the page); the numbers are also in `window.openTiming`.
 
 To publish: `npm run build` writes `dist/` (the page, the engine and a copy of pdf.js); publish `dist/` with GitHub Pages, Cloudflare Pages or Netlify. It is a static site: nothing runs on the server and no review data leaves the user's PC.
 

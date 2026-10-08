@@ -1,19 +1,19 @@
 ---
 name: review-screen-fulltexts
-description: Suggest full-text screening decisions for a scoping review in this vault (Review Studio, stage 8, Full text tab) by reading each retrieved PDF against the eligibility criteria. Use when the user asks to pre-screen, suggest decisions for, or help with full-text screening of a review. The reviewer confirms every suggestion; this skill never decides.
+description: Suggest full-text screening decisions for a scoping review (PRISMA Studio) (Review Studio, stage 8, Full text tab) by reading each retrieved PDF against the eligibility criteria. Use when the user asks to pre-screen, suggest decisions for, or help with full-text screening of a review. The reviewer confirms every suggestion; this skill never decides.
 ---
 
 # Suggest full-text decisions
 
 You suggest; the reviewer decides. For records that passed title/abstract screening and have a PDF attached, you read the full text and write only `ai_ft_decision`, `ai_ft_reason` and `ai_ft_why`. The reviewer then confirms or changes each suggestion in Review Studio (Screening → Full text tab → **Suggested** queue), and only that writes `ft_decision`.
 
-All reading and writing goes through `bin/ai-assist.js` (PRISMA Studio), run from the folder that holds the review. Never edit record notes or `review_state.json` yourself.
+All reading and writing goes through `bin/ai-assist.js` (PRISMA Studio). Pass `--review` the full path of the review's `<name> records` folder (ask the reviewer if you do not know it; the test copy is `C:/Users/A-Bag/Desktop/PRISMA Studio test/Project 2 review records`). Never edit record notes or `review_state.json` yourself.
 
 ## Steps
 
-1. **Get the batch.** Run this from the vault root:
+1. **Get the batch.** Run this from any folder:
    ```
-   node "C:/Users/A-Bag/Desktop/prisma-studio/bin/ai-assist.js" --review "<review>" context fulltext --limit 5
+   node "C:/Users/A-Bag/Desktop/prisma-studio/bin/ai-assist.js" --review "<full path of the review records folder>" context fulltext --limit 5
    ```
    - If it says full-text suggestions are **off**, stop. Tell the user that the reviewer can choose "AI suggests (+ full text)" in Review Studio (stage 8, AI assistance card).
    - The output has the review questions (PCC), the eligibility text, the full-text exclusion reasons (`ft_reasons`), `remaining`, `without_pdf` and up to 5 records with their `pdf` path.
@@ -25,14 +25,14 @@ All reading and writing goes through `bin/ai-assist.js` (PRISMA Studio), run fro
    - **First check that the PDF is the right paper** (title and authors on page 1). If it isn't, don't suggest anything for that record; report it so the PDF can be replaced.
    - `why`: one or two sentences with page or section locators, e.g. `Software product lines only (§2, p. 3); no physical product.` Never claim anything the paper does not say.
 
-3. **Write the suggestions** to a JSON file in your scratch or temp folder, never in the vault:
+3. **Write the suggestions** to a JSON file in your scratch or temp folder, never in the review folder:
    ```json
    [{"id": "R0123", "decision": "include", "why": "DSM-based module identification for a PCB assembly, case study §4 p. 7."},
     {"id": "R0124", "decision": "exclude", "reason": "E3", "why": "Supply-chain modularity only (p. 2, §1)."}]
    ```
    Then run:
    ```
-   node "C:/Users/A-Bag/Desktop/prisma-studio/bin/ai-assist.js" --review "<review>" suggest FILE.json --stage ft --model "<your exact model id>"
+   node "C:/Users/A-Bag/Desktop/prisma-studio/bin/ai-assist.js" --review "<full path of the review records folder>" suggest FILE.json --stage ft --model "<your exact model id>"
    ```
    Read the "skipped" lines and fix any invalid reason codes.
 

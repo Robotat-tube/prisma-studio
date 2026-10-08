@@ -1,19 +1,19 @@
 ---
 name: review-second-reviewer
-description: Act as the independent (blind) second reviewer on the screening sample of a scoping review in this vault (Review Studio, stage 9), when the review chose "AI as second reviewer". Use when the user asks the AI to fill the second-reviewer sheet or compute agreement with an AI reviewer.
+description: Act as the independent (blind) second reviewer on the screening sample of a scoping review (PRISMA Studio) (Review Studio, stage 9), when the review chose "AI as second reviewer". Use when the user asks the AI to fill the second-reviewer sheet or compute agreement with an AI reviewer.
 ---
 
 # Blind second reviewer
 
 You screen the random sample independently. Blindness is the whole point of this step. You see only the blind sheet and the criteria, never the first reviewer's decisions. So do not open record notes, `Screening.base`, the PRISMA flow, or the timeline for this review while you work.
 
-All reading and writing goes through `bin/ai-assist.js` (PRISMA Studio), run from the folder that holds the review.
+All reading and writing goes through `bin/ai-assist.js` (PRISMA Studio). Pass `--review` the full path of the review's `<name> records` folder (ask the reviewer if you do not know it; the test copy is `C:/Users/A-Bag/Desktop/PRISMA Studio test/Project 2 review records`).
 
 ## Steps
 
 1. **Get the sheet:**
    ```
-   node "C:/Users/A-Bag/Desktop/prisma-studio/bin/ai-assist.js" --review "<review>" context reviewer
+   node "C:/Users/A-Bag/Desktop/prisma-studio/bin/ai-assist.js" --review "<full path of the review records folder>" context reviewer
    ```
    - If it says AI assistance is **off**, stop: this review uses a human second reviewer.
    - If there's no sheet yet, the reviewer first draws the sample in Review Studio (stage 9).
@@ -30,7 +30,7 @@ All reading and writing goes through `bin/ai-assist.js` (PRISMA Studio), run fro
    ```
    Then run:
    ```
-   node "C:/Users/A-Bag/Desktop/prisma-studio/bin/ai-assist.js" --review "<review>" r2 FILE.json --model "<your exact model id>"
+   node "C:/Users/A-Bag/Desktop/prisma-studio/bin/ai-assist.js" --review "<full path of the review records folder>" r2 FILE.json --model "<your exact model id>"
    ```
    This saves a filled copy of the sheet named `… (AI).csv`, imports it, recomputes Cohen's κ and logs the model and date.
 
