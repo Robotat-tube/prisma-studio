@@ -22,10 +22,10 @@ PRISMA Studio is a browser app whose data is a folder on the user's PC. The code
 
 | Layer | Folder | Contains | May import |
 |---|---|---|---|
-| **domain** | `src/domain/` | Pure functions and value objects: front matter, CSV, names, matching, importers, (next) screening checks, PRISMA counts, κ, reports as text. No I/O, no clock, no randomness, no platform APIs. | domain |
-| **ports** | `src/ports/` | Interfaces the services need from outside: `Folder` (the review folder), `Clock`. Types only. | domain, ports |
+| **domain** | `src/domain/` | Pure functions and value objects: front matter, CSV, names, matching, importers, records, screening checks, PRISMA counts, κ, sampling (Python's random), review state and stage rules, search strings, protocol, generated notes as text. No I/O, no clock, no randomness, no platform APIs. | domain |
+| **ports** | `src/ports/` | Interfaces the services need from outside: `Folder` (the review folder), `Clock`, `Http` (OpenAlex). Types only. | domain, ports |
 | **services** | `src/services/` | Use cases. Load the review through a `Folder`, call the domain, write the result back. Receive their ports as parameters (dependency injection). | domain, ports, services |
-| **adapters** | `src/adapters/` | Implementations of the ports for each platform: Node file system (tests, CLI), in-memory (tests), browser File System Access (UI). | domain, ports, adapters |
+| **adapters** | `src/adapters/` | Implementations of the ports for each platform: Node file system (tests, CLI), in-memory (tests), `fetch` for Http, browser File System Access (UI, phase 2). | domain, ports, adapters |
 | **ui** | `src/ui/` (phase 2) | The page. Calls services only. | services, ports, adapters |
 
 `npm run check` enforces the "may import" column and that domain, ports and services use no platform modules (`node:*`, packages), so they run in the browser as they are.
