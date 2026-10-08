@@ -21,7 +21,6 @@ A browser app for scoping reviews (PRISMA-ScR). A review is a folder on the user
 
 ## Open items (2026-10-08)
 
-- Opening a real folder in Chrome failed with AbortError; fixed by picking with read access and asking for edit access separately (commit 828b80b) — still to be confirmed by the user.
 - Test copy of the user's review: `Desktop\PRISMA Studio test\Project 2 review records` (never test on the original in the vault).
 - Offline: `web/sw.js` stores the app on first visit (list from `scripts/precache-list.js`, served as `/web/precache.json`); it then opens at http://localhost:8770/web/ without the server. Chrome can install it as an app.
 - Not yet: hosting (postponed by the user, 2026-10-08), timing a real 5,683-note review from disk.
