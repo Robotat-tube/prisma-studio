@@ -1,0 +1,11 @@
+{
+  "name": "PRISMA Studio",
+  "short_name": "PRISMA Studio",
+  "description": "Scoping reviews (PRISMA-ScR); every review stays in a folder on your own PC.",
+  "start_url": "/web/",
+  "scope": "/web/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#4f46e5",
+  "icons": [{ "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }]
+}

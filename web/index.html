@@ -9,6 +9,8 @@
   <script type="importmap">
     { "imports": { "pdfjs": "../node_modules/pdfjs-dist/build/pdf.mjs", "pdfjs/worker": "../node_modules/pdfjs-dist/build/pdf.worker.mjs" } }
   </script>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icon.svg">
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="start.css">
   <script>
@@ -65,5 +67,9 @@
   <aside class="drawer" id="drawer"></aside>
   <div class="toasts" id="toasts"></div>
   <script type="module" src="main.js"></script>
+  <script>
+    // offline support (web/sw.js): the app keeps working without the server or a network
+    if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(e => console.warn("offline support unavailable:", e));
+  </script>
 </body>
 </html>

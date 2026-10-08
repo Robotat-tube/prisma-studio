@@ -2,6 +2,7 @@
 //   node scripts/serve.js [port]   then open http://localhost:<port>/web/
 import { createServer } from "node:http";
 import { readFile, stat } from "node:fs/promises";
+import { precacheList } from "./precache-list.js";
 import { extname, join, normalize, resolve } from "node:path";
 
 const ROOT = resolve(import.meta.dirname, "..");
@@ -13,6 +14,11 @@ createServer(async (req, res) => {
   const url = new URL(req.url, "http://localhost");
   let path = normalize(join(ROOT, decodeURIComponent(url.pathname)));
   if (!path.startsWith(ROOT)) { res.writeHead(403).end(); return; }
+  if (url.pathname === "/web/precache.json") {   // generated: the files web/sw.js stores for offline use
+    const files = await precacheList(ROOT, ["node_modules/pdfjs-dist/build/pdf.mjs", "node_modules/pdfjs-dist/build/pdf.worker.mjs"]);
+    res.writeHead(200, { "Content-Type": "application/json", "Cache-Control": "no-store" }).end(JSON.stringify(files));
+    return;
+  }
   try {
     if ((await stat(path)).isDirectory()) path = join(path, "index.html");
     const body = await readFile(path);
