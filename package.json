@@ -1,0 +1,13 @@
+{
+  "name": "prisma-studio",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Scoping-review workbench (PRISMA-ScR) that runs in the browser and keeps every review in a folder on your own PC.",
+  "type": "module",
+  "scripts": {
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
