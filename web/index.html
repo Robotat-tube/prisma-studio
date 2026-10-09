@@ -93,7 +93,12 @@
   <script type="module" src="main.js"></script>
   <script>
     // offline support (web/sw.js): the app keeps working without the server or a network
-    if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(e => console.warn("offline support unavailable:", e));
+    if ("serviceWorker" in navigator) {
+      // a new version of the offline helper took over (the app was updated): reload once to show the new version
+      const had = Boolean(navigator.serviceWorker.controller);
+      navigator.serviceWorker.addEventListener("controllerchange", () => { if (had) location.reload(); });
+      navigator.serviceWorker.register("sw.js", { updateViaCache: "none" }).catch(e => console.warn("offline support unavailable:", e));
+    }
   </script>
 </body>
 </html>
