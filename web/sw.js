@@ -7,7 +7,7 @@ self.addEventListener("install", event => {
   event.waitUntil((async () => {
     const cache = await caches.open(CACHE);
     const files = await (await fetch("precache.json", { cache: "no-store" })).json();
-    await cache.addAll(["/web/", ...files]);
+    await cache.addAll(["./", ...files]);                         // relative to sw.js
     await self.skipWaiting();
   })());
 });

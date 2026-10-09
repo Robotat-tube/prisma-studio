@@ -1,5 +1,6 @@
 // The files the offline service worker (web/sw.js) stores on first visit: the page, the engine and pdf.js.
-// Paths are relative to the site root. Used by serve.js (from the repository) and build-site.js (from dist/).
+// Paths are relative to web/ (where sw.js is), so the site also works in a subfolder (GitHub Pages: /prisma-studio/).
+// Used by serve.js (from the repository) and build-site.js (from dist/).
 import { readdir } from "node:fs/promises";
 import { join, relative } from "node:path";
 
@@ -16,5 +17,6 @@ async function walk(dir) {
 export async function precacheList(root, pdfjs) {
   const files = [...await walk(join(root, "web")), ...await walk(join(root, "src"))]
     .filter(p => !p.endsWith("node-folder.js") && !p.endsWith("sw.js"));
-  return [...files.map(p => relative(root, p).split("\\").join("/")), ...pdfjs].map(p => "/" + p);
+  const fromWeb = p => relative(join(root, "web"), join(root, p)).split("\\").join("/");
+  return [...files.map(p => fromWeb(relative(root, p))), ...pdfjs.map(fromWeb)].map(p => (p.startsWith(".") ? p : "./" + p));
 }
