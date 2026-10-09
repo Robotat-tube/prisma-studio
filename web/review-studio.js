@@ -405,6 +405,7 @@ function renderChrome() { renderSidebar(); renderTop(); renderMetrics(); renderD
 
 function render() {
   renderChrome();
+  renderDraftBar();
   const page = $("#page");
   page.replaceChildren(PAGES[CUR]());
   nameFields(page);
@@ -1404,11 +1405,7 @@ document.addEventListener("keydown", e => {
 $("#reviewSel").addEventListener("change", async e => {
   if (e.target.value !== "__open__") return switchReview(e.target.value);
   e.target.value = REVIEW;
-  try {
-    const entry = await backend.pickFolder();
-    await backend.open(entry);
-    switchReview(entry.name);
-  } catch (err) { if (err.name !== "AbortError") toast(err.message, "err"); }
+  openReviewFolder();
 });
 $("#btnTheme").onclick = () => { const t = document.documentElement.dataset.theme === "dark" ? "light" : "dark"; document.documentElement.dataset.theme = t; store.set("theme", t); };
 $("#btnGlossary").onclick = openGlossary;
@@ -1426,6 +1423,38 @@ $("#main").addEventListener("scroll", () => $("#topwrap").classList.toggle("scro
   menu.addEventListener("click", () => show(false));
   document.addEventListener("click", e => { if (!menu.hidden && !menu.contains(e.target)) show(false); });
   document.addEventListener("keydown", e => { if (e.key === "Escape" && !menu.hidden) { show(false); sb.focus(); } });
+}
+
+// The draft (a review in the browser's own storage, where the app starts): save it to a folder, or open one.
+function renderDraftBar() {
+  const bar = $("#draftBar");
+  bar.hidden = !backend.entry?.draft;
+  if (bar.hidden) return;
+  const recent = S.reviews.filter(r => r !== REVIEW).slice(0, 2);
+  bar.replaceChildren(
+    h("span", { class: "draft-text" }, h("b", {}, "✏️ Draft"), " · kept in this browser until you save it to a folder on your PC."),
+    h("span", { class: "draft-actions" },
+      btn("💾 Save to a folder…", e => busy(e.currentTarget, saveDraft), "sm primary"),
+      btn("📂 Open a review folder…", openReviewFolder, "sm"),
+      ...recent.map(r => btn(`▶ ${r.replace(/ records$/, "")}`, () => switchReview(r), "sm ghost"))));
+}
+
+async function saveDraft() {
+  const name = (await promptText("Save the draft", "Name of the review. A folder \"<name> records\" is made in the place you choose next.", "e.g. Repairability review"))?.trim();
+  if (!name) return;
+  try {
+    const entry = await backend.saveDraft(name);
+    await switchReview(entry.name);
+    toast(`Saved: ${entry.name}. From now on every change is written there.`, "ok");
+  } catch (e) { if (e.name !== "AbortError") toast(e.message, "err"); }
+}
+
+async function openReviewFolder() {
+  try {
+    const entry = await backend.pickFolder();
+    await backend.open(entry);
+    switchReview(entry.name);
+  } catch (err) { if (err.name !== "AbortError") toast(err.message, "err"); }
 }
 
 async function switchReview(name) {

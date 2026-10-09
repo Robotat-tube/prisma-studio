@@ -18,10 +18,10 @@ PRISMA Studio walks you through a scoping review from the first idea to the PRIS
 
 ## Getting started
 
-1. Open **https://robotat-tube.github.io/prisma-studio/** in **Chrome or Edge** (other browsers cannot open folders on your PC yet).
-2. Choose **＋ New review…** and pick an empty folder, or **📂 Open a review folder…** and pick an existing `… records` folder.
-3. Allow the browser to **view and edit files** in that folder when it asks. It asks again once per visit.
-4. Work through the stages in the left sidebar. Everything is saved to the folder as you go.
+1. Open **https://robotat-tube.github.io/prisma-studio/** in **Chrome or Edge**.
+2. You land straight in the workspace, on a **draft** review kept in your browser: start with your idea and research questions right away.
+3. When you want to keep it, press **💾 Save to a folder…** in the bar at the top: give the review a name and pick a place on your PC. From then on every change is written to that folder.
+4. Next time, the same bar offers **📂 Open a review folder…** and **▶ Continue** for the reviews you opened before. The browser asks once per visit before the app may edit a folder.
 
 Tip: install it as an app (install icon at the right of the address bar). It then opens in its own window and works **offline**.
 

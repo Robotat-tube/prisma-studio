@@ -46,6 +46,7 @@ startSteps();
 
 // ------------------------------------------------------------------ the browser must be able to open folders
 if (!("showDirectoryPicker" in window)) {
+  $("#start").hidden = false;
   $("#startBody").replaceChildren(el("div", { className: "callout" },
     "This browser cannot open folders on your PC. Use Google Chrome or Microsoft Edge on a computer."));
   throw new Error("File System Access API not available");
@@ -81,6 +82,7 @@ async function openReview(entry) {
 function showOpenTiming(t) {
   window.openTiming = t;
   console.info("PRISMA Studio open timing", t);
+  if (!t.notes) return;                         // nothing worth timing (the draft, a new review)
   const note = document.createElement("div");
   note.className = "toast";
   note.title = "Click to close";
@@ -164,4 +166,11 @@ async function startScreen() {
   ].filter(Boolean));
 }
 
-startScreen();
+// The app opens on the draft review (kept in the browser), so the workspace is there straight away; the draft
+// bar offers saving it to a folder, opening a review folder and the reviews opened before. The start page is
+// only shown when that fails.
+openReview(await backend.draftEntry()).catch(e => {
+  $("#app").hidden = true;
+  $("#start").hidden = false;
+  startScreen().then(() => explain(e));
+});

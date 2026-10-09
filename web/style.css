@@ -290,3 +290,12 @@ input:focus-visible, select:focus-visible, textarea:focus-visible { outline: non
 .popmenu[hidden] { display: none; }
 .popmenu .btn { justify-content: flex-start; }
 @media (max-width: 900px) { .toolbar { flex-wrap: wrap; } }
+
+/* draft bar: the review lives in the browser until it is saved to a folder */
+.draft-bar { display: flex; align-items: center; gap: 10px 14px; flex-wrap: wrap; margin: 0 0 12px; padding: 8px 10px 8px 14px;
+  border: 1px solid color-mix(in srgb, var(--accent) 35%, var(--border)); border-radius: 12px;
+  background: linear-gradient(90deg, var(--accent-2), color-mix(in srgb, #06b6d4 10%, var(--surface))); }
+.draft-bar[hidden] { display: none; }
+.draft-text { flex: 1 1 280px; font-size: 13.5px; color: var(--muted); }
+.draft-text b { color: var(--text); }
+.draft-actions { display: flex; gap: 6px; flex-wrap: wrap; }

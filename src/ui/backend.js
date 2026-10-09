@@ -14,6 +14,20 @@ import { recordView, snapshot } from "./view-model.js";
 /** What makes a folder a review folder (any of these). */
 const REVIEW_MARKERS = ["review_state.json", "08 - Records", "07 - Searches.csv"];
 
+const DRAFT_DIR = "Draft review records";
+
+/** Copies every file and folder of `from` into `to` (directory handles). */
+async function copyFolder(from, to) {
+  for await (const [name, item] of from.entries()) {
+    if (item.kind === "directory") await copyFolder(item, await to.getDirectoryHandle(name, { create: true }));
+    else {
+      const out = await (await to.getFileHandle(name, { create: true })).createWritable();
+      await out.write(await item.getFile());
+      await out.close();
+    }
+  }
+}
+
 const extension = path => (/\.[^./]+$/.exec(path)?.[0] ?? "").toLowerCase();
 
 /** A JSON answer as the page expects from the server. */
@@ -63,9 +77,9 @@ export class Backend {
     const clock = { today: () => new Date().toLocaleDateString("sv"), now: () => new Date().toLocaleString("sv").slice(0, 16) };
     this.session = await ReviewSession.open(browserFolder(entry.handle), {
       clock, library, openalex: this.openalex, devMode: false, onProgress,
-      settings: { name: entry.name.replace(/ records$/, ""), recordsPath: s.recordsPath || `${entry.name}/08 - Records`, template: this.templates.record },
+      settings: { name: s.name || entry.name.replace(/ records$/, ""), recordsPath: s.recordsPath || `${entry.name}/08 - Records`, template: this.templates.record },
     });
-    this.entry = await rememberReview(entry.handle, s);
+    this.entry = entry.draft ? entry : await rememberReview(entry.handle, s);
     if (!(await this.session.repo.folder.exists("review_state.json"))) {      // a new review: its first files
       await this.session.repo.log("init", "review workspace created");
       await this.session.save();
@@ -81,13 +95,42 @@ export class Backend {
     return rememberReview(handle);
   }
 
-  /** Names for the review menu (the open review first). */
+  /** Names for the review menu: the draft, then the folders opened before. */
   async reviewNames() {
-    return (await recentReviews()).map(r => r.name);
+    return [Backend.DRAFT, ...(await recentReviews()).map(r => r.name)];
   }
 
   async #reviewByName(name) {
+    if (name === Backend.DRAFT) return this.draftEntry();
     return (await recentReviews()).find(r => r.name === name) ?? null;
+  }
+
+  // ------------------------------------------------------------ the draft review
+
+  /** The menu name of the draft: a review kept in the browser's own storage until it is saved to a folder. */
+  static DRAFT = "✏️ Draft (in this browser)";
+
+  /** The draft review: needs no folder and no permission, so the app can open on it straight away. */
+  async draftEntry() {
+    const handle = await (await navigator.storage.getDirectory()).getDirectoryHandle(DRAFT_DIR, { create: true });
+    return { id: "draft", name: Backend.DRAFT, handle, draft: true, settings: { name: "Draft review", recordsPath: `${DRAFT_DIR}/08 - Records` } };
+  }
+
+  /**
+   * Saves the draft as "<name> records" in a folder the user picks, opens that folder and empties the draft.
+   * @returns {Promise<object>} the saved review's entry
+   */
+  async saveDraft(name) {
+    const parent = await window.showDirectoryPicker({ id: "parent", mode: "readwrite" });
+    const handle = await parent.getDirectoryHandle(`${name} records`, { create: true });
+    for await (const _ of handle.keys()) throw new Error(`"${name} records" already exists there and is not empty. Choose another name or place.`);
+    const draft = await this.draftEntry();
+    await copyFolder(draft.handle, handle);
+    const entry = await rememberReview(handle, { recordsPath: `${name} records/08 - Records` });
+    await this.open(entry);
+    await this.session.save();                         // the notes written from the state, now with the review's name
+    for await (const key of draft.handle.keys()) await draft.handle.removeEntry(key, { recursive: true });
+    return this.entry;
   }
 
   // ------------------------------------------------------------ requests from the page
