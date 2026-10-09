@@ -11,9 +11,11 @@ Your job is to get the full text of every record in the retrieval queue and atta
 
 ## Steps
 
+Run the commands from the PRISMA Studio folder (the project open in Claude Code).
+
 1. **Get the queue:**
    ```
-   node "C:/Users/A-Bag/Desktop/prisma-studio/bin/ai-assist.js" --review "<review name or full path of its records folder>" context retrieval --limit 200
+   node bin/ai-assist.js --review "<review name or full path of its records folder>" context retrieval --limit 200
    ```
    - If AI assistance is **off**, stop and tell the user where to switch it on (Review Studio, stage 10).
    - Each record comes with title, authors, year, DOI, URL and `oa_url`, which is filled when Review Studio found an open-access link.
@@ -36,7 +38,7 @@ Your job is to get the full text of every record in the retrieval queue and atta
 
 4. **Attach each PDF:**
    ```
-   node "C:/Users/A-Bag/Desktop/prisma-studio/bin/ai-assist.js" --review "<review name or full path of its records folder>" attach R0123 "C:/temp/x.pdf" --model "<your exact model id>"
+   node bin/ai-assist.js --review "<review name or full path of its records folder>" attach R0123 "C:/temp/x.pdf" --model "<your exact model id>"
    ```
 
 5. **Never bypass access controls:** no CAPTCHA solving, no shadow libraries (Sci-Hub, LibGen and the like), no sharing logins. If a site asks "are you a robot", leave that paper for the user.

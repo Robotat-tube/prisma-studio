@@ -11,9 +11,9 @@ All reading and writing goes through `bin/ai-assist.js` (PRISMA Studio). Pass `-
 
 ## Steps
 
-1. **Get the batch.** Run this from any folder:
+1. **Get the batch.** Run this from the PRISMA Studio folder (the project open in Claude Code):
    ```
-   node "C:/Users/A-Bag/Desktop/prisma-studio/bin/ai-assist.js" --review "<review name or full path of its records folder>" context screening --limit 40
+   node bin/ai-assist.js --review "<review name or full path of its records folder>" context screening --limit 40
    ```
    - If it says AI assistance is **off**, stop. Tell the user to switch it on in Review Studio: stage 8, the AI assistance card. Never switch it on yourself.
    - The output has the review questions (PCC), the eligibility text, the exclusion reasons (`ta_reasons`, e.g. `E1 …`), `remaining`, and up to 40 records with title and abstract.
@@ -31,7 +31,7 @@ All reading and writing goes through `bin/ai-assist.js` (PRISMA Studio). Pass `-
    ```
    Then run:
    ```
-   node "C:/Users/A-Bag/Desktop/prisma-studio/bin/ai-assist.js" --review "<review name or full path of its records folder>" suggest FILE.json --model "<your exact model id>"
+   node bin/ai-assist.js --review "<review name or full path of its records folder>" suggest FILE.json --model "<your exact model id>"
    ```
    Read the "skipped" lines and fix any invalid reason codes.
 

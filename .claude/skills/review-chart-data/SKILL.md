@@ -11,9 +11,11 @@ You fill empty charting fields for included papers, from the full text, with pag
 
 ## Steps
 
+Run the commands from the PRISMA Studio folder (the project open in Claude Code).
+
 1. **Get the next papers:**
    ```
-   node "C:/Users/A-Bag/Desktop/prisma-studio/bin/ai-assist.js" --review "<review name or full path of its records folder>" context charting --limit 5
+   node bin/ai-assist.js --review "<review name or full path of its records folder>" context charting --limit 5
    ```
    - If AI assistance is **off**, stop and tell the user where to switch it on (Review Studio, stage 12).
    - The output has the review questions, the charting `fields` (name + description, which often fixes the allowed values), and per paper its `pdf` path and the fields already `filled`.
@@ -30,7 +32,7 @@ You fill empty charting fields for included papers, from the full text, with pag
    ```
    Then run:
    ```
-   node "C:/Users/A-Bag/Desktop/prisma-studio/bin/ai-assist.js" --review "<review name or full path of its records folder>" chart FILE.json --model "<your exact model id>"
+   node bin/ai-assist.js --review "<review name or full path of its records folder>" chart FILE.json --model "<your exact model id>"
    ```
 
 4. **Repeat** for further batches if the user wants. Then report how many papers you prefilled and any field whose description was hard to apply consistently. That is useful feedback for the charting form, and changing the form after the lock is an amendment.

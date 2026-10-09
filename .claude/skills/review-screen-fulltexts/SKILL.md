@@ -11,9 +11,9 @@ All reading and writing goes through `bin/ai-assist.js` (PRISMA Studio). Pass `-
 
 ## Steps
 
-1. **Get the batch.** Run this from any folder:
+1. **Get the batch.** Run this from the PRISMA Studio folder (the project open in Claude Code):
    ```
-   node "C:/Users/A-Bag/Desktop/prisma-studio/bin/ai-assist.js" --review "<review name or full path of its records folder>" context fulltext --limit 5
+   node bin/ai-assist.js --review "<review name or full path of its records folder>" context fulltext --limit 5
    ```
    - If it says full-text suggestions are **off**, stop. Tell the user that the reviewer can choose "AI suggests (+ full text)" in Review Studio (stage 8, AI assistance card).
    - The output has the review questions (PCC), the eligibility text, the full-text exclusion reasons (`ft_reasons`), `remaining`, `without_pdf` and up to 5 records with their `pdf` path.
@@ -32,7 +32,7 @@ All reading and writing goes through `bin/ai-assist.js` (PRISMA Studio). Pass `-
    ```
    Then run:
    ```
-   node "C:/Users/A-Bag/Desktop/prisma-studio/bin/ai-assist.js" --review "<review name or full path of its records folder>" suggest FILE.json --stage ft --model "<your exact model id>"
+   node bin/ai-assist.js --review "<review name or full path of its records folder>" suggest FILE.json --stage ft --model "<your exact model id>"
    ```
    Read the "skipped" lines and fix any invalid reason codes.
 

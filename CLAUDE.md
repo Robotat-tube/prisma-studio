@@ -1,6 +1,6 @@
 # PRISMA Studio — notes for Claude
 
-A browser app for scoping reviews (PRISMA-ScR). A review is a folder on the user's PC (`<name> records/`: `08 - Records/*.md`, `07 - Searches.csv`, `review_state.json`, `10 - Full texts/`, …). The app reads and writes that folder through the File System Access API; nothing is uploaded. It is a port of the Python "Review Studio" that lived in the user's Obsidian vault (`Desktop\Modular_Electronics_Obsidian v1`); review folders written by either are compatible.
+A browser app for scoping reviews (PRISMA-ScR). A review is a folder on the user's PC (`<name> records/`: `08 - Records/*.md`, `07 - Searches.csv`, `review_state.json`, `10 - Full texts/`, …). The app reads and writes that folder through the File System Access API; nothing is uploaded. It is a port of the Python "Review Studio" that lived in the user's Obsidian vault; review folders written by either are compatible.
 
 ## Working with the user
 

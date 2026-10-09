@@ -11,9 +11,11 @@ All reading and writing goes through `bin/ai-assist.js` (PRISMA Studio). Pass `-
 
 ## Steps
 
+Run the commands from the PRISMA Studio folder (the project open in Claude Code).
+
 1. **Get the sheet:**
    ```
-   node "C:/Users/A-Bag/Desktop/prisma-studio/bin/ai-assist.js" --review "<review name or full path of its records folder>" context reviewer
+   node bin/ai-assist.js --review "<review name or full path of its records folder>" context reviewer
    ```
    - If it says AI assistance is **off**, stop: this review uses a human second reviewer.
    - If there's no sheet yet, the reviewer first draws the sample in Review Studio (stage 9).
@@ -30,7 +32,7 @@ All reading and writing goes through `bin/ai-assist.js` (PRISMA Studio). Pass `-
    ```
    Then run:
    ```
-   node "C:/Users/A-Bag/Desktop/prisma-studio/bin/ai-assist.js" --review "<review name or full path of its records folder>" r2 FILE.json --model "<your exact model id>"
+   node bin/ai-assist.js --review "<review name or full path of its records folder>" r2 FILE.json --model "<your exact model id>"
    ```
    This saves a filled copy of the sheet named `… (AI).csv`, imports it, recomputes Cohen's κ and logs the model and date.
 
