@@ -322,4 +322,9 @@ input:focus-visible, select:focus-visible, textarea:focus-visible { outline: non
   0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 0%, transparent); background: transparent; }
   50% { box-shadow: 0 0 14px 3px color-mix(in srgb, var(--accent) 55%, transparent); background: var(--accent-2); }
 }
-@media (prefers-reduced-motion: reduce) { #btnTour.glow { animation: none; background: var(--accent-2); } }
+.tour-offer { animation: offer-glow 2s ease-in-out infinite; }
+@keyframes offer-glow {
+  0%, 100% { box-shadow: 0 12px 40px rgb(0 0 0 / .3), 0 0 0 0 color-mix(in srgb, var(--accent) 0%, transparent); }
+  50% { box-shadow: 0 12px 40px rgb(0 0 0 / .3), 0 0 22px 5px color-mix(in srgb, var(--accent) 55%, transparent); border-color: var(--accent); }
+}
+@media (prefers-reduced-motion: reduce) { #btnTour.glow, .tour-offer { animation: none; } #btnTour.glow { background: var(--accent-2); } .tour-offer { border-color: var(--accent); } }
