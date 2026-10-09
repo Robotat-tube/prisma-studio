@@ -1,47 +1,119 @@
 # PRISMA Studio
 
-A workbench for scoping reviews (PRISMA-ScR) that runs in the browser and keeps every review in a folder on your own PC: records as Markdown notes, searches as CSV, full texts as PDFs. Nothing is uploaded. The folders open in Obsidian and work with Claude Code.
+**A scoping-review workbench (PRISMA-ScR) that runs in your browser and keeps every review in a folder on your own PC.**
 
-**Online:** https://robotat-tube.github.io/prisma-studio/ (Chrome or Edge). See [ARCHITECTURE.md](ARCHITECTURE.md) for how the code is organised.
+👉 **Open it: https://robotat-tube.github.io/prisma-studio/** (Chrome or Edge on a computer)
 
-## Run it
+PRISMA Studio walks you through a scoping review from the first idea to the PRISMA flow diagram: questions, search strings, protocol, database imports, screening, full texts, charting and the report. Your review is a plain folder of Markdown notes, CSV tables and PDFs: nothing is uploaded, there is no account, and the folder opens in Obsidian or any text editor.
 
-Double-click `Start PRISMA Studio.cmd`: it installs what is needed on first start, starts the app and opens it in Chrome or Edge (needs Node.js). Or by hand:
+## Contents
+
+- [Getting started](#getting-started)
+- [The 15 stages](#the-15-stages)
+- [Your review folder](#your-review-folder)
+- [AI assistance with Claude (optional)](#ai-assistance-with-claude-optional)
+- [Privacy and data safety](#privacy-and-data-safety)
+- [Run it on your own PC](#run-it-on-your-own-pc)
+- [For developers](#for-developers)
+
+## Getting started
+
+1. Open **https://robotat-tube.github.io/prisma-studio/** in **Chrome or Edge** (other browsers cannot open folders on your PC yet).
+2. Choose **＋ New review…** and pick an empty folder, or **📂 Open a review folder…** and pick an existing `… records` folder.
+3. Allow the browser to **view and edit files** in that folder when it asks. It asks again once per visit.
+4. Work through the stages in the left sidebar. Everything is saved to the folder as you go.
+
+Tip: install it as an app (install icon at the right of the address bar). It then opens in its own window and works **offline**.
+
+## The 15 stages
+
+| # | Stage | What you do |
+|---:|---|---|
+| 0 | Idea *(optional)* | Write down, with dates, what you want to find out and why. |
+| 1 | Research questions | Population–Concept–Context and the review questions; every version is kept. |
+| 2 | Concepts and terms | One block per concept with all synonyms and spellings, combined with AND. |
+| 3 | Search strings | Strings generated per database (Scopus, IEEE Xplore, OpenAlex, …) from the concept table. |
+| 4 | Pilot and validation *(optional)* | Trial runs: hit count and how many papers of your test set a string finds. |
+| 5 | Protocol | The protocol text, generated from stages 1–4 plus the method sections. |
+| 6 | Registration *(optional)* | Freeze the protocol before searching; later changes become logged amendments. |
+| 7 | Database searches | Import each export (RIS, BibTeX, CSV) with its exact string and date; duplicates are merged. |
+| 8 | Screening | Title/abstract, then full text, with keyboard shortcuts and exclusion reasons. |
+| 9 | Second reviewer *(optional)* | A blind sample of ≥ 20 % for a second reviewer, with Cohen's κ. |
+| 10 | Full-text retrieval | Find and attach the PDFs (it can match them in your own folders), or mark them not retrieved. |
+| 11 | Snowballing *(optional)* | Citation rounds from the included papers until a round adds nothing new. |
+| 12 | Data charting | The charting form for every included paper, with page locators. |
+| 13 | Critical appraisal *(optional)* | Appraise each included source. |
+| 14 | Report | PRISMA flow diagram, PRISMA-ScR checklist, report draft and exports. |
+
+Keyboard shortcuts while screening: **I** include · **U** unsure · **E** exclude · **1–9** reason · **← / →** previous / next.
+
+## Your review folder
+
+A review is one folder named `<review name> records`:
+
+```
+Project 2 review records/
+├── 00 - Review log.md          every action, dated
+├── 00 - Review timeline.md     the review's history in one note
+├── 03 - Search strategy.md
+├── 05 - Protocol.md
+├── 07 - Searches.csv           one row per search: database, string, date, counts
+├── 07 - Exports/               the original database exports
+├── 08 - Records/               one Markdown note per paper (R0001 - 2024 - Liu et al. - ….md)
+├── 08 - Screening guide.md     eligibility criteria and exclusion reasons
+├── 09 - Second reviewer/       blind sample sheets (CSV)
+├── 10 - Full texts/            the PDFs, named after their record
+├── 14 - PRISMA flow.md
+├── 14 - PRISMA-ScR checklist.md
+└── review_state.json           stages, protocol, settings
+```
+
+Each record note keeps its decisions in its properties (`ta_decision`, `ft_decision`, `ta_reason`, …), so you can also browse and filter the review in Obsidian. *Settings → Review settings* links the folder to your Obsidian vault, so notes open there with one click.
+
+## AI assistance with Claude (optional)
+
+Each stage that can use help has an **🤖 AI assistance** card where you choose whether to use it. It is off by default. When it's on, [Claude Code](https://claude.com/claude-code) can:
+
+- **pre-screen** titles and abstracts, or full texts, and suggest a decision with a reason;
+- **fetch full texts** (open access first) and attach the PDFs;
+- act as a **blind second reviewer** on the sample;
+- **prefill the charting form** from the PDFs, with page locators.
+
+Claude only ever *suggests*: you confirm or change every suggestion in PRISMA Studio, each AI action is logged with the model and date, and the protocol's "Use of AI assistance" section is written for you.
+
+How to use it: open this repository's folder in Claude Code, press **📋 Copy prompt** on the AI card and paste it. The skills are in `.claude/skills/`; they work through `node bin/ai-assist.js`, which refuses whenever the review has the AI switched off for that step. Keep PRISMA Studio open next to it: it notices Claude's changes and shows them.
+
+## Privacy and data safety
+
+- **Nothing leaves your PC.** The app is a static web page; your review folder is read and written by your own browser. The only network requests are searches you start yourself (OpenAlex) and loading the app.
+- **Your files stay readable.** Plain Markdown, CSV and JSON: no database, no lock-in.
+- **Edits made elsewhere are kept.** If you change a note in Obsidian while the app is open, saving that record in the app keeps your edit. If Claude changes the review, the app re-reads it.
+- **Tip:** keep the review folder under version control (git) or in a synced folder, so you can always go back.
+
+## Run it on your own PC
+
+You can also run PRISMA Studio locally, for example to work offline or to change it:
+
+1. Install [Node.js](https://nodejs.org) (version 20 or later).
+2. Download this repository (green **Code** button → *Download ZIP*, or `git clone`).
+3. Double-click **`Start PRISMA Studio.cmd`** (Windows). It installs what is needed the first time, starts the app and opens it in Chrome or Edge.
+
+Or from a terminal:
 
 ```
 npm install
-npm run serve            # then open http://localhost:8770/web/ in Chrome or Edge
+npm run serve            # then open http://localhost:8770/web/
 ```
 
-Open a review folder (the "… records" folder) or start a new review. *Settings → Review settings* sets the Obsidian vault (to open notes in Obsidian) and an optional library folder for publication notes.
+## For developers
 
-**Offline.** After the first visit the browser keeps a copy of the app (`web/sw.js`), so it opens without the server or a network. Chrome and Edge can also install it as an app (install icon in the address bar). Review folders are never copied; only searching OpenAlex needs the internet.
-
-**Opening a review** shows how long it took (reading the folder, showing the page); the numbers are also in `window.openTiming`.
-
-**Changes made elsewhere** are kept: a note edited in Obsidian is merged when the app saves that record, and the app re-reads the review when Claude (or another program) changed it.
-
-## What it does
-
-- **Planning:** idea log, research questions (PCC), concepts and search terms, search strings per database, pilots, protocol (write, lock, register, amendments).
-- **Searching:** import RIS / BibTeX / CSV exports with duplicate detection, OpenAlex searches, snowballing rounds.
-- **Screening:** title/abstract and full-text screening with keyboard shortcuts, exclusion reasons from the screening guide, decision checks, a blind second-reviewer sample with Cohen's κ.
-- **Full texts:** retrieval queue, matching PDFs from your own folders, attaching PDFs.
-- **Charting and reporting:** charting form, critical appraisal, PRISMA flow diagram, PRISMA-ScR checklist, report draft and exports.
-- **AI assistance (optional, per step):** the skills in `.claude/skills/` let Claude Code pre-screen, fetch full texts, act as blind second reviewer or prefill charting. Claude only suggests; you confirm every decision, and each AI action is logged with the model.
-
-The skills run `node bin/ai-assist.js` from this folder; `--review` takes a review's name or the full path of its "… records" folder.
-
-## Publish
-
-`npm run build` writes `dist/` (the page, the engine and a copy of pdf.js). It is a static site: nothing runs on the server and no review data leaves the user's PC. Every push to `main` builds and publishes it on GitHub Pages (`.github/workflows/pages.yml`).
-
-## Develop
+Plain JavaScript (ES modules), no framework and no bundler; the only dependency is [pdf.js](https://mozilla.github.io/pdf.js/) for reading PDFs. The code is split into layers (domain rules, ports, services, adapters, UI). See [ARCHITECTURE.md](ARCHITECTURE.md).
 
 ```
 npm test                 # unit tests
-npm run check            # architecture: layers import only what they may
+npm run check            # architecture: each layer imports only what it may
+npm run build            # the static site in dist/
 node scripts/bench-open.js "<copy of a … records folder>"   # how fast a review opens
 ```
 
-Requires Node 20+. Review data is never part of this repo.
+Every push to `main` is tested, built and published on GitHub Pages (`.github/workflows/pages.yml`). Review data is never part of this repository.
