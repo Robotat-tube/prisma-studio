@@ -20,14 +20,36 @@
 </head>
 <body>
   <!-- start screen: shown until a review folder is open -->
+  <!-- the app's own layout: the stages in the sidebar, a welcome page where the first stage will be -->
   <main class="start" id="start">
-    <div class="start-card">
-      <div class="brand start-brand"><div class="logo">
+    <aside class="sidebar start-side">
+      <div class="brand"><div class="logo">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4 6h16M7 12h10M10 18h4"/></svg>
       </div>PRISMA Studio</div>
-      <p class="muted">Scoping reviews, step by step. Each review is a folder on your PC: notes, tables and PDFs. Nothing is uploaded.</p>
-      <div id="startBody"></div>
-    </div>
+      <p class="start-side-note">The stages of every review. They open once a review folder is open.</p>
+      <nav class="stepper" id="startSteps" aria-label="Stages of a review"></nav>
+      <div class="start-side-foot">
+        <button class="btn sm ghost" id="startTheme" type="button">🌓 Light / dark</button>
+        <a class="btn sm ghost" href="https://github.com/Robotat-tube/prisma-studio" target="_blank" rel="noopener">GitHub ↗</a>
+      </div>
+    </aside>
+    <section class="start-main">
+      <div class="start-hero">
+        <span class="pill accent">Scoping reviews · PRISMA-ScR</span>
+        <h1>Your scoping review, <span class="grad">step by step.</span></h1>
+        <p class="lead">From the first idea to the PRISMA flow diagram: questions, search strings, protocol, screening, full texts, charting and the report. Each review is a folder on your PC (notes, tables and PDFs) and nothing is uploaded.</p>
+        <div id="startBody"></div>
+      </div>
+      <div class="start-stage" id="startStage" hidden></div>
+      <div class="start-features">
+        <div class="card feature"><div class="ficon">🔒</div><h3>Your files, your PC</h3><p>Plain Markdown, CSV and PDFs in a folder you choose. No account, no upload. Opens in Obsidian too.</p></div>
+        <div class="card feature"><div class="ficon">🧭</div><h3>Guided, reproducible</h3><p>Locked protocol with logged amendments, exclusion reasons, a blind second reviewer with κ, and a dated timeline.</p></div>
+        <div class="card feature"><div class="ficon">🤖</div><h3>AI only if you want it</h3><p>Claude can pre-screen, fetch PDFs or prefill charting. It only suggests; you confirm every decision.</p></div>
+      </div>
+      <div class="start-flow" aria-label="The review in five steps">
+        <span>Plan</span><i>→</i><span>Search</span><i>→</i><span>Screen</span><i>→</i><span>Chart</span><i>→</i><span>Report</span>
+      </div>
+    </section>
   </main>
 
   <div class="app" id="app" hidden>

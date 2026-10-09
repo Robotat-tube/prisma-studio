@@ -3,6 +3,7 @@
 import * as pdfjs from "pdfjs";
 import { Backend } from "../src/ui/backend.js";
 import { forgetReview, recentReviews, rememberReview } from "../src/adapters/browser-store.js";
+import { stages } from "../src/index.js";
 
 pdfjs.GlobalWorkerOptions.workerSrc = import.meta.resolve("pdfjs/worker");
 
@@ -15,6 +16,33 @@ const el = (tag, props = {}, ...kids) => {
 const button = (label, onclick, cls = "") => el("button", { className: `btn ${cls}`, onclick, type: "button" }, label);
 const say = (text, kind = "") => $("#startBody").querySelector(".start-msg")?.replaceChildren(el("span", { className: kind }, text));
 const remember = (k, v) => { try { localStorage.setItem(k, v); } catch { /* private window */ } };
+
+// ------------------------------------------------------------------ start screen chrome: the stages, light / dark
+
+const PHASES = [["Planning", 0, 6], ["Conducting", 7, 13], ["Reporting", 14, 14]];
+function startSteps() {
+  const nav = $("#startSteps"), box = $("#startStage");
+  PHASES.forEach(([name, a, b]) => {
+    nav.append(el("div", { className: "phase" }, name));
+    stages.STAGES.slice(a, b + 1).forEach(s => {
+      const step = el("div", { className: "step", title: s.description },
+        el("span", { className: "dot" }), s.title.replace(/^\d+ · /, ""), s.optional ? el("span", { className: "opt" }, "optional") : null);
+      step.onclick = () => {                    // a preview of what the stage is for
+        nav.querySelectorAll(".step.active").forEach(x => x.classList.remove("active"));
+        step.classList.add("active");
+        box.replaceChildren(el("b", {}, s.title), el("span", { className: "muted" }, s.description));
+        box.hidden = false;
+      };
+      nav.append(step);
+    });
+  });
+  $("#startTheme").onclick = () => {
+    const next = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
+    document.documentElement.dataset.theme = next;
+    remember("theme", next);
+  };
+}
+startSteps();
 
 // ------------------------------------------------------------------ the browser must be able to open folders
 if (!("showDirectoryPicker" in window)) {
@@ -123,16 +151,16 @@ async function reviewSettings() {
 async function startScreen() {
   const recent = await recentReviews();
   const list = recent.map(r => el("div", { className: "recent" },
-    button(`▶ ${r.name}`, () => openReview(r).catch(explain), "primary"),
+    el("span", { className: "name", title: r.name }, "📁 ", r.name.replace(/ records$/, "")),
     el("span", { className: "muted small" }, new Date(r.opened).toLocaleDateString()),
-    button("Forget", async () => { await forgetReview(r.id); startScreen(); }, "sm ghost")));
+    button("Forget", async () => { await forgetReview(r.id); startScreen(); }, "sm ghost"),
+    button("Continue →", () => openReview(r).catch(explain), "sm primary")));
   $("#startBody").replaceChildren(...[
-    list.length ? el("div", { className: "stack" }, el("h3", {}, "Continue"), ...list) : null,
-    el("div", { className: "row start-actions" },
-      button("📂 Open a review folder…", () => openFolder().catch(explain), list.length ? "" : "primary"),
-      button("＋ New review…", () => newReview().catch(explain), "")),
-    el("p", { className: "start-msg small muted" }, "Chrome or Edge asks once per visit before the app may use a folder."),
-    el("p", { className: "small muted" }, "Use Chrome or Edge in a normal browser window: browser panes built into other apps cannot open folders on your PC."),
+    el("div", { className: "start-actions" },
+      button("＋ New review…", () => newReview().catch(explain), list.length ? "" : "primary"),
+      button("📂 Open a review folder…", () => openFolder().catch(explain), "")),
+    list.length ? el("div", { className: "recents" }, el("h3", {}, "Continue where you left off"), ...list) : null,
+    el("p", { className: "start-msg small muted" }, "Works in Chrome or Edge on a computer. The browser asks once per visit before the app may use a folder."),
   ].filter(Boolean));
 }
 

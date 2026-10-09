@@ -1,11 +1,54 @@
-/* Start screen: recent reviews, open a folder, new review */
-.start { min-height: 100vh; display: grid; place-items: center; padding: 24px 16px; background: var(--bg); }
+/* Start screen: the app's own layout (stages in the sidebar) with a welcome page in the main column */
+.start { display: grid; grid-template-columns: 284px minmax(0, 1fr); height: 100vh; background: var(--bg); }
 .start[hidden], .app[hidden] { display: none; }
-.start-card { width: min(560px, 100%); background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 28px; box-shadow: var(--shadow); display: grid; gap: 14px; }
-.start-brand { padding: 0; font-size: 20px; }
-.start-actions { display: flex; gap: 8px; flex-wrap: wrap; }
-.recent { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+
+.start-side-note { margin: 0 18px 4px; font-size: 12.5px; color: var(--faint); }
+.start-side .step { cursor: default; }
+.start-side .step:hover, .start-side .step.active { background: var(--surface-2); color: var(--text); }
+.start-side .step.active .dot { border-color: var(--accent); }
+.start-side-foot { display: flex; gap: 6px; padding: 10px 14px 14px; border-top: 1px solid var(--border); flex-wrap: wrap; }
+.start-side-foot a.btn { text-decoration: none; }
+
+.start-main { overflow: auto; min-width: 0; padding: 56px clamp(16px, 5vw, 64px) 40px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 28px; align-content: start;
+  background:
+    radial-gradient(900px 420px at 85% -10%, color-mix(in srgb, var(--accent) 16%, transparent), transparent 70%),
+    radial-gradient(700px 360px at 0% 0%, color-mix(in srgb, #06b6d4 10%, transparent), transparent 70%),
+    var(--bg); }
+.start-hero { max-width: 760px; display: grid; gap: 14px; justify-items: start; }
+.start-hero h1 { font-size: clamp(30px, 4.4vw, 46px); line-height: 1.08; letter-spacing: -.02em; margin: 4px 0 0; }
+.start-hero .grad { background: linear-gradient(90deg, var(--accent), #06b6d4); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.start-hero .lead { font-size: 16.5px; color: var(--muted); margin: 0; max-width: 660px; }
+#startBody { display: grid; gap: 14px; width: 100%; margin-top: 6px; }
+.start-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+.start-actions .btn { padding: 11px 18px; font-size: 15px; border-radius: 12px; }
+.start-msg { margin: 0; }
 .start-msg .err { color: var(--bad); }
+
+.recents { display: grid; gap: 8px; max-width: 560px; }
+.recents h3 { margin: 0; font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--faint); }
+.recent { display: flex; align-items: center; gap: 10px; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 8px 8px 8px 14px; box-shadow: var(--shadow); }
+.recent .name { font-weight: 650; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.start-stage { max-width: 760px; background: var(--surface); border: 1px solid var(--border); border-left: 4px solid var(--accent); border-radius: 12px; padding: 12px 16px; box-shadow: var(--shadow); }
+.start-stage b { display: block; margin-bottom: 2px; }
+.start-stage[hidden] { display: none; }
+
+.start-features { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; max-width: 1000px; }
+.feature { padding: 18px; margin: 0; }
+.feature h3 { margin: 8px 0 4px; font-size: 15.5px; }
+.feature p { margin: 0; color: var(--muted); font-size: 13.5px; }
+.ficon { width: 38px; height: 38px; border-radius: 11px; display: grid; place-items: center; font-size: 19px; background: var(--accent-2); }
+
+.start-flow { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; color: var(--muted); font-size: 13px; }
+.start-flow span { background: var(--surface); border: 1px solid var(--border); border-radius: 99px; padding: 4px 12px; font-weight: 600; color: var(--text); }
+.start-flow i { font-style: normal; color: var(--faint); }
+
+@media (max-width: 860px) {
+  .start { grid-template-columns: minmax(0, 1fr); height: auto; min-height: 100vh; }
+  .start-side { display: none; }
+  .start-main { padding-top: 32px; }
+}
+
 dialog.modal { border: 1px solid var(--border); border-radius: 14px; padding: 0; background: var(--surface); color: var(--text); width: min(560px, calc(100% - 32px)); }
 dialog.modal::backdrop { background: rgb(0 0 0 / 0.45); }
 dialog.modal .mh { font-weight: 700; padding: 16px 20px 0; }
