@@ -480,6 +480,18 @@ function openHelp(key) {
     h("details", { class: "fold" }, h("summary", {}, `References (${Object.keys(num).length})`), refList(num)));
 }
 
+/**
+ * The worked example's value for a field, as light-grey text in an empty field ("e.g. …"); "" when the example has none.
+ * `name` is matched to the example's label, ignoring case and "_" (e.g. "main question", "study_type", "eligibility").
+ */
+function exampleFor(stageKey, name, part) {
+  const norm = t => String(t).toLowerCase().replace(/[_\s]+/g, " ").trim();
+  const item = (H?.examples?.[stageKey]?.items || []).find(([label]) => norm(label) === norm(name) || norm(name).startsWith(norm(label)));
+  if (!item) return "";
+  const value = part === undefined ? item[1] : String(item[1]).split(" · ")[part];
+  return value ? `e.g. ${value}` : "";
+}
+
 function openExample(key) {
   const ex = H.examples[key] || {}, s = stage(key);
   drawer("Example · " + s.title.replace(/^\d+ · /, ""),
@@ -614,7 +626,7 @@ function openChecklist(focus) {
 const PAGES = {};
 
 PAGES.idea = () => {
-  const ta = autosize(h("textarea", { placeholder: "What do you want to find out, and why? What did you read or discuss? What changed?", rows: 4, value: D.idea || "", oninput: e => D.idea = e.target.value }));
+  const ta = autosize(h("textarea", { placeholder: exampleFor("idea", "Note") || "What do you want to find out, and why? What did you read or discuss? What changed?", rows: 4, value: D.idea || "", oninput: e => D.idea = e.target.value }));
   const ideas = [...S.state.idea].reverse();
   return h("div", {},
     card("New idea note", "Short and dated. It is fine to be vague here — the next stage makes it precise.", ta,
@@ -630,18 +642,18 @@ PAGES.questions = () => {
   const bind = k => e => d[k] = e.target.value;
   const subs = h("div", { class: "stack" });
   const drawSubs = () => subs.replaceChildren(...d.sub.map((s, i) => h("div", { class: "row", style: "flex-wrap:nowrap" },
-    h("span", { class: "muted", style: "width:22px" }, `${i + 1}.`), h("input", { type: "text", value: s, oninput: e => d.sub[i] = e.target.value }),
+    h("span", { class: "muted", style: "width:22px" }, `${i + 1}.`), h("input", { type: "text", value: s, placeholder: exampleFor("questions", "Sub-questions", i), oninput: e => d.sub[i] = e.target.value }),
     iconBtn("✕", "Remove sub-question", () => { d.sub.splice(i, 1); drawSubs(); }))), btn("+ Add sub-question", () => { d.sub.push(""); drawSubs(); }, "sm"));
   drawSubs();
   const pcc = (k, label, hint, color) => h("div", { class: "card", style: `border-top:3px solid ${color};margin:0` },
-    h("h3", {}, label), h("p", { class: "sub" }, hint), autosize(h("textarea", { rows: 2, value: d[k], oninput: bind(k) })));
+    h("h3", {}, label), h("p", { class: "sub" }, hint), autosize(h("textarea", { rows: 2, value: d[k], placeholder: exampleFor("questions", label), oninput: bind(k) })));
   return h("div", {},
     h("div", { class: "grid3", style: "margin-bottom:16px" },
       pcc("population", "Population", "What is studied? (products, systems, people…)", "#4f46e5"),
       pcc("concept", "Concept", "The core phenomenon, method or intervention", "#0891b2"),
       pcc("context", "Context", "Setting, domain, period, publication types", "#16a34a")),
     card("Review questions", null,
-      field("Main question", autosize(h("textarea", { rows: 2, value: d.main, oninput: bind("main") }))),
+      field("Main question", autosize(h("textarea", { rows: 2, value: d.main, placeholder: exampleFor("questions", "Main question"), oninput: bind("main") }))),
       h("div", { style: "margin-top:12px" }, h("span", { class: "small muted", style: "font-weight:600" }, "Sub-questions"), subs),
       h("div", { class: "hr" }),
       h("div", { class: "row", style: "flex-wrap:nowrap" },
@@ -857,7 +869,7 @@ PAGES.protocol = () => {
     h("div", { class: "callout", style: "margin-bottom:16px" }, "Objectives, questions, search strings and pilot results are filled in automatically from stages 1–4. Write the method sections below, then generate the Protocol note."),
     card("Method sections", null, S.protocol_sections.map(sct => h("details", { open: !d[sct.key], style: "border-bottom:1px solid var(--border);padding:8px 0" },
       h("summary", {}, h("b", { style: "color:var(--text)" }, withScr(sct.title)), authorPill(sct.key), d[sct.key] ? h("span", { class: "pill ok", style: "margin-left:8px" }, "written") : h("span", { class: "pill", style: "margin-left:8px" }, "empty")),
-      h("div", { style: "margin-top:8px" }, autosize(h("textarea", { rows: 3, value: d[sct.key] || "", oninput: e => d[sct.key] = e.target.value })),
+      h("div", { style: "margin-top:8px" }, autosize(h("textarea", { rows: 3, value: d[sct.key] || "", placeholder: exampleFor("protocol", sct.key) || exampleFor("protocol", sct.title), oninput: e => d[sct.key] = e.target.value })),
         ((S.state.protocol_meta || {})[sct.key] || {}).by === "claude" ? h("div", { class: "row end", style: "margin-top:6px" },
           btn("✓ Approve as is", () => api("approve_section", { key: sct.key }), "sm")) : null))),
       h("div", { class: "row end", style: "margin-top:12px" },
@@ -1306,7 +1318,7 @@ PAGES.charting = () => {
         btn("Next ›", () => { const nx = next(); if (nx) { D.chartSel = nx.record_id; render(); } }, "ghost")),
       r.notes ? h("details", { class: "small", style: "margin-bottom:10px" }, h("summary", { class: "muted" }, "Notes on this record"), h("div", { class: "muted", style: "margin-top:4px;white-space:pre-wrap" }, r.notes)) : null,
       ...(hasCols ? S.state.charting.fields.filter(f => f.name !== "checked_by").map(f => field(f.name, autosize(h("textarea", {
-        rows: 2, value: r.chart[f.name] || "",
+        rows: 2, value: r.chart[f.name] || "", placeholder: exampleFor("charting", f.name),
         onchange: e => { r.chart[f.name] = e.target.value; api("set_record", { record_id: r.record_id, fields: { ["chart_" + f.name]: e.target.value } }, { render: false, silent: true }).then(() => toast("Saved", "ok")); },
       })), f.description)) : [h("div", { class: "callout warn" }, "Add the charting columns first (Charting form, below).")]));
   };

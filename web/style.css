@@ -333,3 +333,4 @@ input:focus-visible, select:focus-visible, textarea:focus-visible { outline: non
 .step .ai-mark.on { color: var(--accent); border-color: color-mix(in srgb, var(--accent) 55%, transparent); background: var(--accent-2); }
 .step { white-space: nowrap; }
 .step .opt + .ai-mark { margin-left: 4px; }
+textarea::placeholder, input::placeholder { color: var(--faint); opacity: .75; font-style: italic; }
