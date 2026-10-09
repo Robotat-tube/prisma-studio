@@ -10,6 +10,10 @@ PRISMA Studio walks you through a scoping review from the first idea to the PRIS
 
 *Screening in PRISMA Studio (example data). Search terms are highlighted in the abstract; I / U / E decide.*
 
+![The app tour highlighting the 15 stages](docs/tour.png)
+
+*The 1-minute app tour, offered on your first visit.*
+
 ## Contents
 
 - [Getting started](#getting-started)
@@ -120,7 +124,7 @@ npm test                 # unit tests
 npm run check            # architecture: each layer imports only what it may
 npm run build            # the static site in dist/
 node scripts/bench-open.js "<copy of a … records folder>"   # how fast a review opens
-node scripts/readme-screenshot.js   # docs/screenshot.png, with example data (needs npm run serve)
+node scripts/readme-screenshot.js   # docs/screenshot.png and docs/tour.png, with example data (needs npm run serve)
 ```
 
 Every push to `main` is tested, built and published on GitHub Pages (`.github/workflows/pages.yml`). Review data is never part of this repository.

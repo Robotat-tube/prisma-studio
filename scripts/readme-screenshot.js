@@ -1,4 +1,4 @@
-// Takes the README screenshot (docs/screenshot.png): starts headless Chrome on a fresh profile, fills the draft
+// Takes the README screenshots (docs/screenshot.png, and docs/tour.png with a step of the app tour): starts headless Chrome on a fresh profile, fills the draft
 // review with made-up example data, opens the Screening stage and saves the page as a PNG.
 //   npm run serve   (in another terminal)   then   node scripts/readme-screenshot.js [chrome.exe]
 import { spawn } from "node:child_process";
@@ -8,7 +8,7 @@ import { join, resolve } from "node:path";
 
 const CHROME = process.argv[2] ?? "C:/Program Files/Google/Chrome/Application/chrome.exe";
 const URL = "http://localhost:8770/web/";
-const OUT = resolve(import.meta.dirname, "..", "docs", "screenshot.png");
+const DOCS = resolve(import.meta.dirname, "..", "docs");
 const [W, H, SCALE] = [1440, 900, 2];
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
@@ -76,11 +76,20 @@ try {
   await send("Page.navigate", { url: URL + "#screening" });
   for (let i = 0; i < 50 && !(await run(`document.querySelector("#page .rec") !== null`)); i++) await sleep(200);
   await sleep(800);                                             // the abstract loads after the page
-  await run(`document.querySelector("#toasts").replaceChildren()`);   // no notes in the picture
-  const shot = await send("Page.captureScreenshot", { format: "png" });
-  mkdirSync(resolve(OUT, ".."), { recursive: true });
-  writeFileSync(OUT, Buffer.from(shot.result.data, "base64"));
-  console.log(`saved ${OUT}`);
+  await run(`document.querySelector("#toasts").replaceChildren(); document.querySelector(".tour-offer")?.remove()`);   // no notes in the picture
+  mkdirSync(DOCS, { recursive: true });
+  const save = async name => {
+    const shot = await send("Page.captureScreenshot", { format: "png" });
+    writeFileSync(join(DOCS, name), Buffer.from(shot.result.data, "base64"));
+    console.log(`saved docs/${name}`);
+  };
+  await save("screenshot.png");
+  // the tour, at its step about the stages
+  await run(`document.querySelector("#btnTour").click()`);
+  await sleep(300);
+  await run(`[...document.querySelectorAll(".tour-card button")].find(b => b.textContent.startsWith("Next")).click()`);
+  await sleep(600);                                             // the highlight moves into place
+  await save("tour.png");
   ws.close();
 } finally {
   chrome.kill();
