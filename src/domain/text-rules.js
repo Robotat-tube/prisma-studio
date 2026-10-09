@@ -1,13 +1,12 @@
 /**
- * String helpers that behave exactly like their Python counterparts.
+ * Text rules used everywhere a note or table is written: whitespace, line breaks, character counting, sorting.
  *
- * Review folders are also written by the Python version of the tool, so every rule that touches text
- * (whitespace, line breaks, character counts) must give the same result in both languages. Keep all such
- * rules here instead of scattering look-alike regexes through the domain.
- * @module domain/pytext
+ * Every rule that touches text (whitespace, line breaks, character counts) must give the same result
+ * wherever a review is written, so the folder format stays stable. Keep all such rules here instead of scattering look-alike regexes through the domain.
+ * @module domain/text-rules
  */
 
-// Python's str.strip(), str.split() and "\s" in re treat these as whitespace (Unicode + \x1c-\x1f, \x85)
+// Whitespace for strip(), splitWords() and RUN_WS (Unicode + \x1c-\x1f, \x85)
 const WS = "\\s\\u001c-\\u001f\\u0085";
 const EDGE_WS = new RegExp(`^[${WS}]+|[${WS}]+$`, "gu");
 const RUN_WS = new RegExp(`[${WS}]+`, "gu");
@@ -30,13 +29,13 @@ export function splitLines(s) {
   return lines;
 }
 
-/** Code points, as Python indexes and counts strings (JS counts UTF-16 units). */
+/** Code points (JS counts UTF-16 units). */
 export const chars = s => Array.from(String(s));
 
 /** len(s) */
-export const pyLen = s => chars(s).length;
+export const charCount = s => chars(s).length;
 
-/** Text as Python's open() reads it (universal newlines): CRLF and lone CR become LF. */
+/** Text with universal newlines: CRLF and lone CR become LF. */
 export const normalizeNewlines = s => String(s).replace(/\r\n?/g, "\n");
 
 /** str.isprintable() for one character */
@@ -65,14 +64,14 @@ export function formatFixed(x, digits) {
   if (twice > den || (twice === den && q % 2n === 1n)) q++;
   let s = q.toString().padStart(digits + 1, "0");
   if (digits) s = s.slice(0, -digits) + "." + s.slice(-digits);
-  return (negative ? "-" : "") + s;              // Python keeps the sign of -0.0 too
+  return (negative ? "-" : "") + s;              // the sign of -0.0 is kept too
 }
 
 /** format(x, ".0%") */
 export const formatPercent = x => formatFixed(x * 100, 0) + "%";
 
-/** Python's default string order (by code point); JS sorts by UTF-16 units. */
-export function comparePy(a, b) {
+/** String order by code point; JS sorts by UTF-16 units. */
+export function compareCodePoints(a, b) {
   // fast path: UTF-16 order equals code-point order up to the first difference, unless a surrogate is involved there
   a = String(a); b = String(b);
   const n = Math.min(a.length, b.length);

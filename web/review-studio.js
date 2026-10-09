@@ -1,7 +1,7 @@
 // The Review Studio page. It talks to `window.backend` (src/ui/backend.js), which runs the review engine in
-// the browser on the folder the user opened; the page code is the same as in the Python version.
+// the browser on the folder the user opened.
 const backend = window.backend;
-/* Review Studio — front end for review_server.py. Plain JavaScript, no build step. */
+/* Review Studio — the page. Plain JavaScript, no build step. */
 "use strict";
 
 // ================================================================ basics

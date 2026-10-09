@@ -10,7 +10,7 @@ import { shortId, WORK_FIELDS, workToEntry } from "../domain/openalex.js";
 import { isIncluded } from "../domain/progress.js";
 import { frozenProtocolName, integrityProblems, lockChecks, protocolMarkdown, PROTOCOL_FILE } from "../domain/protocol.js";
 import { openalexQuery } from "../domain/queries.js";
-import { chars, comparePy, strip } from "../domain/pytext.js";
+import { chars, compareCodePoints, strip } from "../domain/text-rules.js";
 import { event, FULLTEXT_DIR, isLocked, touch } from "../domain/stages.js";
 import { bibtex, chartingBase, chartingCsv, checklistEvidence, checklistNote, STAGE_FILES } from "../domain/stage-notes.js";
 import { FILES } from "../domain/notes.js";
@@ -21,7 +21,7 @@ import { STATE_FILE } from "./review-state.js";
 
 const recordStem = r => r.file.split("/").pop().replace(/\.md$/, "");
 const generatorOf = repo => repo.settings.generator ?? APP_GENERATOR;
-const includedRecords = repo => [...repo.records.values()].filter(r => isIncluded(r.props)).sort((a, b) => comparePy(String(a.props.record_id), String(b.props.record_id)));
+const includedRecords = repo => [...repo.records.values()].filter(r => isIncluded(r.props)).sort((a, b) => compareCodePoints(String(a.props.record_id), String(b.props.record_id)));
 
 /** SHA-256 of bytes as hex (Web Crypto: browsers and Node). */
 async function sha256(bytes) {
@@ -79,7 +79,7 @@ export async function pilotOpenalex(repo, st, openalex, library = emptyLibrary()
     const res = await openalex.get("works", { filter: `${filter},doi:${dois.slice(i, i + 50).join("|")}`, "per-page": 50, select: "doi" });
     for (const w of res.results) if (w.doi) found.add(normalizeDoi(w.doi));
   }
-  const missed = [...withDoi].filter(([d]) => !found.has(d)).map(([, stem]) => stem).sort(comparePy);
+  const missed = [...withDoi].filter(([d]) => !found.has(d)).map(([, stem]) => stem).sort(compareCodePoints);
   const now = repo.clock.now();
   const row = { when: now, database: "OpenAlex (title/abstract)", query: q, hits, test_set: withDoi.size, retrieved: found.size, missed, note };
   st.pilots.push(row);
@@ -94,7 +94,7 @@ export async function pilotFile(repo, st, library = emptyLibrary(), { fileName, 
   const index = new DuplicateIndex();
   entries.forEach((e, i) => index.add(i, e.doi, e.title, e.year));
   const tests = testSetNotes(repo, library);
-  const missed = [...tests].filter(([, p]) => index.find(p.doi, p.title, yearOf(p.year)) === null).map(([s]) => s).sort(comparePy);
+  const missed = [...tests].filter(([, p]) => index.find(p.doi, p.title, yearOf(p.year)) === null).map(([s]) => s).sort(compareCodePoints);
   const now = repo.clock.now();
   const row = { when: now, database, query, hits: entries.length, test_set: tests.size, retrieved: tests.size - missed.length, missed, note };
   st.pilots.push(row);

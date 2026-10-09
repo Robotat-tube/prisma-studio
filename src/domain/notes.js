@@ -5,16 +5,16 @@
  * @module domain/notes
  */
 import * as frontmatter from "./frontmatter.js";
-import { formatFixed, formatPercent } from "./pytext.js";
+import { formatFixed, formatPercent } from "./text-rules.js";
 import { DEFAULT_FT_REASONS, DEFAULT_TA_REASONS } from "./vocabulary.js";
 
 /**
  * How generated notes name the tool that wrote them.
  * @typedef {object} Generator
  * @property {string} path      written to `generated-by`
- * @property {string} rerun     how to regenerate the PRISMA flow note, e.g. "`prisma_review.py report`"
+ * @property {string} rerun     how to regenerate the PRISMA flow note, e.g. "Review Studio, 14 · Report"
  * @property {string} commands  last section of the screening guide (where the commands are)
- * @property {string} logBy     who writes the review log, e.g. "`prisma_review.py`"
+ * @property {string} logBy     who writes the review log, e.g. "Review Studio"
  * @property {string} stagesBy  `generated-by` of the protocol note
  */
 
@@ -67,7 +67,7 @@ Optional: \`screener\` (your initials), \`notes\` (free text). \`screened_on\` i
 
 ## Second reviewer
 
-\`sample_ta\` / \`sample_ft\` are set by \`prisma_review.py sample\`; the second reviewer never sees this vault's decisions, only the blind CSV sheet. Do not edit the \`r2_*\` properties by hand: they are imported from the returned sheet.
+\`sample_ta\` / \`sample_ft\` are set when the sample is drawn in Review Studio (9 · Second reviewer); the second reviewer never sees this vault's decisions, only the blind CSV sheet. Do not edit the \`r2_*\` properties by hand: they are imported from the returned sheet.
 
 ## Commands
 

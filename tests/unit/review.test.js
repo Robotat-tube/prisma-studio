@@ -3,8 +3,8 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { cohensKappa } from "../../src/domain/agreement.js";
 import { flowCounts } from "../../src/domain/flow.js";
-import { sample } from "../../src/domain/pyrandom.js";
-import { formatFixed, formatPercent } from "../../src/domain/pytext.js";
+import { sample } from "../../src/domain/seeded-random.js";
+import { formatFixed, formatPercent } from "../../src/domain/text-rules.js";
 import { createRecord, mergeDuplicate, nextRecordId } from "../../src/domain/records.js";
 import { checkRecord, isValidReason } from "../../src/domain/screening.js";
 import { makeEntry } from "../../src/domain/importers.js";
@@ -16,15 +16,15 @@ const clock = { today: () => "2026-01-15", now: () => "2026-01-15 10:00" };
 const settings = { name: "Test review", recordsPath: "Test review records/08 - Records" };
 const entry = (title, more = {}) => makeEntry({ title, authors: "Liu, Z.", year: "2024", ...more });
 
-test("random sample is Python's random.Random(seed).sample", () => {
-  // values printed by Python 3: random.Random(42).sample(range(39), 8) and random.Random(7).sample(range(30), 6)
+test("random sample is reproducible for a seed (Mersenne Twister)", () => {
+  // reference values of the standard Mersenne Twister sample for seeds 42 and 7
   assert.deepEqual(sample(42, [...Array(39).keys()], 8), [7, 1, 17, 15, 14, 8, 6, 5]);
   assert.deepEqual(sample(7, [...Array(30).keys()], 6), [10, 4, 12, 20, 1, 2]);
   assert.equal(new Set(sample(1, [...Array(5683).keys()], 285)).size, 285);
   assert.throws(() => sample(1, [1, 2], 3), RangeError);
 });
 
-test("number formatting rounds like Python", () => {
+test("number formatting rounds half to even", () => {
   assert.equal(formatFixed(0.125, 2), "0.12");
   assert.equal(formatFixed(0.375, 2), "0.38");
   assert.equal(formatFixed(2.5, 0), "2");

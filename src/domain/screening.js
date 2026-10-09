@@ -3,7 +3,7 @@
  * include opens the full-text stage, a decision sets the screening date), and what is a problem to fix.
  * @module domain/screening
  */
-import { splitWords, strip } from "./pytext.js";
+import { splitWords, strip } from "./text-rules.js";
 import { FT_DECISIONS, PDF_STATUSES, SECOND_REVIEWER_DECISIONS, TA_DECISIONS } from "./vocabulary.js";
 
 const NORMALISED = ["ta_decision", "ft_decision", "pdf_status", "r2_ta_decision", "r2_ft_decision"];

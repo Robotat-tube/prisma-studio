@@ -10,7 +10,7 @@ import { flowCounts } from "../domain/flow.js";
 import { makeEntry, parseExport } from "../domain/importers.js";
 import { DuplicateIndex, yearOf } from "../domain/matching.js";
 import { FILES, prismaFlowNote } from "../domain/notes.js";
-import { comparePy, formatPercent, normalizeNewlines, strip } from "../domain/pytext.js";
+import { compareCodePoints, formatPercent, normalizeNewlines, strip } from "../domain/text-rules.js";
 import { createRecord, mergeDuplicate, nextRecordId } from "../domain/records.js";
 import { drawSample as draw, samplePool, SECOND_REVIEWER_DIR, sheetName, sheetText } from "../domain/sampling.js";
 import { checkRecord } from "../domain/screening.js";
@@ -20,12 +20,12 @@ import { emptyLibrary, testSet } from "./library.js";
 /** A command that cannot run; the message is meant for the reviewer. */
 export class ReviewError extends Error {}
 
-/** A seed from 0 to 999 999 from the system's secure random source (as Python's SystemRandom). */
+/** A seed from 0 to 999 999 from the system's secure random source . */
 const secureSeed = () => globalThis.crypto.getRandomValues(new Uint32Array(1))[0] % 1_000_000;
 
 const sourceId = rows => `S${String(rows.length + 1).padStart(2, "0")}`;
 
-/** Text of an uploaded export as Python reads it: UTF-8 with or without BOM, bad bytes replaced. */
+/** Text of an uploaded export as it is read: UTF-8 with or without BOM, bad bytes replaced. */
 export const decodeExport = bytes => normalizeNewlines(new TextDecoder("utf-8").decode(bytes)).replace(/^﻿/, "");
 
 /**
@@ -174,7 +174,7 @@ export async function writeReport(repo, library = emptyLibrary()) {
     const [observed, kappa] = cohensKappa(pairs);
     return { label, sampled, pairs, disagreements, observed, kappa };
   });
-  const tests = testSet(library, repo.link).sort(comparePy);
+  const tests = testSet(library, repo.link).sort(compareCodePoints);
   const found = new Set(props.filter(p => p.publication).map(p => String(p.publication).replace(/^[[\]]+|[[\]]+$/g, "")));
   const missed = tests.filter(s => !found.has(s));
   await repo.folder.writeText(FILES.flow, prismaFlowNote({ reviewName: repo.name, reviewLink: repo.link, today: repo.clock.today(),

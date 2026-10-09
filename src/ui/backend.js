@@ -1,7 +1,7 @@
 /**
  * The page's backend in the browser: answers the requests the Review Studio page makes (state, help,
- * actions, uploads, downloads, folders) with a ReviewSession on a folder the user picked. Replaces the
- * Python server; the page itself is unchanged apart from calling this object instead of fetch().
+ * actions, uploads, downloads, folders) with a ReviewSession on a folder the user picked. Replaces a
+ * server; the page itself is unchanged apart from calling this object instead of fetch().
  * @module ui/backend
  */
 import { browserFolder, requestAccess } from "../adapters/browser-folder.js";

@@ -3,7 +3,7 @@
  * In-progress stages whose work is finished are marked done automatically, unless the reviewer reopened them.
  * @module domain/progress
  */
-import { strip } from "./pytext.js";
+import { strip } from "./text-rules.js";
 import { CHECKLIST, event } from "./stages.js";
 
 export const isIncluded = props => props.ft_decision === "include";

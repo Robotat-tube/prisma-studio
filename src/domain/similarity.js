@@ -1,9 +1,9 @@
 /**
- * Title similarity, identical to Python's difflib.SequenceMatcher(None, a, b).ratio() so that the
- * duplicate finder gives the same answers as the Python version.
+ * Title similarity, as a ratio of matching blocks (Ratcliff/Obershelp) so that the
+ * duplicate finder gives stable answers.
  * @module domain/similarity
  */
-import { chars } from "./pytext.js";
+import { chars } from "./text-rules.js";
 
 /** Positions of each character in b, minus "popular" characters in long strings (difflib's autojunk). */
 function index(b) {

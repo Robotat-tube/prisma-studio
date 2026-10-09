@@ -11,7 +11,7 @@
  * @module domain/pdf-matching
  */
 import { normalizeDoi, normalizeTitle } from "./matching.js";
-import { comparePy, pyLen, splitWords, strip } from "./pytext.js";
+import { compareCodePoints, charCount, splitWords, strip } from "./text-rules.js";
 
 const DOI = /\b10\.\d{4,9}\/[^\s"<>]+/gi;
 const RANK = { doi: 3, title: 2, likely: 1 };
@@ -25,7 +25,7 @@ const TOP = 3000;                // characters of normalised text where the titl
  */
 export function summarizePdf(raw) {
   const dois = new Set([...raw.matchAll(DOI)].map(m => normalizeDoi(m[0]).replace(/[).,;\]]+$/, "")));
-  return { text: [...normalizeTitle(raw)].slice(0, 20000).join(""), dois: [...dois].sort(comparePy) };
+  return { text: [...normalizeTitle(raw)].slice(0, 20000).join(""), dois: [...dois].sort(compareCodePoints) };
 }
 
 /** Consecutive word pairs of a title (stop words kept: they fix the order). */
@@ -69,13 +69,13 @@ export function matchPdfs(records, pdfs) {
     const top = ` ${[...pdf.text].slice(0, TOP).join("")} `;
     for (const [id, full, pairs, author] of titles) {
       // names set in letter-spaced small capitals come out as "j i a o" from some PDF readers
-      if (pyLen(author) < 2 || !(top.includes(` ${author} `) || top.includes(` ${[...author].join(" ")} `))) continue;
-      if (pyLen(full) >= 15 && top.includes(` ${full} `)) offer(id, pdf, "title", 1);
+      if (charCount(author) < 2 || !(top.includes(` ${author} `) || top.includes(` ${[...author].join(" ")} `))) continue;
+      if (charCount(full) >= 15 && top.includes(` ${full} `)) offer(id, pdf, "title", 1);
       else if (pairs.length >= 4) {
         const share = pairs.filter(q => top.includes(` ${q} `)).length / pairs.length;
         if (share >= 0.75) offer(id, pdf, "likely", share);
       }
     }
   }
-  return [...best.values()].sort((a, b) => ORDER[a.how] - ORDER[b.how] || comparePy(a.record_id, b.record_id));
+  return [...best.values()].sort((a, b) => ORDER[a.how] - ORDER[b.how] || compareCodePoints(a.record_id, b.record_id));
 }

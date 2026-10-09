@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Command line for AI assistants (the skills in .claude/skills/review-*). Same commands as the Python tool:
+ * Command line for AI assistants (the skills in .claude/skills/review-*). Commands:
  *
  *   node bin/ai-assist.js --review "<… records folder or review name>" context screening [--limit 40]
  *   node bin/ai-assist.js --review "…" suggest SUGGESTIONS.json --model "claude-…" [--stage ft]

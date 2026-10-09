@@ -8,7 +8,7 @@ import * as frontmatter from "../domain/frontmatter.js";
 import { DuplicateIndex, yearOf } from "../domain/matching.js";
 import { isIncluded } from "../domain/progress.js";
 import { newPublicationNote, nextIndex } from "../domain/publications.js";
-import { comparePy } from "../domain/pytext.js";
+import { compareCodePoints } from "../domain/text-rules.js";
 import { event, FULLTEXT_DIR } from "../domain/stages.js";
 import { fileOrder } from "./review-repository.js";
 
@@ -47,7 +47,7 @@ export function testSet(library, reviewLink) {
 }
 
 const noteName = link => String(link ?? "").replace(/^[[\]]+|[[\]]+$/g, "");
-// Python iterates a property value: a list item by item, a text character by character
+// a property value is iterated: a list item by item, a text character by character
 const asList = v => (Array.isArray(v) ? v : typeof v === "string" ? [...v] : []).filter(Boolean);
 
 /**
@@ -71,7 +71,7 @@ export function planLibrarySync(repo, library) {
     }
   }
   const lacking = records.filter(r => r.props.ft_decision === "include" && !r.props.publication)
-    .map(r => `${r.id} - ${[...String(r.props.title)].slice(0, 80).join("")}`).sort(comparePy);
+    .map(r => `${r.id} - ${[...String(r.props.title)].slice(0, 80).join("")}`).sort(compareCodePoints);
   return { changes, lacking };
 }
 
@@ -101,7 +101,7 @@ export async function addKeptToLibrary(repo, st, library, { template }) {
   const done = new Map();
   const bump = k => done.set(k, (done.get(k) ?? 0) + 1);
   const included = [...repo.records.values()].filter(r => isIncluded(r.props))
-    .sort((a, b) => comparePy(String(a.props.record_id), String(b.props.record_id)));
+    .sort((a, b) => compareCodePoints(String(a.props.record_id), String(b.props.record_id)));
   for (const r of included) {
     const f = r.props;
     const linked = noteName(f.publication || "");
@@ -116,7 +116,7 @@ export async function addKeptToLibrary(repo, st, library, { template }) {
       bump("added");
     }
     const [props, body] = frontmatter.parse(await library.folder.readText(`${stem}.md`));
-    const current = props.included_in;                       // a list, or text typed by hand (as Python treats it)
+    const current = props.included_in;                       // a list, or text typed by hand 
     const listed = (Array.isArray(current) || typeof current === "string") && current.includes(repo.link);
     if (!listed) props.included_in = [...(Array.isArray(current) ? current : typeof current === "string" ? [...current] : []), repo.link];
     const pdf = `${FULLTEXT_DIR}/${r.file.split("/").pop().replace(/\.md$/, "")}.pdf`;

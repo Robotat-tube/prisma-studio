@@ -1,9 +1,9 @@
 /**
- * CSV reading and writing compatible with Python's csv module (the format of `07 - Searches.csv`, the
+ * CSV reading and writing in one fixed dialect (the format of `07 - Searches.csv`, the
  * second-reviewer sheets and database exports).
  * @module domain/csv
  */
-import { splitLines } from "./pytext.js";
+import { splitLines } from "./text-rules.js";
 
 /**
  * Parses CSV text into rows, like csv.reader(text.splitlines()): quoted fields may span lines,

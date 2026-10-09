@@ -3,7 +3,7 @@
  * @module domain/sampling
  */
 import { writeRows } from "./csv.js";
-import { sample } from "./pyrandom.js";
+import { sample } from "./seeded-random.js";
 import { textAfterAbstractHeading } from "./records.js";
 
 export const SECOND_REVIEWER_DIR = "09 - Second reviewer";
@@ -18,7 +18,7 @@ export const samplePool = (records, stage) =>
   records.filter(r => stage === "ta" || (r.props.ft_decision ?? "") !== "").map(r => r.id).sort();
 
 /**
- * The ids drawn for a seed: ceil(fraction × pool) records, the same as Python's
+ * The ids drawn for a seed: ceil(fraction × pool) records, the same for every run with that seed:
  * random.Random(seed).sample(pool, k).
  * @returns {Set<string>}
  */

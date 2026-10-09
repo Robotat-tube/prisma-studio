@@ -3,7 +3,7 @@
  * between blocks, NOT blocks excluded), in each database's syntax. A string edited by hand wins.
  * @module domain/queries
  */
-import { splitWords, strip } from "./pytext.js";
+import { splitWords, strip } from "./text-rules.js";
 
 /** Terms typed one per line or separated by ";". */
 export const cleanTerms = text => String(text).split(/[\n;]+/).map(strip).filter(Boolean);

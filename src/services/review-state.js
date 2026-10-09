@@ -1,6 +1,6 @@
 /**
  * The review state (review_state.json) and the notes written from it. Saving marks finished stages done
- * and rewrites the timeline and the search strategy, as the Python tool does.
+ * and rewrites the timeline and the search strategy.
  * @module services/review-state
  */
 import { autoDone } from "../domain/progress.js";

@@ -6,14 +6,14 @@
 import * as csv from "../domain/csv.js";
 import * as frontmatter from "../domain/frontmatter.js";
 import { FILES, logHeader, logRow, screeningBase, screeningGuide } from "../domain/notes.js";
-import { comparePy } from "../domain/pytext.js";
+import { compareCodePoints } from "../domain/text-rules.js";
 import { RECORDS_DIR, recordText } from "../domain/records.js";
 import { DEFAULT_FT_REASONS, DEFAULT_TA_REASONS } from "../domain/vocabulary.js";
 
 export const SEARCH_COLUMNS = Object.freeze(["id", "kind", "database", "date", "query", "filters", "export", "records", "new", "duplicates"]);
 
-/** File order as Python lists a folder on Windows: case-insensitive, by code point. */
-export const fileOrder = (a, b) => comparePy(a.toLowerCase(), b.toLowerCase()) || comparePy(a, b);
+/** File order: case-insensitive, by code point. */
+export const fileOrder = (a, b) => compareCodePoints(a.toLowerCase(), b.toLowerCase()) || compareCodePoints(a, b);
 
 /**
  * @typedef {object} ReviewSettings
@@ -68,7 +68,7 @@ export class ReviewRepository {
 
   /** Records in record-id order. */
   sortedRecords() {
-    return [...this.records.values()].sort((a, b) => comparePy(a.id, b.id));
+    return [...this.records.values()].sort((a, b) => compareCodePoints(a.id, b.id));
   }
 
   /** Replaces or adds a record; it is written at the next save(). */

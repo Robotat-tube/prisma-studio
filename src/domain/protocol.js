@@ -6,7 +6,7 @@
 import { AI_STEPS, aiMode } from "./ai-steps.js";
 import * as frontmatter from "./frontmatter.js";
 import { buildQuery } from "./queries.js";
-import { chars, comparePy, strip } from "./pytext.js";
+import { chars, compareCodePoints, strip } from "./text-rules.js";
 import { isLocked, PROTOCOL_SECTIONS, sameValue, STAGE } from "./stages.js";
 import { DEFAULT_TA_REASONS } from "./vocabulary.js";
 
@@ -75,7 +75,7 @@ export function protocolMarkdown({ reviewName, reviewLink, st, ftReasons, frozen
 export function lockChecks(st, reasons) {
   const t = st.protocol_text;
   const empty = PROTOCOL_SECTIONS.filter(([key]) => !strip(t[key] || "")).map(([, title]) => title);
-  const holders = [...new Set(Object.values(t).flatMap(v => [...String(v || "").matchAll(/\[[^\]\n]{2,40}\]/g)].map(m => m[0])))].sort(comparePy);
+  const holders = [...new Set(Object.values(t).flatMap(v => [...String(v || "").matchAll(/\[[^\]\n]{2,40}\]/g)].map(m => m[0])))].sort(compareCodePoints);
   const drafted = sectionsBy(st, "claude");
   const pilot = st.stages.pilot.status;
   const checked = st.pilots.filter(p => p.test_set !== "" && p.test_set !== null && p.test_set !== undefined);

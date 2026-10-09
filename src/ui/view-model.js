@@ -1,6 +1,6 @@
 /**
  * What the page shows about an open review: one snapshot object with the stages, state, records, counts and
- * checks, in the shape the Review Studio page reads (the Python server's snapshot()).
+ * checks, in the shape the Review Studio page reads .
  * @module ui/view-model
  */
 import {

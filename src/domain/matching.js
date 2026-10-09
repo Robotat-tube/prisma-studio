@@ -3,7 +3,7 @@
  * duplicate index used when a search is imported.
  * @module domain/matching
  */
-import { pyLen, strip } from "./pytext.js";
+import { charCount, strip } from "./text-rules.js";
 import { similarity } from "./similarity.js";
 
 const NEAR_DUPLICATE = 0.93;          // similarity of two titles in the same year that counts as one paper
@@ -51,7 +51,7 @@ export class DuplicateIndex {
     if (d && this.#byDoi.has(d)) return this.#byDoi.get(d);
     if (!t) return null;
     for (const [y, key] of this.#byTitle.get(t) ?? []) if (!year || !y || Math.abs(year - y) <= 1) return key;
-    if (pyLen(t) > MIN_FUZZY_LENGTH && year) {
+    if (charCount(t) > MIN_FUZZY_LENGTH && year) {
       for (const [other, key] of this.#byYear.get(year) ?? []) if (similarity(t, other) >= NEAR_DUPLICATE) return key;
     }
     return null;

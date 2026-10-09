@@ -4,7 +4,7 @@
  * @module domain/frontmatter
  */
 import { readRows } from "./csv.js";
-import { escapeRegExp, splitLines, strip } from "./pytext.js";
+import { escapeRegExp, splitLines, strip } from "./text-rules.js";
 
 const BLOCK = /^---\r?\n([\s\S]*?)\r?\n---[ \t]*(?:\r?\n|$(?![\s\S]))/;
 
@@ -26,7 +26,7 @@ export function parseScalar(raw) {
 
 /**
  * Splits a note into its properties and the text after them.
- * @param {string} text note text with "\n" line ends (see pytext.normalizeNewlines)
+ * @param {string} text note text with "\n" line ends (see text-rules normalizeNewlines)
  * @returns {[Properties, string]}
  */
 export function parse(text) {

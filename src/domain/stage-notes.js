@@ -6,7 +6,7 @@
 import { writeRows } from "./csv.js";
 import * as frontmatter from "./frontmatter.js";
 import { buildQuery } from "./queries.js";
-import { chars } from "./pytext.js";
+import { chars } from "./text-rules.js";
 import { CHECKLIST, isLocked, STAGE, STAGES, STATUS_ICON } from "./stages.js";
 
 export const STAGE_FILES = Object.freeze({

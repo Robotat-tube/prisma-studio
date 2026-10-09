@@ -36,7 +36,7 @@ PRISMA Studio is a browser app whose data is a folder on the user's PC. The code
 
 ## Rules
 
-- **The review folder is the contract.** Its file names and formats stay stable, so existing reviews keep opening. Text rules (whitespace, line breaks, character counting, sorting) go through `domain/pytext.js` so every note is written the same way.
+- **The review folder is the contract.** Its file names and formats stay stable, so existing reviews keep opening. Text rules (whitespace, line breaks, character counting, sorting) go through `domain/text-rules.js` so every note is written the same way.
 - **Effects at the edges.** Dates, random seeds and file access are passed in (ports); domain functions return values instead of writing. This keeps them deterministic and testable.
 - **One module, one concern.** A module is named after what it is about (`matching`, `importers`), exports a small API, and documents it with JSDoc at the top.
 - **Public API.** Code outside `src/` (UI, tools, tests of the API) imports from `src/index.js`.

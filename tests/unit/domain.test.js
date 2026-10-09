@@ -1,4 +1,4 @@
-// Fast, self-contained tests of the domain layer (no files, no Python).
+// Fast, self-contained tests of the domain layer (no files).
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import * as fm from "../../src/domain/frontmatter.js";
@@ -8,13 +8,13 @@ import { DuplicateIndex, normalizeDoi, normalizeTitle, yearOf } from "../../src/
 import { similarity } from "../../src/domain/similarity.js";
 import { parseExport } from "../../src/domain/importers.js";
 import { memoryFolder } from "../../src/adapters/memory-folder.js";
-import { comparePy } from "../../src/domain/pytext.js";
+import { compareCodePoints } from "../../src/domain/text-rules.js";
 
-test("comparePy: Python's code-point order, also past the BMP", () => {
-  const sorted = ["b", "a", "ab", "", "～", "\u{1F600}", "R0010", "R0002"].sort(comparePy);
+test("compareCodePoints: code-point order, also past the BMP", () => {
+  const sorted = ["b", "a", "ab", "", "～", "\u{1F600}", "R0010", "R0002"].sort(compareCodePoints);
   assert.deepEqual(sorted, ["", "R0002", "R0010", "a", "ab", "b", "～", "\u{1F600}"]);
-  assert.ok(comparePy("x\u{1F600}", "x～") > 0, "a surrogate pair sorts after U+FF5E, unlike UTF-16 order");
-  assert.equal(comparePy("same", "same"), 0);
+  assert.ok(compareCodePoints("x\u{1F600}", "x～") > 0, "a surrogate pair sorts after U+FF5E, unlike UTF-16 order");
+  assert.equal(compareCodePoints("same", "same"), 0);
 });
 
 test("front matter: parse, serialize, replace one list", () => {
@@ -51,7 +51,7 @@ test("matching: DOIs, titles, years and duplicates", () => {
   assert.equal(similarity("abc", "abc"), 1);
 });
 
-test("csv: Python-compatible reading and writing", () => {
+test("csv: reading and writing", () => {
   assert.deepEqual(csv.readRows('a,"b, ""c"""\n\n1,2\n'), [["a", 'b, "c"'], ["1", "2"]]);
   assert.deepEqual(csv.readRecords("id,n\nS01,3\n"), [{ id: "S01", n: "3" }]);
   assert.equal(csv.writeRecords(["id", "q"], [{ id: "S01", q: 'a "b", c' }]), 'id,q\r\nS01,"a ""b"", c"\r\n');

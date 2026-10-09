@@ -9,7 +9,7 @@
 import * as csv from "../domain/csv.js";
 import { aiMode } from "../domain/ai-steps.js";
 import { isIncluded } from "../domain/progress.js";
-import { comparePy, normalizeNewlines, strip } from "../domain/pytext.js";
+import { compareCodePoints, normalizeNewlines, strip } from "../domain/text-rules.js";
 import { event, FULLTEXT_DIR, touch } from "../domain/stages.js";
 import { SECOND_REVIEWER_DIR } from "../domain/sampling.js";
 import { importSecondReviewer, ReviewError } from "./review-commands.js";
@@ -22,7 +22,7 @@ export class AiNotAllowed extends ReviewError {}
 
 const stem = r => r.file.split("/").pop().replace(/\.md$/, "");
 const pdfPath = r => `${FULLTEXT_DIR}/${stem(r)}.pdf`;
-// Python's dict.get gives None (JSON null) for a missing property; JavaScript would drop the key
+// a missing property is null in the JSON output, so every key is always there
 const get = (props, key) => props[key] ?? null;
 const codes = reasons => new Set(reasons.map(r => r.split(" ")[0]));
 
@@ -135,7 +135,7 @@ export async function aiSuggest(repo, st, items, { model, stage = "ta" }) {
     if ((r.props[dkey] || "pending") !== "pending" || (ft && !["include", "unsure"].includes(r.props.ta_decision))) { skipped.push(`${it.id}: already decided by the reviewer, left alone`); continue; }
     if (ft && !(await repo.folder.exists(pdfPath(r)))) { skipped.push(`${it.id}: no full text attached; suggest only from the PDF`); continue; }
     if (!["include", "unsure", "exclude"].includes(decision)) { skipped.push(`${it.id}: decision must be include / unsure / exclude`); continue; }
-    if (decision === "exclude" && !allowed.has(code)) { skipped.push(`${it.id}: exclusion needs a reason code from the screening guide (${[...allowed].sort(comparePy).join(", ")})`); continue; }
+    if (decision === "exclude" && !allowed.has(code)) { skipped.push(`${it.id}: exclusion needs a reason code from the screening guide (${[...allowed].sort(compareCodePoints).join(", ")})`); continue; }
     repo.put({ ...r, props: { ...r.props, [pre + "decision"]: decision, [pre + "reason"]: decision === "exclude" ? code : "", [pre + "why"]: strip(it.why || "") } });
     written++;
   }

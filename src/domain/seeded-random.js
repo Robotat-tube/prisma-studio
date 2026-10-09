@@ -1,15 +1,15 @@
 /**
- * Python's random.Random(seed).sample(), reproduced exactly (Mersenne Twister MT19937, CPython's integer
+ * A seeded random sample (Mersenne Twister MT19937 with the standard integer
  * seeding and sampling algorithm). The second-reviewer sample is reported with its seed; the same seed must
- * draw the same records in the Python tool and in this app.
- * @module domain/pyrandom
+ * always draw the same records.
+ * @module domain/seeded-random
  */
 
 class MersenneTwister {
   #mt = new Uint32Array(624);
   #index = 625;
 
-  /** CPython's init_by_array(key) for a non-negative integer seed (32-bit chunks, least significant first). */
+  /** init_by_array(key) for a non-negative integer seed (32-bit chunks, least significant first). */
   constructor(seed) {
     let n = BigInt(seed);
     if (n < 0n) n = -n;

@@ -4,7 +4,7 @@
  * Functions here change the state object they are given and take the current time from the caller.
  * @module domain/stages
  */
-import { strip } from "./pytext.js";
+import { strip } from "./text-rules.js";
 
 /** @typedef {{key: string, title: string, optional: boolean, description: string}} Stage */
 
@@ -86,7 +86,7 @@ export const CHECKLIST = Object.freeze([
 /** A deep copy of plain data (state values are JSON). */
 const copy = v => (v === undefined ? v : JSON.parse(JSON.stringify(v)));
 
-/** Python's == on JSON-like values: deep, key order ignored. */
+/** Equality of JSON-like values: deep, key order ignored. */
 export function sameValue(a, b) {
   if (a === b) return true;
   if (typeof a === "boolean" || typeof b === "boolean") return Number(a) === Number(b) && typeof a !== "string" && typeof b !== "string";

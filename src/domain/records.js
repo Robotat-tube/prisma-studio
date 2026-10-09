@@ -5,7 +5,7 @@
  */
 import * as frontmatter from "./frontmatter.js";
 import { recordName } from "./names.js";
-import { strip } from "./pytext.js";
+import { strip } from "./text-rules.js";
 import { NO_ABSTRACT } from "./vocabulary.js";
 
 /**

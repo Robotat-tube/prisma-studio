@@ -3,7 +3,7 @@
  * (Chrome, Edge). Text is read with universal newlines and written with "\n", as the Node adapter does.
  * @module adapters/browser-folder
  */
-import { normalizeNewlines } from "../domain/pytext.js";
+import { normalizeNewlines } from "../domain/text-rules.js";
 
 const parts = path => String(path).split("/").filter(Boolean);
 

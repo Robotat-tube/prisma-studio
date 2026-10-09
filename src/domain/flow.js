@@ -3,7 +3,7 @@
  * records were excluded.
  * @module domain/flow
  */
-import { comparePy } from "./pytext.js";
+import { compareCodePoints } from "./text-rules.js";
 
 /** @typedef {{id: string, kind: string, database: string, date: string, query: string, filters: string,
  *   export: string, records: string|number, new: string|number, duplicates: string|number}} SearchRow */
@@ -11,11 +11,11 @@ import { comparePy } from "./pytext.js";
 const count = (items, value) => items.filter(v => v === value).length;
 const toInt = v => parseInt(v || 0, 10) || 0;
 
-/** Counts of each value, sorted by value as Python's sorted(Counter.items()). @returns {[string, number][]} */
+/** Counts of each value, sorted by value (code-point order). @returns {[string, number][]} */
 function tally(values) {
   const m = new Map();
   for (const v of values) m.set(v, (m.get(v) ?? 0) + 1);
-  return [...m].sort(([a], [b]) => comparePy(String(a), String(b)));
+  return [...m].sort(([a], [b]) => compareCodePoints(String(a), String(b)));
 }
 
 /**

@@ -5,7 +5,7 @@
  */
 import { readRows } from "./csv.js";
 import { normalizeDoi, yearOf } from "./matching.js";
-import { collapseWhitespace, splitLines, strip } from "./pytext.js";
+import { collapseWhitespace, splitLines, strip } from "./text-rules.js";
 
 /**
  * @typedef {object} Entry  one paper as found in an export

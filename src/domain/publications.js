@@ -4,7 +4,7 @@
  * @module domain/publications
  */
 import * as frontmatter from "./frontmatter.js";
-import { chars, strip } from "./pytext.js";
+import { chars, strip } from "./text-rules.js";
 
 const FORBIDDEN = /[\\/:*?"<>|#^[\]]/g;
 

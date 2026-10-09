@@ -2,7 +2,7 @@
  * How papers are named: authors as cited and record file names (`R0001 - 2024 - Liu et al. - Title`).
  * @module domain/names
  */
-import { chars, collapseWhitespace, isPrintable, splitWords, strip } from "./pytext.js";
+import { chars, collapseWhitespace, isPrintable, splitWords, strip } from "./text-rules.js";
 
 const isPrivateUse = c => c.codePointAt(0) >= 0xe000 && c.codePointAt(0) <= 0xf8ff;   // e.g. U+F020 in exports
 const keepInName = c => " ,'’.-".includes(c) || /[\p{L}\p{M}\p{N}]/u.test(c);

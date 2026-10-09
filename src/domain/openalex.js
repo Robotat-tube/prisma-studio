@@ -4,7 +4,7 @@
  * @module domain/openalex
  */
 import { makeEntry } from "./importers.js";
-import { comparePy } from "./pytext.js";
+import { compareCodePoints } from "./text-rules.js";
 
 export const API = "https://api.openalex.org";
 export const WORK_FIELDS = "id,doi,title,publication_year,authorships,primary_location,abstract_inverted_index,referenced_works";
@@ -14,7 +14,7 @@ export function abstractFromIndex(inverted) {
   if (!inverted || !Object.keys(inverted).length) return "";
   const at = [];
   for (const [word, positions] of Object.entries(inverted)) for (const i of positions) at.push([i, word]);
-  at.sort((a, b) => a[0] - b[0] || comparePy(a[1], b[1]));
+  at.sort((a, b) => a[0] - b[0] || compareCodePoints(a[1], b[1]));
   return at.map(([, w]) => w).join(" ");
 }
 

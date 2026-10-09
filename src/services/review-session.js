@@ -1,7 +1,6 @@
 /**
  * One open review and every action the reviewer can take on it (what each button in the app does).
- * A session holds the records and the review state in memory, and saves both after each action, as the
- * Python tool did per request. Changes to protected parts of a locked protocol throw AmendmentRequired;
+ * A session holds the records and the review state in memory, and saves both after each action. Changes to protected parts of a locked protocol throw AmendmentRequired;
  * the UI asks for the reason and repeats the action with it.
  * @module services/review-session
  */
@@ -10,7 +9,7 @@ import * as frontmatter from "../domain/frontmatter.js";
 import { FILES, screeningGuide } from "../domain/notes.js";
 import { PROTOCOL_FILE } from "../domain/protocol.js";
 import { buildQuery } from "../domain/queries.js";
-import { comparePy, splitWords, strip } from "../domain/pytext.js";
+import { compareCodePoints, splitWords, strip } from "../domain/text-rules.js";
 import { addIdea, amend, event, FULLTEXT_DIR, guardedChange, isLocked, needsAmendment, sameValue, saveQuestions, setStatus, touch } from "../domain/stages.js";
 import { checkScreening, drawSample, importSearch, importSecondReviewer, addPaper, writeReport, ReviewError } from "./review-commands.js";
 import { addKeptToLibrary, applyLibrarySync, emptyLibrary, planLibrarySync } from "./library.js";
@@ -488,5 +487,5 @@ export class ReviewSession {
   }
 
   /** Records sorted by id, for the UI. */
-  records() { return [...this.repo.records.values()].sort((a, b) => comparePy(a.id, b.id)); }
+  records() { return [...this.repo.records.values()].sort((a, b) => compareCodePoints(a.id, b.id)); }
 }
