@@ -328,3 +328,4 @@ input:focus-visible, select:focus-visible, textarea:focus-visible { outline: non
   50% { box-shadow: 0 12px 40px rgb(0 0 0 / .3), 0 0 22px 5px color-mix(in srgb, var(--accent) 55%, transparent); border-color: var(--accent); }
 }
 @media (prefers-reduced-motion: reduce) { #btnTour.glow, .tour-offer { animation: none; } #btnTour.glow { background: var(--accent-2); } .tour-offer { border-color: var(--accent); } }
+.aicard .spacer { flex: 1; }

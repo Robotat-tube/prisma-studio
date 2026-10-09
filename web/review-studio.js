@@ -317,18 +317,22 @@ function aiCard(key) {
   const step = S.ai?.steps[key];
   if (!step) return null;
   const mode = S.ai.modes[key] || "off", cur = step.modes.find(m => m.key === mode);
-  return h("div", { class: "aicard" + (mode === "off" ? "" : " on") },
+  // folded to one line by default; the details (what the mode does, the skill, what you check) open on request
+  const open = store.get("ai_open", "") === "1";
+  const toggle = () => { store.set("ai_open", open ? "" : "1"); render(); };
+  return h("div", { class: "aicard" + (mode === "off" ? "" : " on") + (open ? " open" : "") },
     h("div", { class: "row" },
       h("b", {}, "🤖 AI assistance"),
       segmented(step.modes.map(m => [m.key, m.label]), mode, v => api("ai_mode", { stage: key, mode: v })),
-      h("span", { class: "small muted" }, cur.desc)),
-    mode === "off" ? null : h("div", { class: "aibody" },
-      h("div", { class: "row" },
-        btn("📋 Copy prompt for Claude Code", () => copy(step.prompt), "primary"),
-        h("span", { class: "small muted" }, step.skills.length > 1 ? "Skills: " : "Skill: ",
-          step.skills.map((n, i) => [i ? ", " : "", h("code", {}, `.claude/skills/${n}/SKILL.md`)]))),
-      h("div", { class: "small" }, h("b", {}, "You check: "),
-        h("ul", {}, step.checks.map(c => h("li", {}, c))))));
+      mode === "off" ? null : btn("📋 Copy prompt", () => copy(step.prompt), "sm primary"),
+      h("span", { class: "spacer" }),
+      h("button", { class: "btn sm ghost ai-toggle", "aria-expanded": String(open), onclick: toggle }, open ? "Hide details ▴" : "Details ▾")),
+    open ? h("div", { class: "aibody" },
+      h("div", { class: "small muted" }, cur.desc),
+      mode === "off" ? null : h("div", { class: "small muted" }, step.skills.length > 1 ? "Skills: " : "Skill: ",
+        step.skills.map((n, i) => [i ? ", " : "", h("code", {}, `.claude/skills/${n}/SKILL.md`)])),
+      mode === "off" ? null : h("div", { class: "small" }, h("b", {}, "You check: "),
+        h("ul", {}, step.checks.map(c => h("li", {}, c))))) : null);
 }
 
 // Where each stage writes its data (paths relative to the review folder; @library = 98 - Publications)
