@@ -1429,10 +1429,14 @@ $("#main").addEventListener("scroll", () => $("#topwrap").classList.toggle("scro
 function renderDraftBar() {
   const bar = $("#draftBar");
   bar.hidden = !backend.entry?.draft;
+  bar.classList.toggle("has-content", draftHasContent());
   if (bar.hidden) return;
   const recent = S.reviews.filter(r => r !== REVIEW).slice(0, 2);
   bar.replaceChildren(
-    h("span", { class: "draft-text" }, h("b", {}, "✏️ Draft"), " · kept in this browser until you save it to a folder on your PC."),
+    h("span", { class: "draft-text" }, h("span", { class: "unsaved-badge" }, "● Not saved"),
+      draftHasContent()
+        ? " This draft exists only in this browser. Save it to a folder on your PC to keep it."
+        : " Start writing here; save it to a folder on your PC when you want to keep it."),
     h("span", { class: "draft-actions" },
       btn("💾 Save to a folder…", e => busy(e.currentTarget, saveDraft), "sm primary"),
       btn("📂 Open a review folder…", openReviewFolder, "sm"),

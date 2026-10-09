@@ -299,3 +299,6 @@ input:focus-visible, select:focus-visible, textarea:focus-visible { outline: non
 .draft-text { flex: 1 1 280px; font-size: 13.5px; color: var(--muted); }
 .draft-text b { color: var(--text); }
 .draft-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+.unsaved-badge { display: inline-block; font-weight: 700; color: var(--warn); background: var(--warn-bg); border: 1px solid color-mix(in srgb, var(--warn) 40%, transparent); border-radius: 99px; padding: 1px 10px; margin-right: 4px; }
+.draft-bar.has-content { border-color: color-mix(in srgb, var(--warn) 55%, var(--border)); background: linear-gradient(90deg, var(--warn-bg), var(--surface)); }
+.draft-bar.has-content .draft-text { color: var(--text); }
