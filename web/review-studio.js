@@ -1515,7 +1515,7 @@ const TOUR = [
   { target: "#draftBar", title: "Your files stay on your PC",
     text: "You start in a draft kept in this browser. Save it to a folder when you want to keep it: the review becomes plain notes, tables and PDFs on your PC. Nothing is uploaded." },
   { target: ".toolbar", title: "Tools for every stage",
-    text: "The timeline of everything you did, the PRISMA-ScR checklist, a glossary of review terms and, if you want it, AI help from Claude, which only ever suggests." },
+    text: "The timeline of everything you did, the PRISMA-ScR checklist and, if you want it, AI help from Claude, which only ever suggests. The glossary and keyboard shortcuts are under ⚙ Settings." },
   { title: "Ready? Start with your idea ✍️",
     text: "Write down what you want to find out and why. It's fine to be vague: the next stage makes it precise. You can replay this tour with 🎓 Tour at the top." },
 ];
