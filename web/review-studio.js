@@ -1439,6 +1439,15 @@ function renderDraftBar() {
       ...recent.map(r => btn(`▶ ${r.replace(/ records$/, "")}`, () => switchReview(r), "sm ghost"))));
 }
 
+// Closing or leaving the page with a draft that has content: the browser asks first (it shows its own wording).
+// The draft is kept in the browser either way, but only a saved folder is safe from clearing the browser's data.
+const draftHasContent = () => Boolean(backend.entry?.draft && S && (S.events.length || S.records.length || S.state.idea?.length));
+window.addEventListener("beforeunload", e => {
+  if (!draftHasContent()) return;
+  e.preventDefault();
+  e.returnValue = "";
+});
+
 async function saveDraft() {
   const name = (await promptText("Save the draft", "Name of the review. A folder \"<name> records\" is made in the place you choose next.", "e.g. Repairability review"))?.trim();
   if (!name) return;
