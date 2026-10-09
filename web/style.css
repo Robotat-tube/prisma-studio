@@ -317,3 +317,9 @@ input:focus-visible, select:focus-visible, textarea:focus-visible { outline: non
 .tour-offer { position: fixed; right: 20px; bottom: 20px; z-index: 90; width: min(360px, calc(100vw - 40px)); background: var(--surface); border: 1px solid color-mix(in srgb, var(--accent) 45%, var(--border)); border-radius: 14px; padding: 14px 16px; box-shadow: 0 12px 40px rgb(0 0 0 / .3); display: grid; gap: 10px; }
 .tour-offer-text { color: var(--muted); }
 .tour-offer-text b { color: var(--text); }
+#btnTour.glow { color: var(--accent); border-color: color-mix(in srgb, var(--accent) 55%, transparent); animation: tour-glow 2s ease-in-out infinite; }
+@keyframes tour-glow {
+  0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 0%, transparent); background: transparent; }
+  50% { box-shadow: 0 0 14px 3px color-mix(in srgb, var(--accent) 55%, transparent); background: var(--accent-2); }
+}
+@media (prefers-reduced-motion: reduce) { #btnTour.glow { animation: none; background: var(--accent-2); } }

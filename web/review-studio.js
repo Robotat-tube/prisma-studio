@@ -1412,6 +1412,7 @@ $("#btnClaude").onclick = openClaudeGuide;
 $("#btnTimeline").onclick = openTimeline;
 $("#btnKeys").onclick = openKeys;
 $("#btnTour").onclick = () => startTour();
+$("#btnTour").classList.toggle("glow", store.get("toured", "") !== "yes");   // glows until the tour has been taken
 $("#btnScr").onclick = () => openChecklist();
 $("#main").addEventListener("scroll", () => $("#topwrap").classList.toggle("scrolled", $("#main").scrollTop > 4));
 
@@ -1533,6 +1534,7 @@ function startTour(i = 0) {
   tourClose?.();
   document.querySelector(".tour-offer")?.remove();
   store.set("toured", "yes");
+  $("#btnTour").classList.remove("glow");
   const steps = TOUR.filter(s => !s.target || (document.querySelector(s.target) && !document.querySelector(s.target).hidden));
   const step = steps[i];
   if (!step) return;
