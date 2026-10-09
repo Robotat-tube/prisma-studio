@@ -7,7 +7,7 @@ self.addEventListener("install", event => {
   event.waitUntil((async () => {
     const cache = await caches.open(CACHE);
     const files = await (await fetch("precache.json", { cache: "no-store" })).json();
-    await cache.addAll(["./", ...files]);                         // relative to sw.js
+    await cache.addAll(["./", ...files].map(url => new Request(url, { cache: "reload" })));   // relative to sw.js; never the browser's cached copy
     await self.skipWaiting();
   })());
 });
@@ -20,7 +20,9 @@ self.addEventListener("fetch", event => {
   event.respondWith((async () => {
     const cache = await caches.open(CACHE);
     try {
-      const res = await fetch(req);
+      // always ask the server (it answers "not modified" when nothing changed): the browser's own cache could
+      // otherwise mix a new page with an old script after an update
+      const res = await (req.mode === "navigate" ? fetch(req.url, { cache: "no-cache", credentials: "same-origin" }) : fetch(req, { cache: "no-cache" }));
       if (res.ok) cache.put(req, res.clone());
       return res;
     } catch {
