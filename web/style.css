@@ -302,3 +302,18 @@ input:focus-visible, select:focus-visible, textarea:focus-visible { outline: non
 .unsaved-badge { display: inline-block; font-weight: 700; color: var(--warn); background: var(--warn-bg); border: 1px solid color-mix(in srgb, var(--warn) 40%, transparent); border-radius: 99px; padding: 1px 10px; margin-right: 4px; }
 .draft-bar.has-content { border-color: color-mix(in srgb, var(--warn) 55%, var(--border)); background: linear-gradient(90deg, var(--warn-bg), var(--surface)); }
 .draft-bar.has-content .draft-text { color: var(--text); }
+
+/* app tour */
+.tour { position: fixed; inset: 0; z-index: 100; }
+.tour-spot { position: fixed; border-radius: 12px; box-shadow: 0 0 0 9999px rgb(0 0 0 / .62); outline: 2px solid var(--accent); transition: all .25s ease; pointer-events: none; }
+.tour-spot.none { left: 50%; top: 50%; width: 0; height: 0; outline: 0; }
+.tour-card { position: fixed; width: min(380px, calc(100vw - 28px)); background: var(--surface); color: var(--text); border: 1px solid var(--border); border-radius: 14px; padding: 16px 18px; box-shadow: 0 12px 40px rgb(0 0 0 / .35); }
+.tour-spot.none + .tour-card { left: 50% !important; top: 50% !important; transform: translate(-50%, -50%); width: min(460px, calc(100vw - 28px)); }
+.tour-card h3 { margin: 2px 0 6px; font-size: 17px; }
+.tour-card p { margin: 0 0 14px; color: var(--muted); }
+.tour-count { font-size: 12px; color: var(--faint); font-weight: 600; letter-spacing: .04em; }
+.tour-buttons { gap: 6px; }
+.tour-buttons .spacer { flex: 1; }
+.tour-offer { position: fixed; right: 20px; bottom: 20px; z-index: 90; width: min(360px, calc(100vw - 40px)); background: var(--surface); border: 1px solid color-mix(in srgb, var(--accent) 45%, var(--border)); border-radius: 14px; padding: 14px 16px; box-shadow: 0 12px 40px rgb(0 0 0 / .3); display: grid; gap: 10px; }
+.tour-offer-text { color: var(--muted); }
+.tour-offer-text b { color: var(--text); }

@@ -27,6 +27,8 @@ PRISMA Studio walks you through a scoping review from the first idea to the PRIS
 3. When you want to keep it, press **💾 Save to a folder…** in the bar at the top: give the review a name and pick a place on your PC. From then on every change is written to that folder.
 4. Next time, the same bar offers **📂 Open a review folder…** and **▶ Continue** for the reviews you opened before. The browser asks once per visit before the app may edit a folder.
 
+New here? On your first visit the app offers a **1-minute tour** (🎓 Tour at the top replays it).
+
 Tip: install it as an app (install icon at the right of the address bar). It then opens in its own window and works **offline**.
 
 ## The 15 stages

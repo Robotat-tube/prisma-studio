@@ -1412,6 +1412,7 @@ $("#btnGlossary").onclick = openGlossary;
 $("#btnClaude").onclick = openClaudeGuide;
 $("#btnTimeline").onclick = openTimeline;
 $("#btnKeys").onclick = openKeys;
+$("#btnTour").onclick = () => startTour();
 $("#btnScr").onclick = () => openChecklist();
 $("#main").addEventListener("scroll", () => $("#topwrap").classList.toggle("scrolled", $("#main").scrollTop > 4));
 
@@ -1501,6 +1502,79 @@ window.addEventListener("focus", checkOutside);
 document.addEventListener("visibilitychange", checkOutside);
 setInterval(checkOutside, 15000);
 
+// ================================================================ app tour
+// A short, plain explanation of what the app is for, one highlighted part of the screen at a time.
+// Offered once on the first visit; the 🎓 Tour button replays it.
+const TOUR = [
+  { title: "Welcome to PRISMA Studio 👋",
+    text: "This app guides you through a scoping review, step by step: from your first idea to a finished PRISMA report. It keeps every step documented, so your review is transparent and easy to reproduce." },
+  { target: "#stepper", title: "The 15 stages",
+    text: "Your review in order: planning (questions, search terms, protocol), conducting (searching, screening, full texts, charting) and reporting. Optional stages are marked. Click any stage to open it." },
+  { target: "#topbar", title: "One stage at a time",
+    text: "Each stage says what to do and where it is saved. ? Help explains the method, 💡 Example shows a filled-in example, and ✓ Mark done moves you on." },
+  { target: "#draftBar", title: "Your files stay on your PC",
+    text: "You start in a draft kept in this browser. Save it to a folder when you want to keep it: the review becomes plain notes, tables and PDFs on your PC. Nothing is uploaded." },
+  { target: ".toolbar", title: "Tools for every stage",
+    text: "The timeline of everything you did, the PRISMA-ScR checklist, a glossary of review terms and, if you want it, AI help from Claude, which only ever suggests." },
+  { title: "Ready? Start with your idea ✍️",
+    text: "Write down what you want to find out and why. It's fine to be vague: the next stage makes it precise. You can replay this tour with 🎓 Tour at the top." },
+];
+
+function offerTour() {
+  const card = h("div", { class: "tour-offer", role: "dialog", "aria-label": "App tour" },
+    h("div", { class: "tour-offer-text" }, h("b", {}, "New here?"), " Take the 1-minute tour to see what PRISMA Studio does."),
+    h("div", { class: "row" },
+      btn("🎓 Start tour", () => { card.remove(); startTour(); }, "sm primary"),
+      btn("Not now", () => { card.remove(); store.set("toured", "skipped"); }, "sm ghost")));
+  document.body.append(card);
+}
+
+let tourClose = null;                         // closes the step on screen
+function startTour(i = 0) {
+  tourClose?.();
+  document.querySelector(".tour-offer")?.remove();
+  store.set("toured", "yes");
+  const steps = TOUR.filter(s => !s.target || (document.querySelector(s.target) && !document.querySelector(s.target).hidden));
+  const step = steps[i];
+  if (!step) return;
+  const target = step.target && document.querySelector(step.target);
+  const wrap = h("div", { class: "tour" });
+  const spot = h("div", { class: "tour-spot" + (target ? "" : " none") });
+  const close = () => { wrap.remove(); document.removeEventListener("keydown", keys, true); window.removeEventListener("resize", place); tourClose = null; };
+  tourClose = close;
+  const card = h("div", { class: "tour-card", role: "dialog", "aria-label": step.title },
+    h("div", { class: "tour-count" }, `${i + 1} of ${steps.length}`),
+    h("h3", {}, step.title), h("p", {}, step.text),
+    h("div", { class: "row tour-buttons" },
+      i < steps.length - 1 ? btn("Skip tour", close, "sm ghost") : null,
+      h("span", { class: "spacer" }),
+      i > 0 ? btn("← Back", () => startTour(i - 1), "sm") : null,
+      i < steps.length - 1 ? btn("Next →", () => startTour(i + 1), "sm primary") : btn("Let's start", () => { close(); go("idea"); }, "sm primary")));
+  wrap.append(spot, card);
+  document.body.append(wrap);
+  function place() {
+    if (!target) return;
+    const r = target.getBoundingClientRect(), pad = 6;
+    Object.assign(spot.style, { left: `${r.left - pad}px`, top: `${r.top - pad}px`, width: `${r.width + 2 * pad}px`, height: `${r.height + 2 * pad}px` });
+    const cw = card.offsetWidth, ch = card.offsetHeight, m = 14;
+    let left = r.right + m, top = r.top;                                         // right of the target …
+    if (left + cw > innerWidth - m) { left = Math.max(m, Math.min(r.left, innerWidth - cw - m)); top = r.bottom + m; }   // … or below it
+    if (top + ch > innerHeight - m) top = Math.max(m, r.top - ch - m);                                                   // … or above it
+    Object.assign(card.style, { left: `${left}px`, top: `${Math.max(m, top)}px` });
+  }
+  function keys(e) {
+    if (e.key === "Escape") close();
+    else if (e.key === "ArrowRight" && i < steps.length - 1) startTour(i + 1);
+    else if (e.key === "ArrowLeft" && i > 0) startTour(i - 1);
+    else return;
+    e.stopPropagation(); e.preventDefault();
+  }
+  place();
+  window.addEventListener("resize", place);
+  document.addEventListener("keydown", keys, true);
+  card.querySelector(".btn.primary")?.focus();
+}
+
 // main.js waits for this to time how long opening a review takes
 window.studioReady = (async function start() {
   try {
@@ -1513,6 +1587,7 @@ window.studioReady = (async function start() {
       S = await getJSON(`/api/state?review=${encodeURIComponent(REVIEW)}`);
     }
     render();
+    if (!store.get("toured", "")) offerTour();
   } catch (e) {
     $("#page").replaceChildren(h("div", { class: "card empty" }, h("div", { class: "big" }, "⚠️"), h("h3", {}, "Could not load the review"), h("p", {}, e.message)));
   }
