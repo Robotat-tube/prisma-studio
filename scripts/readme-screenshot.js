@@ -23,6 +23,7 @@ const DEMO = async () => {
     { name: "Appliances", terms: ["appliance*", "household product*", "consumer electronic*"] },
     { name: "Design", terms: ["design method*", "design guideline*", "design for"] }]);
   for (const k of ["idea", "questions", "concepts", "queries", "protocol"]) await s.setStageStatus(k, "done");
+  await s.setAiMode("screening", "suggest");                   // shows the AI label in the sidebar, switched on
   await s.lockProtocol("OSF");
   const papers = [
     ["Design for disassembly of small kitchen appliances: a scoring method", "Vermeer, L.; Okafor, C.", 2023, "Journal of Cleaner Production",

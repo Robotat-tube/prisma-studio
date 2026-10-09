@@ -274,6 +274,13 @@ function pilotChart(pilots) {
 const PHASES = [["Planning", 0, 6], ["Conducting", 7, 13], ["Reporting", 14, 14]];
 const stage = k => S.stages.find(s => s.key === k);
 
+/** "AI" next to a stage where AI can help: grey while off, in the accent colour when the review switched it on. */
+function aiMark(key) {
+  if (!S.ai?.steps[key]) return null;
+  const on = (S.ai.modes[key] || "off") !== "off";
+  return h("span", { class: "ai-mark" + (on ? " on" : ""), title: on ? "AI assistance is on for this stage" : "AI can help here (off; switch it on in the stage's AI assistance card)" }, "AI");
+}
+
 function renderSidebar() {
   const sel = $("#reviewSel");
   const label = r => /[\\/]/.test(r) ? "📂 " + r.split(/[\\/]/).pop().replace(/ records$/, "") : r;
@@ -287,7 +294,7 @@ function renderSidebar() {
     S.stages.slice(a, b + 1).forEach((s, i) => nav.append(h("div", {
       class: `step ${s.status} ${s.key === CUR ? "active" : ""}`, onclick: () => go(s.key), title: s.desc,
     }, h("span", { class: "dot" }, s.status === "done" ? "✓" : s.status === "skipped" ? "–" : ""),
-      s.title.replace(/^\d+ · /, ""), s.optional ? h("span", { class: "opt" }, "optional") : null)));
+      s.title.replace(/^\d+ · /, ""), s.optional ? h("span", { class: "opt" }, "optional") : null, aiMark(s.key))));
   });
   nav.querySelector(".step.active")?.scrollIntoView({ block: "nearest", inline: "nearest" });   // narrow layout: keep the current step in view
 }
