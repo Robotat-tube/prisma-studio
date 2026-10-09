@@ -6,6 +6,10 @@
 
 PRISMA Studio walks you through a scoping review from the first idea to the PRISMA flow diagram: questions, search strings, protocol, database imports, screening, full texts, charting and the report. Your review is a plain folder of Markdown notes, CSV tables and PDFs: nothing is uploaded, there is no account, and the folder opens in Obsidian or any text editor.
 
+![PRISMA Studio: screening a record, with the review's stages in the sidebar](docs/screenshot.png)
+
+*Screening in PRISMA Studio (example data). Search terms are highlighted in the abstract; I / U / E decide.*
+
 ## Contents
 
 - [Getting started](#getting-started)
@@ -114,6 +118,7 @@ npm test                 # unit tests
 npm run check            # architecture: each layer imports only what it may
 npm run build            # the static site in dist/
 node scripts/bench-open.js "<copy of a … records folder>"   # how fast a review opens
+node scripts/readme-screenshot.js   # docs/screenshot.png, with example data (needs npm run serve)
 ```
 
 Every push to `main` is tested, built and published on GitHub Pages (`.github/workflows/pages.yml`). Review data is never part of this repository.
