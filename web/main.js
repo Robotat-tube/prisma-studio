@@ -26,7 +26,7 @@ function startSteps() {
     nav.append(el("div", { className: "phase" }, name));
     stages.STAGES.slice(a, b + 1).forEach(s => {
       const step = el("div", { className: "step", title: s.description },
-        el("span", { className: "dot" }), s.title.replace(/^\d+ · /, ""), s.optional ? el("span", { className: "opt" }, "optional") : null);
+        el("span", { className: "dot" }), s.title.replace(/^\d+ · /, ""), null);
       step.onclick = () => {                    // a preview of what the stage is for
         nav.querySelectorAll(".step.active").forEach(x => x.classList.remove("active"));
         step.classList.add("active");

@@ -292,9 +292,9 @@ function renderSidebar() {
   PHASES.forEach(([name, a, b]) => {
     nav.append(h("div", { class: "phase" }, name));
     S.stages.slice(a, b + 1).forEach((s, i) => nav.append(h("div", {
-      class: `step ${s.status} ${s.key === CUR ? "active" : ""}`, onclick: () => go(s.key), title: s.desc,
+      class: `step ${s.status} ${s.key === CUR ? "active" : ""}`, onclick: () => go(s.key), title: s.optional ? `${s.desc} (optional)` : s.desc,
     }, h("span", { class: "dot" }, s.status === "done" ? "✓" : s.status === "skipped" ? "–" : ""),
-      s.title.replace(/^\d+ · /, ""), s.optional ? h("span", { class: "opt" }, "optional") : null, aiMark(s.key))));
+      s.title.replace(/^\d+ · /, ""), aiMark(s.key))));
   });
   nav.querySelector(".step.active")?.scrollIntoView({ block: "nearest", inline: "nearest" });   // narrow layout: keep the current step in view
 }
@@ -1520,7 +1520,7 @@ const TOUR = [
   { title: "Welcome to PRISMA Studio 👋",
     text: "This app guides you through a scoping review, step by step: from your first idea to a finished PRISMA report. It keeps every step documented, so your review is transparent and easy to reproduce." },
   { target: "#stepper", title: "The 15 stages",
-    text: "Your review in order: planning (questions, search terms, protocol), conducting (searching, screening, full texts, charting) and reporting. Optional stages are marked. Click any stage to open it." },
+    text: "Your review in order: planning (questions, search terms, protocol), conducting (searching, screening, full texts, charting) and reporting. Stages marked AI are where Claude can help, if you want. Click any stage to open it." },
   { target: "#topbar", title: "One stage at a time",
     text: "Each stage says what to do and where it is saved. ? Help explains the method (with a filled-in example), and ✓ Mark done moves you on." },
   { target: "#draftBar", title: "Your files stay on your PC",
