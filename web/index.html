@@ -29,6 +29,8 @@
       <nav class="stepper" id="startSteps" aria-label="Stages of a review"></nav>
       <div class="start-side-foot">
         <button class="btn sm ghost" id="startTheme" type="button">🌓 Light / dark</button>
+        <button class="btn sm ghost" id="startInstall" type="button" title="Install it as a desktop app that works offline">⬇ Install as an app</button>
+        <a class="btn sm ghost" href="https://github.com/Robotat-tube/prisma-studio/releases/latest/download/prisma-scoping-review-studio.zip" title="The app as a ZIP with launchers for Windows, Mac and Linux, to run it on your own computer (needs Node.js)">💾 Download (Windows, Mac, Linux)</a>
         <a class="btn sm ghost" href="https://github.com/Robotat-tube/prisma-studio" target="_blank" rel="noopener">GitHub ↗</a>
       </div>
     </aside>
@@ -75,6 +77,8 @@
               <button class="btn ghost" id="btnGlossary" title="Terms used in the review (G)">📖 Glossary</button>
               <button class="btn ghost" id="btnKeys" title="Keyboard shortcuts">⌨ Keyboard shortcuts</button>
               <button class="btn ghost" id="btnTheme">🌓 Light / dark</button>
+              <button class="btn ghost" id="btnInstall" title="Install it as a desktop app that works offline">⬇ Install as an app</button>
+              <a class="btn ghost" href="https://github.com/Robotat-tube/prisma-studio/releases/latest/download/prisma-scoping-review-studio.zip" title="The app as a ZIP with launchers for Windows, Mac and Linux, to run it on your own computer (needs Node.js)">💾 Download for Windows, Mac, Linux</a>
               <button class="btn ghost" id="btnDev">🛠 Developer mode</button>
             </div>
           </div>
@@ -90,6 +94,7 @@
   <aside class="drawer" id="drawer"></aside>
   <div class="toasts" id="toasts"></div>
   <script type="module" src="main.js"></script>
+  <script src="install.js"></script>
   <script>
     // offline support (web/sw.js): the app keeps working without the server or a network
     if ("serviceWorker" in navigator) {

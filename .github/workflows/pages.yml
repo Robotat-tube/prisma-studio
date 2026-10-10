@@ -1,4 +1,6 @@
 # Builds the static site (npm run build -> dist/) after the tests pass and publishes it on GitHub Pages.
+# Also packs the app as a ZIP for running it locally (launchers for Windows, Mac and Linux) and attaches it
+# to the "latest" release: https://github.com/Robotat-tube/prisma-studio/releases/latest
 name: Pages
 
 on:
@@ -42,3 +44,35 @@ jobs:
     steps:
       - id: deployment
         uses: actions/deploy-pages@v4
+
+  download:
+    needs: build
+    if: github.repository == 'Robotat-tube/prisma-studio'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci --omit=dev
+      - name: Pack the app with its launchers
+        run: |
+          D="PRISMA Scoping Review Studio"
+          mkdir -p "pack/$D/scripts" "pack/$D/node_modules" "pack/$D/.claude"
+          cp -r bin src web package.json package-lock.json README.md LICENSE* "pack/$D/" 2>/dev/null || true
+          cp scripts/serve.js scripts/precache-list.js "pack/$D/scripts/"
+          mkdir -p "pack/$D/node_modules/pdfjs-dist"   # only what the app uses: build (browser), legacy (Node, for the AI skills)
+          cp -r node_modules/pdfjs-dist/build node_modules/pdfjs-dist/legacy node_modules/pdfjs-dist/package.json node_modules/pdfjs-dist/LICENSE "pack/$D/node_modules/pdfjs-dist/"
+          cp -r .claude/skills "pack/$D/.claude/"
+          cp "Start PRISMA Studio.cmd" "Start PRISMA Studio.command" start-prisma-studio.sh "pack/$D/"
+          chmod +x "pack/$D/Start PRISMA Studio.command" "pack/$D/start-prisma-studio.sh"
+          (cd pack && zip -qr ../prisma-scoping-review-studio.zip "$D")
+      - name: Replace the "latest" release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release delete latest --yes --cleanup-tag || true
+          gh release create latest prisma-scoping-review-studio.zip --latest             --title "PRISMA Scoping Review Studio (latest)"             --notes "The app to run on your own computer, built from ${{ github.sha }}. Unzip it, install Node.js 20 or newer (https://nodejs.org) and double-click the launcher: Windows: Start PRISMA Studio.cmd · Mac: Start PRISMA Studio.command (the first time: right-click → Open) · Linux: start-prisma-studio.sh. It opens in Chrome or Edge at http://localhost:8770/web/."

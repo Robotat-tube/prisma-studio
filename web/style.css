@@ -399,3 +399,5 @@ textarea::placeholder, input::placeholder { color: var(--faint); opacity: .75; f
 .demo-db b { font-size: 20px; color: var(--text); } .demo-db.on { border-color: var(--accent); color: var(--text); }
 .demo-total { font-size: 13px; color: var(--muted); opacity: 0; transition: opacity .4s; } .demo-total.on { opacity: 1; } .demo-total b { font-size: 18px; color: var(--ok); }
 .toolbar .btn[hidden] { display: none; }
+.btn[hidden] { display: none; }
+a.btn { text-decoration: none; color: inherit; }
