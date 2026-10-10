@@ -39,7 +39,7 @@ const debounce = (fn, ms) => { let t; return (...a) => { clearTimeout(t); t = se
 let S = null;            // server snapshot
 let H = null;            // help texts
 let REVIEW = store.get("review", "Project 2 review");
-let CUR = location.hash.slice(1) || store.get("stage", "idea");
+let CUR = location.hash.slice(1) || store.get("stage", "home");
 const D = {};            // unsaved drafts per stage
 
 // ================================================================ server calls
@@ -273,6 +273,7 @@ function pilotChart(pilots) {
 // ================================================================ chrome: sidebar, topbar, metrics
 const PHASES = [["Planning", 0, 6], ["Conducting", 7, 13], ["Reporting", 14, 14]];
 const stage = k => S.stages.find(s => s.key === k);
+const HOME = "home";                                  // the introduction page above the stages (not a stage itself)
 
 /** "AI" next to a stage where AI can help: grey while off, in the accent colour when the review switched it on. */
 function aiMark(key) {
@@ -288,7 +289,8 @@ function renderSidebar() {
   sel.replaceChildren(...S.reviews.map(r => h("option", { value: r, selected: r === REVIEW }, label(r))),
     h("option", { value: "__open__" }, "📂 Open folder…"));
   const nav = $("#stepper");
-  nav.replaceChildren();
+  nav.replaceChildren(h("div", { class: `step home ${CUR === HOME ? "active" : ""}`, onclick: () => go(HOME), title: "What PRISMA Studio is and how it works" },
+    h("span", { class: "dot" }, "⌂"), "Homepage"));
   PHASES.forEach(([name, a, b]) => {
     nav.append(h("div", { class: "phase" }, name));
     S.stages.slice(a, b + 1).forEach((s, i) => nav.append(h("div", {
@@ -300,6 +302,14 @@ function renderSidebar() {
 }
 
 function renderTop() {
+  if (CUR === HOME) {
+    $("#topbar").replaceChildren(
+      h("div", { class: "crumbs" }, `${REVIEW} · Homepage`),
+      h("div", { class: "titlerow" }, h("h1", {}, "Welcome to PRISMA Studio"), h("span", { class: "spacer" }),
+        btn("🎓 Tour", () => startTour(), "ghost"), btn("Start with your idea →", () => go("idea"), "primary")),
+      h("p", { class: "desc" }, "An introduction: what the app does, how a review is organised and where your files live."));
+    return;
+  }
   const s = stage(CUR), n = S.stages.indexOf(s);
   const phase = PHASES.find(([, a, b]) => n >= a && n <= b)[0];
   const locked = S.state.protocol.locked;
@@ -439,7 +449,7 @@ function nameFields(root) {
   }
 }
 
-function go(key) { CUR = key; store.set("stage", key); history.replaceState(null, "", "#" + key); render(); $("#main").scrollTo({ top: 0 }); const dr = $("#drawer"); if (dr.classList.contains("open")) (dr.querySelector("h2").textContent.startsWith("Example") ? openExample : openHelp)(key); }
+function go(key) { CUR = key; store.set("stage", key); history.replaceState(null, "", "#" + key); render(); $("#main").scrollTo({ top: 0 }); const dr = $("#drawer"); if (dr.classList.contains("open") && key !== HOME) (dr.querySelector("h2").textContent.startsWith("Example") ? openExample : openHelp)(key); }
 
 async function skipStage() {
   const r = await promptText("Skip this stage", "Skipping is fine for optional stages, but the reason is reported in the timeline and the PRISMA-ScR checklist.", "e.g. optional in scoping reviews; not planned in the protocol", true);
@@ -624,6 +634,84 @@ function openChecklist(focus) {
 
 // ================================================================ pages
 const PAGES = {};
+
+// The animated demo on the Homepage: a small mock screen that plays through the five steps of a review.
+// Plain DOM and CSS (no video file), so it works offline and follows the light/dark theme.
+const DEMO = [
+  { key: "plan", label: "Plan", caption: "Write down your idea, then turn it into questions and search terms.",
+    draw: el => { const t = h("div", { class: "demo-type" }); el.append(h("div", { class: "demo-lbl" }, "💡 Idea note"), t);
+      const s = "How do researchers measure how repairable a phone is?"; let i = 0;
+      return setInterval(() => { t.textContent = s.slice(0, ++i); }, 45); } },
+  { key: "search", label: "Search", caption: "Run the search strings in the databases and import the exports. Duplicates are removed.",
+    draw: el => { const n = h("b", {}, "0"); el.append(h("div", { class: "demo-lbl" }, "🔎 Scopus · Web of Science"), h("div", { class: "demo-big" }, n, " records"));
+      let v = 0; return setInterval(() => { v = Math.min(412, v + 23); n.textContent = v; }, 60); } },
+  { key: "screen", label: "Screen", caption: "Read each title and abstract: include, unsure or exclude with a reason. Then the full texts.",
+    draw: el => { const papers = ["Repairability scoring of smartphones", "Battery chemistry review", "EN 45554 in practice", "Consumer repair behaviour"];
+      const rows = papers.map(p => h("div", { class: "demo-row" }, h("span", {}, p), h("span", { class: "demo-dec" })));
+      el.append(h("div", { class: "demo-lbl" }, "☑ Title/abstract screening"), ...rows);
+      let i = 0; return setInterval(() => { if (i >= rows.length) return; const d = rows[i].lastChild, ex = i === 1;
+        d.textContent = ex ? "✕ exclude · E2" : "✓ include"; d.className = "demo-dec " + (ex ? "bad" : "ok"); i++; }, 700); } },
+  { key: "chart", label: "Chart", caption: "Fill a charting form for every included paper (AI can prefill it; you check).",
+    draw: el => { const cells = ["Method", "Index", "Products", "Scale"].map(k => [k, h("span", { class: "demo-cell" })]);
+      el.append(h("div", { class: "demo-lbl" }, "▦ Data charting"), ...cells.map(([k, c]) => h("div", { class: "demo-row" }, h("span", { class: "muted" }, k), c)));
+      const vals = ["Expert scoring", "EN 45554", "Smartphones", "1–10"]; let i = 0;
+      return setInterval(() => { if (i < cells.length) cells[i][1].textContent = vals[i++]; }, 650); } },
+  { key: "report", label: "Report", caption: "The PRISMA flow diagram and checklist are made from your decisions.",
+    draw: el => { const box = (t, n) => h("div", { class: "demo-flow" }, t, h("b", {}, n));
+      const bs = [box("Identified", 412), box("Screened", 318), box("Full text", 64), box("Included", 27)];
+      bs.forEach(b => b.style.opacity = 0); el.append(h("div", { class: "demo-lbl" }, "📊 PRISMA flow"), h("div", { class: "demo-flows" }, bs));
+      let i = 0; return setInterval(() => { if (i < bs.length) bs[i++].style.opacity = 1; }, 500); } },
+];
+
+function homeDemo() {
+  let i = 0, timer = null, anim = null, playing = !matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const screen = h("div", { class: "demo-screen", "aria-live": "polite" }), caption = h("p", { class: "demo-caption" });
+  const bar = h("div", { class: "demo-progress" }, h("i"));
+  const tabs = DEMO.map((d, k) => h("button", { class: "demo-tab", onclick: () => { show(k); } }, `${k + 1}. ${d.label}`));
+  const play = btn("", () => { playing = !playing; show(i); }, "sm ghost");
+  function show(k) {
+    clearInterval(anim); clearTimeout(timer);
+    if (!screen.isConnected && timer !== null) return;          // the page was left: stop
+    i = k; screen.replaceChildren(); anim = DEMO[i].draw(screen);
+    caption.textContent = DEMO[i].caption;
+    tabs.forEach((t, n) => t.classList.toggle("on", n === i));
+    play.textContent = playing ? "⏸ Pause" : "▶ Play";
+    bar.firstChild.style.animation = "none"; bar.firstChild.offsetWidth;
+    bar.firstChild.style.animation = playing ? "demo-bar 4.5s linear forwards" : "none";
+    timer = setTimeout(() => playing ? show((i + 1) % DEMO.length) : null, 4500);
+  }
+  setTimeout(() => show(0));
+  return h("div", { class: "demo" }, h("div", { class: "demo-tabs" }, tabs, h("span", { class: "spacer" }), play), bar, screen, caption);
+}
+
+// Homepage: an introduction to the app — what it is for, the three phases, where the files live, AI help
+PAGES.home = () => {
+  const done = S.stages.filter(s => s.status === "done" || s.status === "skipped").length;
+  const next = S.stages.find(s => s.status !== "done" && s.status !== "skipped");
+  const phaseCard = ([name, a, b], what) => h("div", { class: "card home-phase" },
+    h("h3", {}, name), h("p", { class: "sub" }, what),
+    h("div", { class: "home-stages" }, S.stages.slice(a, b + 1).map(s =>
+      h("button", { class: "home-stage " + s.status, title: s.desc, onclick: () => go(s.key) },
+        s.status === "done" ? "✓ " : "", s.title.replace(/^\d+ · /, ""), aiMark(s.key)))));
+  return h("div", { class: "home" },
+    card("See how it works", "A one-minute walk through a review. Click a step to jump to it.", homeDemo()),
+    card("What PRISMA Studio does", null,
+      h("p", {}, "PRISMA Studio guides you through a scoping review that follows the PRISMA-ScR reporting guideline: from the first idea, through questions, search strings and a registered protocol, to screening, full texts, data charting and the final PRISMA flow diagram and checklist."),
+      h("p", {}, "Every step is dated and documented, so the review stays transparent and reproducible. Each stage says what to do, where it is saved and has ? Help with a worked example."),
+      h("div", { class: "row", style: "margin-top:12px" },
+        pill(`${done} of ${S.stages.length} stages done`, done === S.stages.length ? "ok" : "info"),
+        next ? btn(`Continue: ${next.title.replace(/^\d+ · /, "")} →`, () => go(next.key), "primary") : null)),
+    h("div", { class: "grid3", style: "margin-bottom:16px" },
+      phaseCard(PHASES[0], "Decide what you look for and how: questions, concepts, search strings, a pilot and the protocol."),
+      phaseCard(PHASES[1], "Run the searches, screen titles, abstracts and full texts, find the PDFs and chart the data."),
+      phaseCard(PHASES[2], "The PRISMA flow diagram, the PRISMA-ScR checklist and exports for the paper.")),
+    h("div", { class: "grid3" },
+      card("🔒 Your files, your PC", null, h("p", { class: "small" }, "A review is a folder (“<name> records”) of Markdown notes, CSV tables and PDFs. Nothing is uploaded and there is no account. The folder opens in Obsidian too.")),
+      card("🤖 AI only if you want it", null, h("p", { class: "small" }, "Stages marked AI are where Claude can pre-screen, fetch PDFs or prefill charting. It only suggests; you confirm every decision."),
+        btn("Working with Claude", openClaudeGuide, "sm")),
+      card("🧭 Finding your way", null, h("p", { class: "small" }, "Click a stage in the sidebar, or use Alt+↑/↓. The timeline (T), glossary (G) and PRISMA-ScR checklist are in the bar at the top."),
+        btn("🎓 Take the tour", () => startTour(), "sm"))));
+};
 
 PAGES.idea = () => {
   const ta = autosize(h("textarea", { placeholder: exampleFor("idea", "Note") || "What do you want to find out, and why? What did you read or discuss? What changed?", rows: 4, value: D.idea || "", oninput: e => D.idea = e.target.value }));
@@ -1409,8 +1497,8 @@ document.addEventListener("keydown", e => {
     return;
   }
   if (typing || e.ctrlKey || e.metaKey || e.altKey) return;
-  if (e.key === "?") { openHelp(CUR); return; }
-  if (e.key.toLowerCase() === "x") { openExample(CUR); return; }
+  if (e.key === "?" && CUR !== HOME) { openHelp(CUR); return; }
+  if (e.key.toLowerCase() === "x" && CUR !== HOME) { openExample(CUR); return; }
   if (e.key.toLowerCase() === "g") { openGlossary(); return; }
   if (e.key.toLowerCase() === "t") { openTimeline(); return; }
   if (CUR !== "screening" || !SC.id) return;
@@ -1500,7 +1588,7 @@ async function switchReview(name) {
     REVIEW = name; store.set("review", name);
     for (const k of Object.keys(D)) delete D[k];
     SC.id = null; SC.cache = {};
-    if (!S.stages.find(s => s.key === CUR)) CUR = "idea";
+    if (CUR !== HOME && !S.stages.find(s => s.key === CUR)) CUR = HOME;
     render();
   } catch (e) { toast(e.message, "err"); }
 }
