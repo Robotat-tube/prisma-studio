@@ -429,6 +429,7 @@ function renderChrome() { renderSidebar(); renderTop(); renderMetrics(); renderD
 function render() {
   renderChrome();
   renderDraftBar();
+  for (const id of ["btnTimeline", "btnScr", "btnClaude"]) $("#" + id).hidden = CUR === HOME;   // the Homepage is only an introduction
   const page = $("#page");
   page.replaceChildren(PAGES[CUR]());
   nameFields(page);
