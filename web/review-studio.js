@@ -637,25 +637,25 @@ const PAGES = {};
 // The animated demo on the Homepage: a small mock screen that plays through the five steps of a review.
 // Plain DOM and CSS (no video file), so it works offline and follows the light/dark theme.
 const DEMO = [
-  { key: "plan", label: "Plan", caption: "Write down your idea, then turn it into questions and search terms.",
+  { key: "plan", you: "Write the idea, the questions (Population, Concept, Context) and the search terms. Lock the protocol before searching.", ai: null, label: "Plan", caption: "Write down your idea, then turn it into questions and search terms.",
     draw: el => { const t = h("div", { class: "demo-type" }); el.append(h("div", { class: "demo-lbl" }, "💡 Idea note"), t);
       const s = "How do researchers measure how repairable a phone is?"; let i = 0;
       return setInterval(() => { t.textContent = s.slice(0, ++i); }, 45); } },
-  { key: "search", label: "Search", caption: "Run the search strings in the databases and import the exports. Duplicates are removed.",
+  { key: "search", you: "Run each string in the databases, export the results and drop the files in. Every search is dated and logged.", ai: null, label: "Search", caption: "Run the search strings in the databases and import the exports. Duplicates are removed.",
     draw: el => { const n = h("b", {}, "0"); el.append(h("div", { class: "demo-lbl" }, "🔎 Scopus · Web of Science"), h("div", { class: "demo-big" }, n, " records"));
       let v = 0; return setInterval(() => { v = Math.min(412, v + 23); n.textContent = v; }, 60); } },
-  { key: "screen", label: "Screen", caption: "Read each title and abstract: include, unsure or exclude with a reason. Then the full texts.",
+  { key: "screen", you: "Decide every record. You confirm each suggestion; nothing is decided for you.", ai: "Pre-screen titles, abstracts and full texts, and act as the blind second reviewer (agreement as κ).", label: "Screen", caption: "Read each title and abstract: include, unsure or exclude with a reason. Then the full texts.",
     draw: el => { const papers = ["Repairability scoring of smartphones", "Battery chemistry review", "EN 45554 in practice", "Consumer repair behaviour"];
       const rows = papers.map(p => h("div", { class: "demo-row" }, h("span", {}, p), h("span", { class: "demo-dec" })));
       el.append(h("div", { class: "demo-lbl" }, "☑ Title/abstract screening"), ...rows);
       let i = 0; return setInterval(() => { if (i >= rows.length) return; const d = rows[i].lastChild, ex = i === 1;
         d.textContent = ex ? "✕ exclude · E2" : "✓ include"; d.className = "demo-dec " + (ex ? "bad" : "ok"); i++; }, 700); } },
-  { key: "chart", label: "Chart", caption: "Fill a charting form for every included paper (AI can prefill it; you check).",
+  { key: "chart", you: "Check every charted paper and correct it; your check is recorded.", ai: "Find and attach the PDFs of the included papers, then prefill the charting form from them.", label: "Chart", caption: "Fill a charting form for every included paper (AI can prefill it; you check).",
     draw: el => { const cells = ["Method", "Index", "Products", "Scale"].map(k => [k, h("span", { class: "demo-cell" })]);
       el.append(h("div", { class: "demo-lbl" }, "▦ Data charting"), ...cells.map(([k, c]) => h("div", { class: "demo-row" }, h("span", { class: "muted" }, k), c)));
       const vals = ["Expert scoring", "EN 45554", "Smartphones", "1–10"]; let i = 0;
       return setInterval(() => { if (i < cells.length) cells[i][1].textContent = vals[i++]; }, 650); } },
-  { key: "report", label: "Report", caption: "The PRISMA flow diagram and checklist are made from your decisions.",
+  { key: "report", you: "Tick the PRISMA-ScR items and export the tables and BibTeX for the paper.", ai: null, label: "Report", caption: "The PRISMA flow diagram and checklist are made from your decisions.",
     draw: el => { const box = (t, n) => h("div", { class: "demo-flow" }, t, h("b", {}, n));
       const bs = [box("Identified", 412), box("Screened", 318), box("Full text", 64), box("Included", 27)];
       bs.forEach(b => b.style.opacity = 0); el.append(h("div", { class: "demo-lbl" }, "📊 PRISMA flow"), h("div", { class: "demo-flows" }, bs));
@@ -666,13 +666,18 @@ function homeDemo() {
   let i = 0, timer = null, anim = null, playing = !matchMedia("(prefers-reduced-motion: reduce)").matches;
   const screen = h("div", { class: "demo-screen", "aria-live": "polite" }), caption = h("p", { class: "demo-caption" });
   const bar = h("div", { class: "demo-progress" }, h("i"));
-  const tabs = DEMO.map((d, k) => h("button", { class: "demo-tab", onclick: () => { show(k); } }, `${k + 1}. ${d.label}`));
+  const tabs = DEMO.map((d, k) => h("button", { class: "demo-tab", onclick: () => { show(k); } }, `${k + 1}. ${d.label}`, d.ai ? h("span", { class: "demo-ai" }, "AI") : null));
+  const side = h("div", { class: "demo-side" });
   const play = btn("", () => { playing = !playing; show(i); }, "sm ghost");
   function show(k) {
     clearInterval(anim); clearTimeout(timer);
     if (!screen.isConnected && timer !== null) return;          // the page was left: stop
     i = k; screen.replaceChildren(); anim = DEMO[i].draw(screen);
     caption.textContent = DEMO[i].caption;
+    side.replaceChildren(
+      h("div", { class: "demo-who you" }, h("b", {}, "👤 You"), h("p", {}, DEMO[i].you)),
+      DEMO[i].ai ? h("div", { class: "demo-who ai" }, h("b", {}, "🤖 Claude can help"), h("p", {}, DEMO[i].ai), h("p", { class: "demo-note" }, "Only if you switch it on; Claude suggests, you confirm."))
+        : h("div", { class: "demo-who none" }, h("b", {}, "🤖 Claude"), h("p", {}, "Not used in this step: it is your own work.")));
     tabs.forEach((t, n) => t.classList.toggle("on", n === i));
     play.textContent = playing ? "⏸ Pause" : "▶ Play";
     bar.firstChild.style.animation = "none"; bar.firstChild.offsetWidth;
@@ -680,12 +685,12 @@ function homeDemo() {
     timer = setTimeout(() => playing ? show((i + 1) % DEMO.length) : null, 4500);
   }
   setTimeout(() => show(0));
-  return h("div", { class: "demo" }, h("div", { class: "demo-tabs" }, tabs, h("span", { class: "spacer" }), play), bar, screen, caption);
+  return h("div", { class: "demo" }, h("div", { class: "demo-tabs" }, tabs, h("span", { class: "spacer" }), play), bar, h("div", { class: "demo-body" }, h("div", {}, screen, caption), side));
 }
 
 // Homepage: the demo and the tour, nothing else
 PAGES.home = () => h("div", { class: "home" },
-  card("See how it works", "A one-minute walk through a review. Click a step to jump to it.", homeDemo()),
+  card("See how it works", "A one-minute walk through a review: what you do, and where Claude can help (AI). Click a step to jump to it.", homeDemo()),
   h("div", { class: "home-tour" },
     h("div", {}, h("h3", {}, "🎓 New here? Take the tour"), h("p", { class: "sub" }, "One minute: what each part of the screen is for.")),
     btn("Start the tour", () => startTour(), "primary tour-big")));
