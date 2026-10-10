@@ -305,7 +305,12 @@ function renderTop() {
   if (CUR === HOME) {
     $("#topbar").replaceChildren(
       h("div", { class: "titlerow" }, h("h1", {}, "Welcome to PRISMA Scoping Review Studio")),
-      h("p", { class: "desc" }, "How a scoping review goes in PRISMA Scoping Review Studio, in one minute."));
+      h("p", { class: "desc" }, "How a scoping review goes in PRISMA Scoping Review Studio, in one minute."),
+      h("div", { class: "home-badges" }, [
+        ["📝 Plain Markdown", "Every record is a Markdown note with properties; the searches are a CSV table. Any text editor can read them."],
+        ["🟣 Opens in Obsidian", "A review folder is an Obsidian vault as it is: the notes, links and the screening and charting tables (.base files) work there too."],
+        ["🔒 Stays on your PC", "Everything is saved in a folder you choose. Nothing is uploaded and there is no account."],
+      ].map(([t, tip]) => h("span", { class: "home-badge", title: tip }, t))));
     return;
   }
   const s = stage(CUR), n = S.stages.indexOf(s);
