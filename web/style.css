@@ -317,7 +317,6 @@ input:focus-visible, select:focus-visible, textarea:focus-visible { outline: non
 .tour-offer { position: fixed; right: 20px; bottom: 20px; z-index: 90; width: min(360px, calc(100vw - 40px)); background: var(--surface); border: 1px solid color-mix(in srgb, var(--accent) 45%, var(--border)); border-radius: 14px; padding: 14px 16px; box-shadow: 0 12px 40px rgb(0 0 0 / .3); display: grid; gap: 10px; }
 .tour-offer-text { color: var(--muted); }
 .tour-offer-text b { color: var(--text); }
-#btnTour.glow { color: var(--accent); border-color: color-mix(in srgb, var(--accent) 55%, transparent); animation: tour-glow 2s ease-in-out infinite; }
 @keyframes tour-glow {
   0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 0%, transparent); background: transparent; }
   50% { box-shadow: 0 0 14px 3px color-mix(in srgb, var(--accent) 55%, transparent); background: var(--accent-2); }
@@ -327,7 +326,7 @@ input:focus-visible, select:focus-visible, textarea:focus-visible { outline: non
   0%, 100% { box-shadow: 0 12px 40px rgb(0 0 0 / .3), 0 0 0 0 color-mix(in srgb, var(--accent) 0%, transparent); }
   50% { box-shadow: 0 12px 40px rgb(0 0 0 / .3), 0 0 22px 5px color-mix(in srgb, var(--accent) 55%, transparent); border-color: var(--accent); }
 }
-@media (prefers-reduced-motion: reduce) { #btnTour.glow, .tour-offer { animation: none; } #btnTour.glow { background: var(--accent-2); } .tour-offer { border-color: var(--accent); } }
+@media (prefers-reduced-motion: reduce) { .tour-offer, .tour-big { animation: none; } .tour-offer { border-color: var(--accent); } }
 .aicard .spacer { flex: 1; }
 .step .ai-mark { margin-left: auto; font-size: 10.5px; font-weight: 600; color: var(--faint); border: 1px solid var(--border); border-radius: 99px; padding: 0 7px; }
 .step .ai-mark.on { color: var(--accent); border-color: color-mix(in srgb, var(--accent) 55%, transparent); background: var(--accent-2); }
@@ -337,13 +336,6 @@ textarea::placeholder, input::placeholder { color: var(--faint); opacity: .75; f
 
 /* Homepage (the introduction above the stages) */
 .step.home .dot { font-size: 13px; }
-.home-phase { margin: 0; }
-.home-stages { display: flex; flex-wrap: wrap; gap: 6px; }
-.home-stage { display: inline-flex; align-items: center; gap: 6px; font: inherit; font-size: 12.5px; padding: 4px 10px; border-radius: 99px; border: 1px solid var(--border); background: var(--surface-2); color: var(--text); cursor: pointer; }
-.home-stage:hover { border-color: var(--accent); }
-.home-stage.done { color: var(--ok); }
-.home-stage .ai-mark { font-size: 10px; color: var(--faint); border: 1px solid var(--border); border-radius: 99px; padding: 0 6px; }
-.home-stage .ai-mark.on { color: var(--accent); }
 
 /* Homepage demo: a small mock screen that plays through a review */
 .demo-tabs { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
@@ -362,3 +354,6 @@ textarea::placeholder, input::placeholder { color: var(--faint); opacity: .75; f
 .demo-flow { transition: opacity .4s; padding: 8px 14px; border-radius: 10px; border: 1px solid var(--accent); background: var(--surface); font-size: 12.5px; display: flex; flex-direction: column; align-items: center; }
 .demo-flow b { font-size: 18px; } .demo-flow:last-child { border-color: var(--ok); color: var(--ok); }
 .demo-caption { margin: 10px 0 0; color: var(--muted); font-size: 13.5px; }
+.home-tour { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding: 18px 22px; border-radius: 14px; border: 1px solid color-mix(in srgb, var(--accent) 55%, transparent); background: var(--accent-2); }
+.home-tour h3 { margin: 0 0 4px; } .home-tour .sub { margin: 0; }
+.btn.tour-big { font-size: 15px; padding: 10px 22px; animation: tour-glow 2s ease-in-out infinite; }

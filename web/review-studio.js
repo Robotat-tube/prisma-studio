@@ -305,9 +305,8 @@ function renderTop() {
   if (CUR === HOME) {
     $("#topbar").replaceChildren(
       h("div", { class: "crumbs" }, `${REVIEW} · Homepage`),
-      h("div", { class: "titlerow" }, h("h1", {}, "Welcome to PRISMA Studio"), h("span", { class: "spacer" }),
-        btn("🎓 Tour", () => startTour(), "ghost"), btn("Start with your idea →", () => go("idea"), "primary")),
-      h("p", { class: "desc" }, "An introduction: what the app does, how a review is organised and where your files live."));
+      h("div", { class: "titlerow" }, h("h1", {}, "Welcome to PRISMA Studio")),
+      h("p", { class: "desc" }, "How a scoping review goes in PRISMA Studio, in one minute."));
     return;
   }
   const s = stage(CUR), n = S.stages.indexOf(s);
@@ -684,34 +683,12 @@ function homeDemo() {
   return h("div", { class: "demo" }, h("div", { class: "demo-tabs" }, tabs, h("span", { class: "spacer" }), play), bar, screen, caption);
 }
 
-// Homepage: an introduction to the app — what it is for, the three phases, where the files live, AI help
-PAGES.home = () => {
-  const done = S.stages.filter(s => s.status === "done" || s.status === "skipped").length;
-  const next = S.stages.find(s => s.status !== "done" && s.status !== "skipped");
-  const phaseCard = ([name, a, b], what) => h("div", { class: "card home-phase" },
-    h("h3", {}, name), h("p", { class: "sub" }, what),
-    h("div", { class: "home-stages" }, S.stages.slice(a, b + 1).map(s =>
-      h("button", { class: "home-stage " + s.status, title: s.desc, onclick: () => go(s.key) },
-        s.status === "done" ? "✓ " : "", s.title.replace(/^\d+ · /, ""), aiMark(s.key)))));
-  return h("div", { class: "home" },
-    card("See how it works", "A one-minute walk through a review. Click a step to jump to it.", homeDemo()),
-    card("What PRISMA Studio does", null,
-      h("p", {}, "PRISMA Studio guides you through a scoping review that follows the PRISMA-ScR reporting guideline: from the first idea, through questions, search strings and a registered protocol, to screening, full texts, data charting and the final PRISMA flow diagram and checklist."),
-      h("p", {}, "Every step is dated and documented, so the review stays transparent and reproducible. Each stage says what to do, where it is saved and has ? Help with a worked example."),
-      h("div", { class: "row", style: "margin-top:12px" },
-        pill(`${done} of ${S.stages.length} stages done`, done === S.stages.length ? "ok" : "info"),
-        next ? btn(`Continue: ${next.title.replace(/^\d+ · /, "")} →`, () => go(next.key), "primary") : null)),
-    h("div", { class: "grid3", style: "margin-bottom:16px" },
-      phaseCard(PHASES[0], "Decide what you look for and how: questions, concepts, search strings, a pilot and the protocol."),
-      phaseCard(PHASES[1], "Run the searches, screen titles, abstracts and full texts, find the PDFs and chart the data."),
-      phaseCard(PHASES[2], "The PRISMA flow diagram, the PRISMA-ScR checklist and exports for the paper.")),
-    h("div", { class: "grid3" },
-      card("🔒 Your files, your PC", null, h("p", { class: "small" }, "A review is a folder (“<name> records”) of Markdown notes, CSV tables and PDFs. Nothing is uploaded and there is no account. The folder opens in Obsidian too.")),
-      card("🤖 AI only if you want it", null, h("p", { class: "small" }, "Stages marked AI are where Claude can pre-screen, fetch PDFs or prefill charting. It only suggests; you confirm every decision."),
-        btn("Working with Claude", openClaudeGuide, "sm")),
-      card("🧭 Finding your way", null, h("p", { class: "small" }, "Click a stage in the sidebar, or use Alt+↑/↓. The timeline (T), glossary (G) and PRISMA-ScR checklist are in the bar at the top."),
-        btn("🎓 Take the tour", () => startTour(), "sm"))));
-};
+// Homepage: the demo and the tour, nothing else
+PAGES.home = () => h("div", { class: "home" },
+  card("See how it works", "A one-minute walk through a review. Click a step to jump to it.", homeDemo()),
+  h("div", { class: "home-tour" },
+    h("div", {}, h("h3", {}, "🎓 New here? Take the tour"), h("p", { class: "sub" }, "One minute: what each part of the screen is for.")),
+    btn("Start the tour", () => startTour(), "primary tour-big")));
 
 PAGES.idea = () => {
   const ta = autosize(h("textarea", { placeholder: exampleFor("idea", "Note") || "What do you want to find out, and why? What did you read or discuss? What changed?", rows: 4, value: D.idea || "", oninput: e => D.idea = e.target.value }));
@@ -1522,8 +1499,6 @@ $("#btnGlossary").onclick = openGlossary;
 $("#btnClaude").onclick = openClaudeGuide;
 $("#btnTimeline").onclick = openTimeline;
 $("#btnKeys").onclick = openKeys;
-$("#btnTour").onclick = () => startTour();
-$("#btnTour").classList.toggle("glow", store.get("toured", "") !== "yes");   // glows until the tour has been taken
 $("#btnScr").onclick = () => openChecklist();
 $("#main").addEventListener("scroll", () => $("#topwrap").classList.toggle("scrolled", $("#main").scrollTop > 4));
 
@@ -1615,7 +1590,7 @@ setInterval(checkOutside, 15000);
 
 // ================================================================ app tour
 // A short, plain explanation of what the app is for, one highlighted part of the screen at a time.
-// Offered once on the first visit; the 🎓 Tour button replays it.
+// Offered once on the first visit; the button on the Homepage replays it.
 const TOUR = [
   { title: "Welcome to PRISMA Studio 👋",
     text: "This app guides you through a scoping review, step by step: from your first idea to a finished PRISMA report. It keeps every step documented, so your review is transparent and easy to reproduce." },
@@ -1628,7 +1603,7 @@ const TOUR = [
   { target: ".toolbar", title: "Tools for every stage",
     text: "The timeline of everything you did, the PRISMA-ScR checklist and, if you want it, AI help from Claude, which only ever suggests. The glossary and keyboard shortcuts are under ⚙ Settings." },
   { title: "Ready? Start with your idea ✍️",
-    text: "Write down what you want to find out and why. It's fine to be vague: the next stage makes it precise. You can replay this tour with 🎓 Tour at the top." },
+    text: "Write down what you want to find out and why. It's fine to be vague: the next stage makes it precise. You can replay this tour from the Homepage." },
 ];
 
 function offerTour() {
@@ -1645,7 +1620,6 @@ function startTour(i = 0) {
   tourClose?.();
   document.querySelector(".tour-offer")?.remove();
   store.set("toured", "yes");
-  $("#btnTour").classList.remove("glow");
   const steps = TOUR.filter(s => !s.target || (document.querySelector(s.target) && !document.querySelector(s.target).hidden));
   const step = steps[i];
   if (!step) return;
@@ -1699,7 +1673,7 @@ window.studioReady = (async function start() {
       S = await getJSON(`/api/state?review=${encodeURIComponent(REVIEW)}`);
     }
     render();
-    if (!store.get("toured", "")) offerTour();
+    if (!store.get("toured", "") && CUR !== HOME) offerTour();   // the Homepage has its own tour button
   } catch (e) {
     $("#page").replaceChildren(h("div", { class: "card empty" }, h("div", { class: "big" }, "⚠️"), h("h3", {}, "Could not load the review"), h("p", {}, e.message)));
   }
