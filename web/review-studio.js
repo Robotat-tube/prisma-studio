@@ -646,8 +646,26 @@ const DEMO = [
       const s = "How do researchers measure how repairable a phone is?"; let i = 0;
       return setInterval(() => { t.textContent = s.slice(0, ++i); }, 45); } },
   { key: "search", you: "Run each string in the databases, export the results and drop the files in. Every search is dated and logged.", ai: null, label: "Find", caption: "Run the search strings in the databases and import the exports. Duplicates are removed.",
-    draw: el => { const n = h("b", {}, "0"); el.append(h("div", { class: "demo-lbl" }, "🔎 Scopus · Web of Science"), h("div", { class: "demo-big" }, n, " records"));
-      let v = 0; return setInterval(() => { v = Math.min(412, v + 23); n.textContent = v; }, 60); } },
+    // the search string is typed, sent to the databases (arrow), and each returns its hits; duplicates come out
+    draw: el => {
+      const q = 'TITLE-ABS-KEY(("repairab*" OR "reparab*") AND (smartphone* OR laptop*))';
+      const code = h("div", { class: "code demo-query" }), arrow = h("div", { class: "demo-arrow" }, h("i"), "send");
+      const dbs = [["Scopus", 268], ["Web of Science", 205]].map(([name, hits]) => ({ hits, n: h("b", {}, "–"), el: null }));
+      dbs[0].el = h("div", { class: "demo-db" }, "Scopus", dbs[0].n); dbs[1].el = h("div", { class: "demo-db" }, "Web of Science", dbs[1].n);
+      const total = h("div", { class: "demo-total" }, h("b", {}, "412"), " unique records · 61 duplicates removed");
+      el.append(h("div", { class: "demo-lbl" }, "🔎 Search string"), code,
+        h("div", { class: "demo-send" }, arrow, h("div", { class: "demo-dbs" }, dbs.map(d => d.el))), total);
+      let t = 0;
+      return setInterval(() => {
+        t++;
+        if (t <= q.length / 2) code.innerHTML = hlQuery(q.slice(0, t * 2));               // typing, two characters a tick
+        else if (t === Math.ceil(q.length / 2) + 2) { code.innerHTML = hlQuery(q); arrow.classList.add("go"); }
+        else if (t > Math.ceil(q.length / 2) + 10 && t <= Math.ceil(q.length / 2) + 30) {
+          const p = (t - Math.ceil(q.length / 2) - 10) / 20;
+          dbs.forEach(d => { d.el.classList.add("on"); d.n.textContent = Math.round(d.hits * p); });
+        } else if (t === Math.ceil(q.length / 2) + 33) total.classList.add("on");
+      }, 40);
+    } },
   { key: "screen", you: "Decide every record. You confirm each suggestion; nothing is decided for you.", ai: "Pre-screen titles, abstracts and full texts, and act as the blind second reviewer (agreement as κ).", label: "Select", caption: "Read each title and abstract: include, unsure or exclude with a reason. Then the full texts.",
     draw: el => { const papers = ["Repairability scoring of smartphones", "Battery chemistry review", "EN 45554 in practice", "Consumer repair behaviour"];
       const rows = papers.map(p => h("div", { class: "demo-row" }, h("span", {}, p), h("span", { class: "demo-dec" })));
