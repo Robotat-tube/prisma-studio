@@ -289,7 +289,7 @@ function renderSidebar() {
   sel.replaceChildren(...S.reviews.map(r => h("option", { value: r, selected: r === REVIEW }, label(r))),
     h("option", { value: "__open__" }, "📂 Open folder…"));
   const nav = $("#stepper");
-  nav.replaceChildren(h("div", { class: `step home ${CUR === HOME ? "active" : ""}`, onclick: () => go(HOME), title: "What PRISMA Studio is and how it works" },
+  nav.replaceChildren(h("div", { class: `step home ${CUR === HOME ? "active" : ""}`, onclick: () => go(HOME), title: "What PRISMA Scoping Review Studio is and how it works" },
     h("span", { class: "dot" }, "⌂"), "Homepage"));
   PHASES.forEach(([name, a, b]) => {
     nav.append(h("div", { class: "phase" }, name));
@@ -304,9 +304,8 @@ function renderSidebar() {
 function renderTop() {
   if (CUR === HOME) {
     $("#topbar").replaceChildren(
-      h("div", { class: "crumbs" }, `${REVIEW} · Homepage`),
-      h("div", { class: "titlerow" }, h("h1", {}, "Welcome to PRISMA Studio")),
-      h("p", { class: "desc" }, "How a scoping review goes in PRISMA Studio, in one minute."));
+      h("div", { class: "titlerow" }, h("h1", {}, "Welcome to PRISMA Scoping Review Studio")),
+      h("p", { class: "desc" }, "How a scoping review goes in PRISMA Scoping Review Studio, in one minute."));
     return;
   }
   const s = stage(CUR), n = S.stages.indexOf(s);
@@ -538,7 +537,7 @@ function openClaudeGuide() {
       "It only ever suggests. You confirm every decision in Review Studio, every AI action is logged with the model and date, and the protocol reports it."),
     sec("1 · Set up once", ol([
       "Install Claude Code: the Claude desktop app (Code tab) or the claude command in a terminal.",
-      ["Open the PRISMA Studio folder (the one that contains ", h("code", {}, ".claude/skills"), ") as the project in Claude Code. The review skills come with the app; Node.js, which the app already needs, runs them."],
+      ["Open the app's folder (the one that contains ", h("code", {}, ".claude/skills"), ") as the project in Claude Code. The review skills come with the app; Node.js, which the app already needs, runs them."],
       "Keep Review Studio open next to it: Claude writes, Review Studio is where you check and confirm.",
       "For paywalled papers: let Claude use a browser where you are signed in to your library (for example Claude in Chrome), only if you agree to that."])),
     sec("2 · How one step works", ol([
@@ -587,7 +586,7 @@ function openTimeline() {
 }
 
 function openKeys() {
-  const rows = [["?", "help for this stage"], ["X", "example for this stage"], ["G", "glossary"], ["T", "timeline"], ["Alt+↑ / Alt+↓", "previous / next stage"],
+  const rows = [["?", "help for this stage"], ["X", "example for this stage"], ["G", "glossary"], ["T", "timeline"], ["[", "hide / show the stages"], ["Alt+↑ / Alt+↓", "previous / next stage"],
     ["I / U / E", "include / unsure / exclude (screening)"], ["1–9", "exclusion reason (screening)"], ["← / →", "previous / next record"], ["Esc", "close panel"]];
   modal({ title: "Keyboard shortcuts", body: h("table", { class: "tbl" }, rows.map(([k, d]) => h("tr", {}, h("td", {}, h("kbd", {}, k)), h("td", {}, d)))) });
 }
@@ -641,10 +640,10 @@ const DEMO = [
     draw: el => { const t = h("div", { class: "demo-type" }); el.append(h("div", { class: "demo-lbl" }, "💡 Idea note"), t);
       const s = "How do researchers measure how repairable a phone is?"; let i = 0;
       return setInterval(() => { t.textContent = s.slice(0, ++i); }, 45); } },
-  { key: "search", you: "Run each string in the databases, export the results and drop the files in. Every search is dated and logged.", ai: null, label: "Search", caption: "Run the search strings in the databases and import the exports. Duplicates are removed.",
+  { key: "search", you: "Run each string in the databases, export the results and drop the files in. Every search is dated and logged.", ai: null, label: "Find", caption: "Run the search strings in the databases and import the exports. Duplicates are removed.",
     draw: el => { const n = h("b", {}, "0"); el.append(h("div", { class: "demo-lbl" }, "🔎 Scopus · Web of Science"), h("div", { class: "demo-big" }, n, " records"));
       let v = 0; return setInterval(() => { v = Math.min(412, v + 23); n.textContent = v; }, 60); } },
-  { key: "screen", you: "Decide every record. You confirm each suggestion; nothing is decided for you.", ai: "Pre-screen titles, abstracts and full texts, and act as the blind second reviewer (agreement as κ).", label: "Screen", caption: "Read each title and abstract: include, unsure or exclude with a reason. Then the full texts.",
+  { key: "screen", you: "Decide every record. You confirm each suggestion; nothing is decided for you.", ai: "Pre-screen titles, abstracts and full texts, and act as the blind second reviewer (agreement as κ).", label: "Select", caption: "Read each title and abstract: include, unsure or exclude with a reason. Then the full texts.",
     draw: el => { const papers = ["Repairability scoring of smartphones", "Battery chemistry review", "EN 45554 in practice", "Consumer repair behaviour"];
       const rows = papers.map(p => h("div", { class: "demo-row" }, h("span", {}, p), h("span", { class: "demo-dec" })));
       el.append(h("div", { class: "demo-lbl" }, "☑ Title/abstract screening"), ...rows);
@@ -688,9 +687,38 @@ function homeDemo() {
   return h("div", { class: "demo" }, h("div", { class: "demo-tabs" }, tabs, h("span", { class: "spacer" }), play), bar, h("div", { class: "demo-body" }, h("div", {}, screen, caption), side));
 }
 
-// Homepage: the demo and the tour, nothing else
+// How far this review is: a ring of the 15 stages (one segment each, coloured by status), the share done
+// in the middle, and per phase how many stages are done. Only shows; the sidebar is where you go to a stage.
+function progressRing() {
+  const n = S.stages.length, R = 70, C = 90, gap = 0.075;
+  const finished = s => s.status === "done" || s.status === "skipped";
+  const done = S.stages.filter(finished).length, pct = Math.round(100 * done / n);
+  const next = S.stages.find(s => !finished(s));
+  const color = s => s.status === "done" ? "var(--ok)" : s.status === "skipped" ? "var(--faint)" : s.status === "in-progress" ? "var(--accent)" : "var(--border)";
+  const arc = (a0, a1) => { const p = a => [C + R * Math.sin(a), C - R * Math.cos(a)].map(v => v.toFixed(1)).join(" ");
+    return `M${p(a0)} A${R} ${R} 0 ${a1 - a0 > Math.PI ? 1 : 0} 1 ${p(a1)}`; };
+  const segs = S.stages.map((s, i) => { const a0 = 2 * Math.PI * i / n + gap, a1 = 2 * Math.PI * (i + 1) / n - gap;
+    return `<path d="${arc(a0, a1)}" fill="none" stroke="${color(s)}" stroke-width="16" stroke-linecap="round"><title>${esc(s.title.replace(/^\d+ · /, ""))}: ${s.status.replace("-", " ")}</title></path>`; }).join("");
+  const ring = svg(180, 180, segs +
+    `<text x="90" y="88" text-anchor="middle" font-size="34" font-weight="700" fill="var(--text)">${pct}%</text>
+     <text x="90" y="110" text-anchor="middle" font-size="12" fill="var(--muted)">${done} of ${n} stages</text>`);
+  ring.className = "ring";
+  const phase = ([name, a, b]) => { const st = S.stages.slice(a, b + 1), d = st.filter(finished).length;
+    return h("div", { class: "ring-phase" }, h("div", { class: "row" }, h("b", {}, name), h("span", { class: "spacer" }), h("span", { class: "muted small" }, `${d} / ${st.length}`)),
+      h("div", { class: "ring-bar" }, h("i", { style: `width:${100 * d / st.length}%` }))); };
+  return h("div", { class: "card home-progress" }, ring,
+    h("div", { class: "ring-info" },
+      h("h3", {}, "Your progress"),
+      h("p", { class: "sub" }, next ? h("span", {}, "Next up: ", h("b", {}, next.title.replace(/^\d+ · /, ""))) : "Every stage is done. 🎉"),
+      PHASES.map(phase),
+      h("div", { class: "ring-legend small muted" }, [["var(--ok)", "done"], ["var(--accent)", "in progress"], ["var(--faint)", "skipped"], ["var(--border)", "not started"]]
+        .map(([c, l]) => h("span", {}, h("i", { style: `background:${c}` }), l)))));
+}
+
+// Homepage: the demo, your progress and the tour
 PAGES.home = () => h("div", { class: "home" },
   card("See how it works", "A one-minute walk through a review: what you do, and where Claude can help (AI). Click a step to jump to it.", homeDemo()),
+  progressRing(),
   h("div", { class: "home-tour" },
     h("div", {}, h("h3", {}, "🎓 New here? Take the tour"), h("p", { class: "sub" }, "One minute: what each part of the screen is for.")),
     btn("Start the tour", () => startTour(), "primary tour-big")));
@@ -1482,6 +1510,7 @@ document.addEventListener("keydown", e => {
   if (e.key === "?" && CUR !== HOME) { openHelp(CUR); return; }
   if (e.key.toLowerCase() === "x" && CUR !== HOME) { openExample(CUR); return; }
   if (e.key.toLowerCase() === "g") { openGlossary(); return; }
+  if (e.key === "[") { $("#btnNav").click(); return; }
   if (e.key.toLowerCase() === "t") { openTimeline(); return; }
   if (CUR !== "screening" || !SC.id) return;
   const k = e.key.toLowerCase();
@@ -1505,6 +1534,10 @@ $("#btnClaude").onclick = openClaudeGuide;
 $("#btnTimeline").onclick = openTimeline;
 $("#btnKeys").onclick = openKeys;
 $("#btnScr").onclick = () => openChecklist();
+// The sidebar folds away (☰ or [) to give the content the whole width; remembered in this browser
+function setNav(open) { $("#app").classList.toggle("nav-hidden", !open); $("#btnNav").setAttribute("aria-expanded", String(open)); store.set("nav", open ? "" : "hidden"); }
+$("#btnNav").onclick = () => setNav($("#app").classList.contains("nav-hidden"));
+setNav(store.get("nav", "") !== "hidden");
 $("#main").addEventListener("scroll", () => $("#topwrap").classList.toggle("scrolled", $("#main").scrollTop > 4));
 
 // Settings menu (theme, developer mode): opens on click, closes on Escape, outside click or after a choice
@@ -1520,7 +1553,7 @@ $("#main").addEventListener("scroll", () => $("#topwrap").classList.toggle("scro
 // The draft (a review in the browser's own storage, where the app starts): save it to a folder, or open one.
 function renderDraftBar() {
   const bar = $("#draftBar");
-  bar.hidden = !backend.entry?.draft;
+  bar.hidden = !backend.entry?.draft || CUR === HOME;              // the Homepage is only an introduction
   bar.classList.toggle("has-content", draftHasContent());
   if (bar.hidden) return;
   const recent = S.reviews.filter(r => r !== REVIEW).slice(0, 2);
@@ -1597,7 +1630,7 @@ setInterval(checkOutside, 15000);
 // A short, plain explanation of what the app is for, one highlighted part of the screen at a time.
 // Offered once on the first visit; the button on the Homepage replays it.
 const TOUR = [
-  { title: "Welcome to PRISMA Studio 👋",
+  { title: "Welcome to PRISMA Scoping Review Studio 👋",
     text: "This app guides you through a scoping review, step by step: from your first idea to a finished PRISMA report. It keeps every step documented, so your review is transparent and easy to reproduce." },
   { target: "#stepper", title: "The 15 stages",
     text: "Your review in order: planning (questions, search terms, protocol), conducting (searching, screening, full texts, charting) and reporting. Stages marked AI are where Claude can help, if you want. Click any stage to open it." },
@@ -1613,7 +1646,7 @@ const TOUR = [
 
 function offerTour() {
   const card = h("div", { class: "tour-offer", role: "dialog", "aria-label": "App tour" },
-    h("div", { class: "tour-offer-text" }, h("b", {}, "New here?"), " Take the 1-minute tour to see what PRISMA Studio does."),
+    h("div", { class: "tour-offer-text" }, h("b", {}, "New here?"), " Take the 1-minute tour to see what PRISMA Scoping Review Studio does."),
     h("div", { class: "row" },
       btn("🎓 Start tour", () => { card.remove(); startTour(); }, "sm primary"),
       btn("Not now", () => { card.remove(); store.set("toured", "skipped"); }, "sm ghost")));

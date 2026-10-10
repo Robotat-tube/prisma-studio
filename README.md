@@ -1,14 +1,14 @@
-# PRISMA Studio
+# PRISMA Scoping Review Studio
 
 **A scoping-review workbench (PRISMA-ScR) that runs in your browser and keeps every review in a folder on your own PC.**
 
 👉 **Open it: https://robotat-tube.github.io/prisma-studio/** (Chrome or Edge on a computer)
 
-PRISMA Studio walks you through a scoping review from the first idea to the PRISMA flow diagram: questions, search strings, protocol, database imports, screening, full texts, charting and the report. Your review is a plain folder of Markdown notes, CSV tables and PDFs: nothing is uploaded, there is no account, and the folder opens in Obsidian or any text editor.
+PRISMA Scoping Review Studio walks you through a scoping review from the first idea to the PRISMA flow diagram: questions, search strings, protocol, database imports, screening, full texts, charting and the report. Your review is a plain folder of Markdown notes, CSV tables and PDFs: nothing is uploaded, there is no account, and the folder opens in Obsidian or any text editor.
 
-![PRISMA Studio: screening a record, with the review's stages in the sidebar](docs/screenshot.png)
+![PRISMA Scoping Review Studio: screening a record, with the review's stages in the sidebar](docs/screenshot.png)
 
-*Screening in PRISMA Studio (example data). Search terms are highlighted in the abstract; I / U / E decide.*
+*Screening in PRISMA Scoping Review Studio (example data). Search terms are highlighted in the abstract; I / U / E decide.*
 
 ![The app tour highlighting the 15 stages](docs/tour.png)
 
@@ -89,9 +89,9 @@ Each stage that can use help has an **🤖 AI assistance** card where you choose
 - act as a **blind second reviewer** on the sample;
 - **prefill the charting form** from the PDFs, with page locators.
 
-Claude only ever *suggests*: you confirm or change every suggestion in PRISMA Studio, each AI action is logged with the model and date, and the protocol's "Use of AI assistance" section is written for you.
+Claude only ever *suggests*: you confirm or change every suggestion in PRISMA Scoping Review Studio, each AI action is logged with the model and date, and the protocol's "Use of AI assistance" section is written for you.
 
-How to use it: open this repository's folder in Claude Code, press **📋 Copy prompt** on the AI card and paste it. The skills are in `.claude/skills/`; they work through `node bin/ai-assist.js`, which refuses whenever the review has the AI switched off for that step. Keep PRISMA Studio open next to it: it notices Claude's changes and shows them.
+How to use it: open this repository's folder in Claude Code, press **📋 Copy prompt** on the AI card and paste it. The skills are in `.claude/skills/`; they work through `node bin/ai-assist.js`, which refuses whenever the review has the AI switched off for that step. Keep PRISMA Scoping Review Studio open next to it: it notices Claude's changes and shows them.
 
 ## Privacy and data safety
 
@@ -102,7 +102,7 @@ How to use it: open this repository's folder in Claude Code, press **📋 Copy p
 
 ## Run it on your own PC
 
-You can also run PRISMA Studio locally, for example to work offline or to change it:
+You can also run PRISMA Scoping Review Studio locally, for example to work offline or to change it:
 
 1. Install [Node.js](https://nodejs.org) (version 20 or later).
 2. Download this repository (green **Code** button → *Download ZIP*, or `git clone`).

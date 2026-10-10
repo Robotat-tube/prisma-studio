@@ -367,3 +367,17 @@ textarea::placeholder, input::placeholder { color: var(--faint); opacity: .75; f
 .demo-who.ai p { color: var(--text); } .demo-who.ai .demo-note { color: var(--muted); font-size: 12px; }
 .demo-who.none { opacity: .75; }
 .demo-ai { margin-left: 6px; font-size: 10px; font-weight: 700; color: var(--accent); border: 1px solid color-mix(in srgb, var(--accent) 55%, transparent); border-radius: 99px; padding: 0 6px; }
+.home-progress { display: flex; gap: 28px; align-items: center; flex-wrap: wrap; }
+.home-progress .ring { width: 180px; flex: none; }
+.ring-info { flex: 1; min-width: 240px; display: flex; flex-direction: column; gap: 8px; }
+.ring-info h3, .ring-info .sub { margin: 0; }
+.ring-phase .row { margin-bottom: 4px; }
+.ring-bar { height: 8px; border-radius: 99px; background: var(--surface-2); overflow: hidden; }
+.ring-bar i { display: block; height: 100%; background: var(--ok); border-radius: 99px; transition: width .4s; }
+.ring-legend { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 4px; }
+.ring-legend i { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 5px; vertical-align: -1px; border: 1px solid var(--border); }
+.app.nav-hidden { grid-template-columns: 0 1fr; }
+.app.nav-hidden > .sidebar { visibility: hidden; overflow: hidden; border: 0; }
+@media (max-width: 900px) { .app.nav-hidden { grid-template-columns: minmax(0, 1fr); grid-template-rows: 0 minmax(0, 1fr); } }
+.brand { white-space: normal; line-height: 1.2; }
+#btnNav { font-size: 17px; line-height: 1; padding: 4px 10px; }

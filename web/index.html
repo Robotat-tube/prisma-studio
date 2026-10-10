@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>PRISMA Studio</title>
+  <title>PRISMA Scoping Review Studio</title>
   <meta name="description" content="Scoping reviews (PRISMA-ScR) in your browser; every review stays in a folder on your own PC.">
   <!-- where pdf.js comes from (the site build points these to its own copy) -->
   <script type="importmap">
@@ -25,7 +25,7 @@
     <aside class="sidebar start-side">
       <div class="brand"><div class="logo">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4 6h16M7 12h10M10 18h4"/></svg>
-      </div>PRISMA Studio</div>
+      </div>PRISMA Scoping Review Studio</div>
       <p class="start-side-note">The stages of every review. They open once a review folder is open.</p>
       <nav class="stepper" id="startSteps" aria-label="Stages of a review"></nav>
       <div class="start-side-foot">
@@ -56,7 +56,7 @@
     <aside class="sidebar">
       <div class="brand"><div class="logo">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4 6h16M7 12h10M10 18h4"/></svg>
-      </div>PRISMA Studio</div>
+      </div>PRISMA Scoping Review Studio</div>
       <div class="review-picker"><select id="reviewSel" title="Review"></select></div>
       <nav class="stepper" id="stepper"></nav>
     </aside>
@@ -64,6 +64,7 @@
       <header class="topbar" id="topwrap">
         <div class="draft-bar" id="draftBar" hidden></div>
         <nav class="toolbar" aria-label="Review tools">
+          <button class="btn sm ghost" id="btnNav" title="Hide or show the stages ([)" aria-label="Hide or show the stages" aria-expanded="true">☰</button>
           <button class="btn sm ghost" id="btnTimeline" title="Every dated event of this review (T)">🕘 Timeline</button>
           <button class="btn sm ghost" id="btnScr" title="PRISMA-ScR: the 22 items a scoping-review paper must report">☑ Reporting checklist</button>
           <button class="btn sm ghost" id="btnClaude" title="How to use Claude (or another AI assistant) with this review">🤖 Working with Claude</button>

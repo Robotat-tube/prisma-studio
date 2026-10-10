@@ -1,6 +1,6 @@
 {
-  "name": "PRISMA Studio",
-  "short_name": "PRISMA Studio",
+  "name": "PRISMA Scoping Review Studio",
+  "short_name": "ScR Studio",
   "description": "Scoping reviews (PRISMA-ScR); every review stays in a folder on your own PC.",
   "start_url": "./",
   "scope": "./",
