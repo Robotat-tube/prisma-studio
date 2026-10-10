@@ -401,3 +401,5 @@ textarea::placeholder, input::placeholder { color: var(--faint); opacity: .75; f
 .toolbar .btn[hidden] { display: none; }
 .btn[hidden] { display: none; }
 a.btn { text-decoration: none; color: inherit; }
+.home-badge.download { cursor: pointer; text-decoration: none; color: var(--accent-ink); background: var(--accent); border-color: var(--accent); }
+.home-badge.download:hover { filter: brightness(1.08); }
