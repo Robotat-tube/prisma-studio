@@ -338,12 +338,6 @@ textarea::placeholder, input::placeholder { color: var(--faint); opacity: .75; f
 .step.home .dot { font-size: 13px; }
 
 /* Homepage demo: a small mock screen that plays through a review */
-.demo-tabs { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
-.demo-tab { font: inherit; font-size: 12.5px; padding: 4px 12px; border-radius: 99px; border: 1px solid var(--border); background: var(--surface-2); color: var(--muted); cursor: pointer; }
-.demo-tab.on { background: var(--accent-2); color: var(--text); border-color: var(--accent); font-weight: 600; }
-.demo-progress { height: 3px; background: var(--surface-2); border-radius: 99px; margin: 10px 0; overflow: hidden; }
-.demo-progress i { display: block; height: 100%; width: 0; background: var(--accent); }
-@keyframes demo-bar { to { width: 100%; } }
 .demo-screen { min-height: 170px; border: 1px solid var(--border); border-radius: 12px; background: var(--surface-2); padding: 16px 18px; display: flex; flex-direction: column; gap: 8px; }
 .demo-lbl { font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: var(--faint); font-weight: 600; }
 .demo-type { font-size: 15px; min-height: 1.4em; border-right: 2px solid var(--accent); width: fit-content; padding-right: 2px; }
@@ -358,24 +352,15 @@ textarea::placeholder, input::placeholder { color: var(--faint); opacity: .75; f
 .home-tour h3 { margin: 0 0 4px; } .home-tour .sub { margin: 0; }
 .btn.tour-big { font-size: 15px; padding: 10px 22px; animation: tour-big-glow 2s ease-in-out infinite; }
 @keyframes tour-big-glow { 50% { box-shadow: 0 0 16px 4px color-mix(in srgb, var(--accent) 55%, transparent); } }
-.demo-body { display: grid; grid-template-columns: minmax(0, 1fr) minmax(240px, 34%); gap: 16px; align-items: start; }
-@media (max-width: 760px) { .demo-body { grid-template-columns: 1fr; } }
+.demo-body { display: grid; grid-template-columns: 270px minmax(0, 1fr) minmax(220px, 30%); gap: 16px; align-items: start; }
+@media (max-width: 1100px) { .demo-body { grid-template-columns: 220px minmax(0, 1fr); } .demo-side { grid-column: 1 / -1; flex-direction: row; } .demo-side > * { flex: 1; } }
+@media (max-width: 700px) { .demo-body { grid-template-columns: 1fr; } .demo-side { flex-direction: column; } }
 .demo-side { display: flex; flex-direction: column; gap: 10px; }
 .demo-who { border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px; background: var(--surface); }
 .demo-who p { margin: 6px 0 0; font-size: 13px; color: var(--muted); }
 .demo-who.ai { border-color: color-mix(in srgb, var(--accent) 55%, transparent); background: var(--accent-2); }
 .demo-who.ai p { color: var(--text); } .demo-who.ai .demo-note { color: var(--muted); font-size: 12px; }
 .demo-who.none { opacity: .75; }
-.demo-ai { margin-left: 6px; font-size: 10px; font-weight: 700; color: var(--accent); border: 1px solid color-mix(in srgb, var(--accent) 55%, transparent); border-radius: 99px; padding: 0 6px; }
-.home-progress { display: flex; gap: 28px; align-items: center; flex-wrap: wrap; }
-.home-progress .ring { width: 180px; flex: none; }
-.ring-info { flex: 1; min-width: 240px; display: flex; flex-direction: column; gap: 8px; }
-.ring-info h3, .ring-info .sub { margin: 0; }
-.ring-phase .row { margin-bottom: 4px; }
-.ring-bar { height: 8px; border-radius: 99px; background: var(--surface-2); overflow: hidden; }
-.ring-bar i { display: block; height: 100%; background: var(--ok); border-radius: 99px; transition: width .4s; }
-.ring-legend { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 4px; }
-.ring-legend i { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 5px; vertical-align: -1px; border: 1px solid var(--border); }
 .app.nav-hidden { grid-template-columns: 0 1fr; }
 .app.nav-hidden > .sidebar { visibility: hidden; overflow: hidden; border: 0; }
 @media (max-width: 900px) { .app.nav-hidden { grid-template-columns: minmax(0, 1fr); grid-template-rows: 0 minmax(0, 1fr); } }
@@ -383,3 +368,19 @@ textarea::placeholder, input::placeholder { color: var(--faint); opacity: .75; f
 #btnNav { font-size: 17px; line-height: 1; padding: 4px 10px; }
 .home-badges { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
 .home-badge { font-size: 12.5px; font-weight: 600; padding: 4px 12px; border-radius: 99px; border: 1px solid var(--border); background: var(--surface); color: var(--text); cursor: help; }
+.demo-ringwrap { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.demo-ring { width: 100%; max-width: 270px; }
+.demo-ring .seg { cursor: pointer; }
+.demo-ring .track, .demo-ring .fill { fill: none; stroke-width: 18; stroke-linecap: round; }
+.demo-ring .track { stroke: var(--border); }
+.demo-ring .fill { stroke: var(--accent); stroke-dasharray: 1 1; stroke-dashoffset: 1; }
+.demo-ring .seg.done .fill { stroke-dashoffset: 0; stroke: var(--ok); }
+.demo-ring .seg.on .fill { stroke-dashoffset: 0; }
+.demo-ring .seg:hover .track { stroke: color-mix(in srgb, var(--accent) 35%, var(--border)); }
+@keyframes demo-fill { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+.demo-ring .lbl { font-size: 15px; fill: var(--muted); }
+.demo-ring .seg.on .lbl { fill: var(--text); font-weight: 700; }
+.demo-ring .mid-n { font-size: 13px; fill: var(--muted); }
+.demo-ring .mid-l { font-size: 30px; font-weight: 700; fill: var(--text); }
+.demo-ring .mid-ai { font-size: 12px; font-weight: 600; fill: var(--accent); }
+@media (prefers-reduced-motion: reduce) { .demo-ring .fill { animation: none !important; } }

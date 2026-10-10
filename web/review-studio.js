@@ -668,11 +668,23 @@ const DEMO = [
 
 function homeDemo() {
   let i = 0, timer = null, anim = null, playing = !matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const STEP_MS = 4500, n = DEMO.length, C = 170, R = 100, gap = 0.07;
   const screen = h("div", { class: "demo-screen", "aria-live": "polite" }), caption = h("p", { class: "demo-caption" });
-  const bar = h("div", { class: "demo-progress" }, h("i"));
-  const tabs = DEMO.map((d, k) => h("button", { class: "demo-tab", onclick: () => { show(k); } }, `${k + 1}. ${d.label}`, d.ai ? h("span", { class: "demo-ai" }, "AI") : null));
   const side = h("div", { class: "demo-side" });
   const play = btn("", () => { playing = !playing; show(i); }, "sm ghost");
+  // the five steps as one circuit: a segment per step that fills as the walk goes round
+  const pt = (r, t) => [C + r * Math.sin(t), C - r * Math.cos(t)].map(v => v.toFixed(1));
+  const arc = (t0, t1) => { const [x0, y0] = pt(R, t0), [x1, y1] = pt(R, t1); return `M${x0} ${y0} A${R} ${R} 0 0 1 ${x1} ${y1}`; };
+  const ring = svg(340, 340, DEMO.map((d, k) => {
+    const t0 = 2 * Math.PI * k / n + gap, t1 = 2 * Math.PI * (k + 1) / n - gap, [lx, ly] = pt(R + 34, (t0 + t1) / 2);
+    return `<g class="seg" data-k="${k}"><title>${k + 1}. ${d.label}</title>
+      <path class="track" d="${arc(t0, t1)}"/><path class="fill" pathLength="1" d="${arc(t0, t1)}"/>
+      <text class="lbl" x="${lx}" y="${ly}" text-anchor="middle" dominant-baseline="middle">${d.label}</text></g>`;
+  }).join("") + `<text class="mid-n" x="${C}" y="${C - 14}" text-anchor="middle"></text><text class="mid-l" x="${C}" y="${C + 18}" text-anchor="middle"></text>
+    <text class="mid-ai" x="${C}" y="${C + 42}" text-anchor="middle"></text>`);
+  ring.className = "demo-ring";
+  const segs = [...ring.querySelectorAll(".seg")];
+  segs.forEach(g => g.addEventListener("click", () => show(+g.dataset.k)));
   function show(k) {
     clearInterval(anim); clearTimeout(timer);
     if (!screen.isConnected && timer !== null) return;          // the page was left: stop
@@ -682,48 +694,26 @@ function homeDemo() {
       h("div", { class: "demo-who you" }, h("b", {}, "👤 You"), h("p", {}, DEMO[i].you)),
       DEMO[i].ai ? h("div", { class: "demo-who ai" }, h("b", {}, "🤖 Claude can help"), h("p", {}, DEMO[i].ai), h("p", { class: "demo-note" }, "Only if you switch it on; Claude suggests, you confirm."))
         : h("div", { class: "demo-who none" }, h("b", {}, "🤖 Claude"), h("p", {}, "Not used in this step: it is your own work.")));
-    tabs.forEach((t, n) => t.classList.toggle("on", n === i));
+    segs.forEach((g, m) => {
+      g.classList.toggle("done", m < i); g.classList.toggle("on", m === i); g.classList.toggle("ai", !!DEMO[m].ai);
+      const fill = g.querySelector(".fill");
+      fill.style.animation = "none"; fill.getBoundingClientRect();
+      fill.style.animation = m === i && playing ? `demo-fill ${STEP_MS}ms linear forwards` : "";
+    });
+    ring.querySelector(".mid-n").textContent = `${i + 1} of ${n}`;
+    ring.querySelector(".mid-l").textContent = DEMO[i].label;
+    ring.querySelector(".mid-ai").textContent = DEMO[i].ai ? "🤖 AI can help" : "";
     play.textContent = playing ? "⏸ Pause" : "▶ Play";
-    bar.firstChild.style.animation = "none"; bar.firstChild.offsetWidth;
-    bar.firstChild.style.animation = playing ? "demo-bar 4.5s linear forwards" : "none";
-    timer = setTimeout(() => playing ? show((i + 1) % DEMO.length) : null, 4500);
+    timer = setTimeout(() => playing ? show((i + 1) % n) : null, STEP_MS);
   }
   setTimeout(() => show(0));
-  return h("div", { class: "demo" }, h("div", { class: "demo-tabs" }, tabs, h("span", { class: "spacer" }), play), bar, h("div", { class: "demo-body" }, h("div", {}, screen, caption), side));
+  return h("div", { class: "demo" }, h("div", { class: "demo-body" },
+    h("div", { class: "demo-ringwrap" }, ring, play), h("div", {}, screen, caption), side));
 }
 
-// How far this review is: a ring of the 15 stages (one segment each, coloured by status), the share done
-// in the middle, and per phase how many stages are done. Only shows; the sidebar is where you go to a stage.
-function progressRing() {
-  const n = S.stages.length, R = 70, C = 90, gap = 0.075;
-  const finished = s => s.status === "done" || s.status === "skipped";
-  const done = S.stages.filter(finished).length, pct = Math.round(100 * done / n);
-  const next = S.stages.find(s => !finished(s));
-  const color = s => s.status === "done" ? "var(--ok)" : s.status === "skipped" ? "var(--faint)" : s.status === "in-progress" ? "var(--accent)" : "var(--border)";
-  const arc = (a0, a1) => { const p = a => [C + R * Math.sin(a), C - R * Math.cos(a)].map(v => v.toFixed(1)).join(" ");
-    return `M${p(a0)} A${R} ${R} 0 ${a1 - a0 > Math.PI ? 1 : 0} 1 ${p(a1)}`; };
-  const segs = S.stages.map((s, i) => { const a0 = 2 * Math.PI * i / n + gap, a1 = 2 * Math.PI * (i + 1) / n - gap;
-    return `<path d="${arc(a0, a1)}" fill="none" stroke="${color(s)}" stroke-width="16" stroke-linecap="round"><title>${esc(s.title.replace(/^\d+ · /, ""))}: ${s.status.replace("-", " ")}</title></path>`; }).join("");
-  const ring = svg(180, 180, segs +
-    `<text x="90" y="88" text-anchor="middle" font-size="34" font-weight="700" fill="var(--text)">${pct}%</text>
-     <text x="90" y="110" text-anchor="middle" font-size="12" fill="var(--muted)">${done} of ${n} stages</text>`);
-  ring.className = "ring";
-  const phase = ([name, a, b]) => { const st = S.stages.slice(a, b + 1), d = st.filter(finished).length;
-    return h("div", { class: "ring-phase" }, h("div", { class: "row" }, h("b", {}, name), h("span", { class: "spacer" }), h("span", { class: "muted small" }, `${d} / ${st.length}`)),
-      h("div", { class: "ring-bar" }, h("i", { style: `width:${100 * d / st.length}%` }))); };
-  return h("div", { class: "card home-progress" }, ring,
-    h("div", { class: "ring-info" },
-      h("h3", {}, "Your progress"),
-      h("p", { class: "sub" }, next ? h("span", {}, "Next up: ", h("b", {}, next.title.replace(/^\d+ · /, ""))) : "Every stage is done. 🎉"),
-      PHASES.map(phase),
-      h("div", { class: "ring-legend small muted" }, [["var(--ok)", "done"], ["var(--accent)", "in progress"], ["var(--faint)", "skipped"], ["var(--border)", "not started"]]
-        .map(([c, l]) => h("span", {}, h("i", { style: `background:${c}` }), l)))));
-}
-
-// Homepage: the demo, your progress and the tour
+// Homepage: the demo and the tour
 PAGES.home = () => h("div", { class: "home" },
-  card("See how it works", "A one-minute walk through a review: what you do, and where Claude can help (AI). Click a step to jump to it.", homeDemo()),
-  progressRing(),
+  card("See how it works", "A one-minute walk through a review: what you do, and where Claude can help (AI). Click a part of the circle to jump to it.", homeDemo()),
   h("div", { class: "home-tour" },
     h("div", {}, h("h3", {}, "🎓 New here? Take the tour"), h("p", { class: "sub" }, "One minute: what each part of the screen is for.")),
     btn("Start the tour", () => startTour(), "primary tour-big")));
