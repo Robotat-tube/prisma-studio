@@ -358,9 +358,6 @@ textarea::placeholder, input::placeholder { color: var(--faint); opacity: .75; f
 .demo-side { display: flex; flex-direction: column; gap: 10px; }
 .demo-who { border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px; background: var(--surface); }
 .demo-who p { margin: 6px 0 0; font-size: 13px; color: var(--muted); }
-.demo-who.ai { border-color: color-mix(in srgb, var(--accent) 55%, transparent); background: var(--accent-2); }
-.demo-who.ai p { color: var(--text); } .demo-who.ai .demo-note { color: var(--muted); font-size: 12px; }
-.demo-who.none { opacity: .75; }
 .app.nav-hidden { grid-template-columns: 0 1fr; }
 .app.nav-hidden > .sidebar { visibility: hidden; overflow: hidden; border: 0; }
 @media (max-width: 900px) { .app.nav-hidden { grid-template-columns: minmax(0, 1fr); grid-template-rows: 0 minmax(0, 1fr); } }
@@ -384,3 +381,10 @@ textarea::placeholder, input::placeholder { color: var(--faint); opacity: .75; f
 .demo-ring .mid-l { font-size: 30px; font-weight: 700; fill: var(--text); }
 .demo-ring .mid-ai { font-size: 12px; font-weight: 600; fill: var(--accent); }
 @media (prefers-reduced-motion: reduce) { .demo-ring .fill { animation: none !important; } }
+.demo-who { --glow: var(--ok); transition: opacity .3s, border-color .3s, background .3s; opacity: .5; }
+.demo-who.ai { --glow: var(--accent); }
+.demo-who.active { opacity: 1; border-color: var(--glow); background: color-mix(in srgb, var(--glow) 10%, var(--surface)); animation: who-glow 2.2s ease-in-out infinite; }
+.demo-who.active p { color: var(--text); } .demo-who.active .demo-note { color: var(--muted); font-size: 12px; }
+.demo-who.active b { color: var(--glow); }
+@keyframes who-glow { 0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--glow) 0%, transparent); } 50% { box-shadow: 0 0 16px 3px color-mix(in srgb, var(--glow) 45%, transparent); } }
+@media (prefers-reduced-motion: reduce) { .demo-who.active { animation: none; box-shadow: 0 0 0 2px color-mix(in srgb, var(--glow) 40%, transparent); } }

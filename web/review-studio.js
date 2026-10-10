@@ -690,10 +690,12 @@ function homeDemo() {
     if (!screen.isConnected && timer !== null) return;          // the page was left: stop
     i = k; screen.replaceChildren(); anim = DEMO[i].draw(screen);
     caption.textContent = DEMO[i].caption;
+    // who works in this step: the active card glows (you in green, Claude in the accent colour; both when both)
     side.replaceChildren(
-      h("div", { class: "demo-who you" }, h("b", {}, "👤 You"), h("p", {}, DEMO[i].you)),
-      DEMO[i].ai ? h("div", { class: "demo-who ai" }, h("b", {}, "🤖 Claude can help"), h("p", {}, DEMO[i].ai), h("p", { class: "demo-note" }, "Only if you switch it on; Claude suggests, you confirm."))
-        : h("div", { class: "demo-who none" }, h("b", {}, "🤖 Claude"), h("p", {}, "Not used in this step: it is your own work.")));
+      h("div", { class: "demo-who you active" }, h("b", {}, "👤 You"), h("p", {}, DEMO[i].you)),
+      h("div", { class: "demo-who ai" + (DEMO[i].ai ? " active" : "") }, h("b", {}, DEMO[i].ai ? "🤖 Claude can help" : "🤖 Claude"),
+        h("p", {}, DEMO[i].ai || "Not used in this step: it is your own work."),
+        DEMO[i].ai ? h("p", { class: "demo-note" }, "Only if you switch it on; Claude suggests, you confirm.") : null));
     segs.forEach((g, m) => {
       g.classList.toggle("done", m < i); g.classList.toggle("on", m === i); g.classList.toggle("ai", !!DEMO[m].ai);
       const fill = g.querySelector(".fill");
